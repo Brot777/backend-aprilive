@@ -7,6 +7,7 @@ import fileUpload from "express-fileupload";
 import usersRoutes from "./routes/ùsers.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import uploadRoutes from "./routes/upload.routes.js";
+import countriesRoutes from "./routes/countries.routes.js";
 
 // INITIAL EXPRESS
 const app = express();
@@ -33,6 +34,7 @@ app.use(
 app.use("/api/users", usersRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/countries", countriesRoutes);
 
 /* STATIC FILES */
 app.use(express.static(urlStatic));

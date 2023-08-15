@@ -38,7 +38,7 @@ export const singin = async (req, res) => {
     );
 
     if (!matchPassword) {
-      return res.status(400).json({ error: "Usuario o contraseña invalido" });
+      return res.status(401).json({ error: "Usuario o contraseña invalido" });
     }
 
     const token = jwt.sign({ _id: userFound._id }, process.env.SECRET);
