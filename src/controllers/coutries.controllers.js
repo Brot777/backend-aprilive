@@ -57,7 +57,7 @@ export const getStates = async (req, res) => {
       }
     );
 
-    res.status(200).json(response);
+    res.status(200).json(response.data);
   } catch (error) {
     handleHttp(res, "Error_Get_Countries", error);
   }
@@ -87,7 +87,7 @@ export const getCities = async (req, res) => {
       }
     );
 
-    res.status(200).json(response);
+    res.status(200).json(response.data);
   } catch (error) {
     handleHttp(res, "Error_Get_Countries", error);
   }
