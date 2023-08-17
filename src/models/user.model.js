@@ -65,13 +65,17 @@ const userSchema = new Schema(
       default: "",
     },
 
-    followers: {
-      type: Map,
-      of: Boolean,
-      default: new Map(),
+    numberFollowers: {
+      type: Number,
+      default: 0,
+    },
+    numberFollowing: {
+      type: Number,
+      default: 0,
     },
     views: {
       type: Number,
+      default: 0,
     },
 
     preferences: {

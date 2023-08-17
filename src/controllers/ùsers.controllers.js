@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import userModel from "./../models/user.model.js";
+import followerModel from "./../models/follower.js";
 import { handleHttp } from "../utils/error.handle.js";
 
 /* export const createUser = async (req, res) => {
@@ -37,6 +38,15 @@ export const getUserProfile = async (req, res) => {
       return res.status(404).json({ error: "404 not found" });
     }
 
+    const [numberFollowers, numberFollowing] = await Promise.all([
+      followerModel.count({ userId }),
+      followerModel.count({ followerId: userId }),
+    ]);
+
+    user.numberFollowers = numberFollowers;
+    user.numberFollowing = numberFollowing;
+    console.log(user);
+
     res.status(200).json(user);
   } catch (error) {
     handleHttp(res, "Error_Get_User", error);
@@ -47,7 +57,7 @@ export const updateUserById = async (req, res) => {
   const userId = req.params.userId;
   try {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(404).json({ error: "404 not found" });
+      return res.status(400).json({ error: "Invalid Id" });
     }
     const user = await userModel.findOne({ _id: userId });
     if (!user) {
