@@ -19,4 +19,4 @@ const followerSchema = new Schema(
   }
 );
 
-export default new model("Follower", followerSchema);
+export default model("Follower", followerSchema);

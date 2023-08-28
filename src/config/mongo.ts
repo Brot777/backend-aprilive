@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
-const URI = process.env.MONGODB_URI;
-async function main() {
+const URI = process.env.MONGODB_URI || "";
+export default async function main() {
   mongoose.set("strictQuery", true);
   await mongoose.connect(URI);
   console.log("database is connected");

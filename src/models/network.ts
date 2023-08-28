@@ -13,4 +13,4 @@ const networkSchema = new Schema(
   }
 );
 
-export default new model("Network", networkSchema);
+export default model("Network", networkSchema);

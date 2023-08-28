@@ -1,6 +1,11 @@
-import userModel from "../models/user.model.js";
+import { NextFunction, Request, Response } from "express";
+import userModel from "../models/user";
 
-export const checkDuplicateUsername = async (req, res, next) => {
+export const checkDuplicateUsername = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const user = await userModel.findOne({ username: req.body.username });
     if (user) {
@@ -10,11 +15,15 @@ export const checkDuplicateUsername = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    res.status(400).json({ error: "Something went wrong" });
+    res.status(500).json({ error: "Something went wrong" });
     console.log(error);
   }
 };
-export const checkDuplicateEmail = async (req, res, next) => {
+export const checkDuplicateEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const user = await userModel.findOne({ email: req.body.email });
     if (user) {
@@ -24,7 +33,7 @@ export const checkDuplicateEmail = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    res.status(400).json({ error: "Something went wrong" });
+    res.status(500).json({ error: "Something went wrong" });
     console.log(error);
   }
 };

@@ -11,4 +11,4 @@ const profileSchema = new Schema(
   }
 );
 
-export default new model("Profile", profileSchema);
+export default model("Profile", profileSchema);

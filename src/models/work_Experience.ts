@@ -25,4 +25,4 @@ const workExperienceSchema = new Schema(
   }
 );
 
-export default new model("WorkExperience", workExperienceSchema);
+export default model("WorkExperience", workExperienceSchema);

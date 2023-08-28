@@ -1,15 +1,21 @@
 import jwt from "jsonwebtoken";
-import userModel from "../models/user.model.js";
+import userModel from "../models/user";
+import { NextFunction, Request, Response } from "express";
+import { Payload } from "../interfaces/payload.interface";
 
-export const isValidToken = async (req, res, next) => {
+export const isValidToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const bearerToken = req.headers.authorization || "";
     const token = bearerToken.split(" ").pop();
     if (!token) {
       return res.status(401).json({ error: "no token provided" });
     }
-    const decoded = jwt.verify(token, process.env.SECRET);
-    req.userId = decoded?._id;
+    const payload = jwt.verify(token, process.env.SECRET || "") as Payload;
+    req.userId = payload?._id;
   } catch (error) {
     return res.status(401).json({ error: "unauthorized" });
   }

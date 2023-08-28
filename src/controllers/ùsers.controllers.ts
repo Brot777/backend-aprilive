@@ -1,24 +1,10 @@
 import mongoose from "mongoose";
-import userModel from "./../models/user.model.js";
-import followerModel from "./../models/follower.js";
-import { handleHttp } from "../utils/error.handle.js";
+import userModel from "../models/user";
+import followerModel from "../models/follower";
+import { handleHttp } from "../utils/error.handle";
+import { Request, Response } from "express";
 
-/* export const createUser = async (req, res) => {
-  try {
-    const { name, username, password } = req.body;
-    const newUser = new userModel({
-      name,
-      username,
-      password: await userModel.encryptPassword(password),
-    });
-    const userSaved = await newUser.save();
-    res.status(201).json(userSaved);
-  } catch (error) {
-    handleHttp(res, "Error_Create_User", error);
-  }
-}; */
-
-export const getUsers = async (req, res) => {
+export const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await userModel.find({});
     res.status(200).json(users);
@@ -27,7 +13,7 @@ export const getUsers = async (req, res) => {
   }
 };
 
-export const getUserProfile = async (req, res) => {
+export const getUserProfile = async (req: Request, res: Response) => {
   const userId = req.params.userId;
   try {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -53,7 +39,7 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
-export const updateUserById = async (req, res) => {
+export const updateUserById = async (req: Request, res: Response) => {
   const userId = req.params.userId;
   try {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -72,7 +58,7 @@ export const updateUserById = async (req, res) => {
   }
 };
 
-export const deleteUserById = async (req, res) => {
+export const deleteUserById = async (req: Request, res: Response) => {
   console.log(req.params.userId);
   const userId = req.params.userId;
   try {

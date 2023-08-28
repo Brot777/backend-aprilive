@@ -1,8 +1,8 @@
 import { model, Schema } from "mongoose";
 
-const educationSchema = new Schema(
+const preferenceSchema = new Schema(
   {
-    title: {
+    value: {
       type: String,
       required: true,
     },
@@ -13,4 +13,4 @@ const educationSchema = new Schema(
   }
 );
 
-export default new model("Education", educationSchema);
+export default model("Preference", preferenceSchema);

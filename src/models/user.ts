@@ -1,16 +1,15 @@
 import { model, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
+import { User } from "../interfaces/user.interface";
 
-const userSchema = new Schema(
+const userSchema = new Schema<User>(
   {
     /* INICIO--- REQUERIDOS AL INICIAR SESION */
     firstName: {
       type: String,
-      required: true,
     },
     lastName: {
       type: String,
-      required: true,
     },
     username: {
       type: String,
@@ -114,16 +113,7 @@ const userSchema = new Schema(
   }
 );
 
-userSchema.statics.encryptPassword = async (password) => {
-  const salt = await bcrypt.genSalt(10);
-  return await bcrypt.hash(password, salt);
-};
-
-userSchema.statics.comparePassword = async (password, receivedPassword) => {
-  return await bcrypt.compare(password, receivedPassword);
-};
-
-export default new model("User", userSchema);
+export default model("User", userSchema);
 
 /* 
 

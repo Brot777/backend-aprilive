@@ -17,4 +17,4 @@ const languajeSchema = new Schema(
   }
 );
 
-export default new model("Languaje", languajeSchema);
+export default model("Languaje", languajeSchema);

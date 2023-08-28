@@ -1,7 +1,8 @@
 import axios from "axios";
-import { handleHttp } from "../utils/error.handle.js";
+import { handleHttp } from "../utils/error.handle";
+import { Request, Response } from "express";
 
-export const getCountries = async (req, res) => {
+export const getCountries = async (req: Request, res: Response) => {
   const userEmail = process.env.USER_EMAIL;
   const userToken = process.env.API_TOKEN;
   try {
@@ -32,7 +33,7 @@ export const getCountries = async (req, res) => {
   }
 };
 
-export const getStates = async (req, res) => {
+export const getStates = async (req: Request, res: Response) => {
   const userEmail = process.env.USER_EMAIL;
   const userToken = process.env.API_TOKEN;
   try {
@@ -62,7 +63,7 @@ export const getStates = async (req, res) => {
     handleHttp(res, "Error_Get_Countries", error);
   }
 };
-export const getCities = async (req, res) => {
+export const getCities = async (req: Request, res: Response) => {
   const userEmail = process.env.USER_EMAIL;
   const userToken = process.env.API_TOKEN;
   try {

@@ -3,7 +3,7 @@ import {
   getCities,
   getCountries,
   getStates,
-} from "../controllers/coutries.controllers.js";
+} from "../controllers/coutries.controllers";
 
 const router = Router();
 
@@ -11,4 +11,4 @@ router.get("/", getCountries);
 router.get("/states/:countryName", getStates);
 router.get("/cities/:stateName", getCities);
 
-export default router;
+export { router };

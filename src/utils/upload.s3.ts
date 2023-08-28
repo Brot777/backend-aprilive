@@ -1,8 +1,9 @@
 import fs from "fs";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { s3Client } from "./../config/s3Client.js";
+import { s3Client } from "../config/s3Client";
+import fileUpload from "express-fileupload";
 
-export const uploadPhotoToS3 = async (file) => {
+export const uploadPhotoToS3 = async (file: fileUpload.UploadedFile) => {
   // Charge File
   const stream = fs.createReadStream(file.tempFilePath);
 

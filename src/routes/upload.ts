@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { uploadPhoto } from "../controllers/upload.controllers.js";
+import { uploadPhoto } from "../controllers/upload.controllers";
 
 const router = Router();
 
 router.post("/", uploadPhoto);
 
-export default router;
+export { router };
