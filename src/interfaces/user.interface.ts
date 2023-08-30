@@ -10,7 +10,19 @@ export interface User {
   profileUrl: string;
   accountType: string;
   videoUrl: string;
-  dataTitular: Schema.Types.Mixed;
+  proTitle: string;
+  proTitleVisible: boolean;
+  proEmail: string;
+  proEmailVisible: boolean;
+  phoneArea: string;
+  phone: string;
+  phoneVisible: boolean;
+  sex: string;
+  sexVisible: boolean;
+  country: string;
+  provinceDepartmentState: string;
+  cityId: string;
+  compensation: Schema.Types.Mixed;
   status: boolean;
   birthday: Date;
   about: string;
@@ -34,7 +46,19 @@ export type RegisterUser = Omit<
   | "profileUrl"
   | "accountType"
   | "videoUrl"
-  | "dataTitular"
+  | "proTitle"
+  | "proTitleVisible"
+  | "proEmail"
+  | "proEmailVisible"
+  | "phoneArea"
+  | "phone"
+  | "phoneVisible"
+  | "sex"
+  | "sexVisible"
+  | "country"
+  | "provinceDepartmentState"
+  | "cityId"
+  | "compensation"
   | "status"
   | "birthday"
   | "about"

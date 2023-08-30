@@ -1,5 +1,4 @@
 import { model, Schema } from "mongoose";
-import bcrypt from "bcryptjs";
 import { User } from "../interfaces/user.interface";
 
 const userSchema = new Schema<User>(
@@ -7,9 +6,11 @@ const userSchema = new Schema<User>(
     /* INICIO--- REQUERIDOS AL INICIAR SESION */
     firstName: {
       type: String,
+      default: "",
     },
     lastName: {
       type: String,
+      default: "",
     },
     username: {
       type: String,
@@ -46,10 +47,66 @@ const userSchema = new Schema<User>(
       type: String,
       default: "",
     },
-    dataTitular: {
-      type: Schema.Types.Mixed,
-      default: {},
+
+    proTitle: {
+      type: String,
+      default: "",
     },
+    proTitleVisible: {
+      type: Boolean,
+      default: true,
+    },
+    proEmail: {
+      type: String,
+      default: "",
+    },
+    proEmailVisible: {
+      type: Boolean,
+      default: true,
+    },
+    phoneArea: {
+      type: String,
+      default: "",
+    },
+    phone: {
+      type: String,
+      default: "",
+    },
+    phoneVisible: {
+      type: Boolean,
+      default: true,
+    },
+    sex: {
+      type: String,
+      default: "",
+    },
+    sexVisible: {
+      type: Boolean,
+      default: true,
+    },
+    country: {
+      type: String,
+      default: "",
+    },
+    provinceDepartmentState: {
+      type: String,
+      default: "",
+    },
+
+    cityId: {
+      type: String,
+      default: "",
+    },
+
+    compensation: {
+      type: Schema.Types.Mixed,
+      default: {
+        payment_currency: "",
+        payment_amount: 0,
+        payment_date: "",
+      },
+    },
+
     status: {
       type: Boolean,
       default: true,
