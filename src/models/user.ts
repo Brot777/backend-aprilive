@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 import { User } from "../interfaces/user.interface";
 
 const userSchema = new Schema<User>(
@@ -33,7 +33,13 @@ const userSchema = new Schema<User>(
     photoUrl: {
       type: Schema.Types.ObjectId,
       ref: "Avatar",
-      default: "",
+      default: mongoose.Types.ObjectId,
+    },
+
+    videoUrl: {
+      type: Schema.Types.ObjectId,
+      ref: "PresentationVideo",
+      default: mongoose.Types.ObjectId,
     },
     profileUrl: {
       type: String,
@@ -42,11 +48,6 @@ const userSchema = new Schema<User>(
     accountType: {
       type: String,
       default: "", // sting 0 o 1
-    },
-
-    videoUrl: {
-      type: String,
-      default: "",
     },
 
     proTitle: {

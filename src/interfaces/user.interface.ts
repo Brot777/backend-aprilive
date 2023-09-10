@@ -9,7 +9,7 @@ export interface User {
   photoUrl: Schema.Types.ObjectId;
   profileUrl: string;
   accountType: string;
-  videoUrl: string;
+  videoUrl: Schema.Types.ObjectId;
   proTitle: string;
   proTitleVisible: boolean;
   proEmail: string;
