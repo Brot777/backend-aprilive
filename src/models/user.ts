@@ -31,7 +31,8 @@ const userSchema = new Schema<User>(
     /* FIN ----REQUERIDOS AL INICIAR SESION */
 
     photoUrl: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: "Avatar",
       default: "",
     },
     profileUrl: {

@@ -1,9 +1,5 @@
 import { Router } from "express";
-import {
-  getCities,
-  getCountries,
-  getStates,
-} from "../controllers/coutries.controllers";
+import { getCities, getCountries, getStates } from "../controllers/coutries";
 
 const router = Router();
 

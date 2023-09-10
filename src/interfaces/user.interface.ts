@@ -6,7 +6,7 @@ export interface User {
   username: string;
   email: string;
   password: string;
-  photoUrl: string;
+  photoUrl: Schema.Types.ObjectId;
   profileUrl: string;
   accountType: string;
   videoUrl: string;

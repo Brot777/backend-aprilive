@@ -2,7 +2,6 @@ import express from "express";
 import { join } from "path";
 import morgan from "morgan";
 import cors from "cors";
-import fileUpload from "express-fileupload";
 import routes from "./routes/index";
 
 // INITIAL EXPRESS
@@ -16,14 +15,6 @@ const urlStatic = join(__dirname, "dist");
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors());
-
-//FILEUPLOAD
-app.use(
-  fileUpload({
-    useTempFiles: true,
-    tempFileDir: "./src/upload",
-  })
-);
 
 //  ROUTES
 app.use("/api/", routes);

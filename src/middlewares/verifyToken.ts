@@ -23,7 +23,7 @@ export const isValidToken = async (
     const user = await userModel.findById(req.userId);
 
     if (!user) {
-      return res.status(401).json({ error: "User not found" });
+      return res.status(401).json({ error: "unauthorized" });
     }
     next();
   } catch (error) {
