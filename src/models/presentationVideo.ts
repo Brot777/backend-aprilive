@@ -11,7 +11,7 @@ const presentationVideoSchema = new Schema(
       default: "",
     },
 
-    userid: {
+    userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,

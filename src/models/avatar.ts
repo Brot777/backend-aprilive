@@ -10,7 +10,7 @@ const avatarSchema = new Schema(
       type: String,
       default: "",
     },
-    userid: {
+    userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,

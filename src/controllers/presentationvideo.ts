@@ -12,7 +12,6 @@ export const createPresentationVideo = async (
       folders.presentationVideo,
       params.userId
     );
-    console.log(response);
     res.status(status).json(response);
   } catch (error) {}
 };

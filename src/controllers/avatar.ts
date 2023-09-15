@@ -13,7 +13,6 @@ export const createAvatar = async (
       folders.avatars,
       params.userId
     );
-    console.log(response);
     res.status(status).json(response);
   } catch (error) {
     handleHttp(res, "Error_Upload_Photo", error);

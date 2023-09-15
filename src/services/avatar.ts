@@ -17,7 +17,7 @@ export const uploadPhotoToS3 = async (
   // Set the parameters
   const BUKET = process.env.AWS_BUCKET_NAME;
 
-  const avatar = await avatarModel.findOne({ authorId: userId });
+  const avatar = await avatarModel.findOne({ userId });
   const name = `${uuidv4()}-${file.originalname}`; // create name
   const params = {
     Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.

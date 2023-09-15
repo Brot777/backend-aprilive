@@ -18,7 +18,7 @@ export const uploadVideoS3 = async (
   const BUKET = process.env.AWS_BUCKET_NAME;
 
   const presentationVideo = await presentationVideoModel.findOne({
-    authorId: userId,
+    userId,
   });
   const name = `${uuidv4()}-${file.originalname}`; // create name
   const params = {

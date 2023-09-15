@@ -9,10 +9,10 @@ export const registerNewUser = async (user: RegisterUser) => {
   user.password = await encryptPassword(user.password);
   const userSaved = await userModel.create(user);
   const avatarSaved = await avatarModel.create({
-    userid: userSaved._id,
+    userId: userSaved._id,
   });
   const presentationVideoSaved = await presentationVideoModel.create({
-    userid: userSaved._id,
+    userId: userSaved._id,
   });
 
   await userModel.findByIdAndUpdate(
