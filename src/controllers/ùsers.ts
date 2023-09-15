@@ -19,7 +19,10 @@ export const getUserProfile = async (req: Request, res: Response) => {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(404).json({ error: "404 not found" });
     }
-    const user = await userModel.findById(userId);
+    const user = await userModel
+      .findById(userId)
+      .populate("photoUrl", "url")
+      .populate("videoUrl", "url");
     if (!user) {
       return res.status(404).json({ error: "404 not found" });
     }
@@ -31,7 +34,6 @@ export const getUserProfile = async (req: Request, res: Response) => {
 
     user.numberFollowers = numberFollowers;
     user.numberFollowing = numberFollowing;
-    console.log(user);
 
     res.status(200).json(user);
   } catch (error) {

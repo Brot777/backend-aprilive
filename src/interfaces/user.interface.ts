@@ -1,4 +1,5 @@
 import { Schema } from "mongoose";
+import { Avatar } from "./avata.interface";
 
 export interface User {
   firstName: string;
@@ -6,7 +7,7 @@ export interface User {
   username: string;
   email: string;
   password: string;
-  photoUrl: Schema.Types.ObjectId;
+  photoUrl: Schema.Types.ObjectId | Avatar;
   profileUrl: string;
   accountType: string;
   videoUrl: Schema.Types.ObjectId;
@@ -74,4 +75,4 @@ export type RegisterUser = Omit<
   | "myCompanies"
 >;
 
-export type LoginUser = Omit<RegisterUser, "email">;
+export type LoginUser = Omit<RegisterUser, "username">;
