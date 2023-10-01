@@ -3,9 +3,11 @@ import { join } from "path";
 import morgan from "morgan";
 import cors from "cors";
 import routes from "./routes/index";
+import { createPreferences } from "./libs/initialSetup";
 
 // INITIAL EXPRESS
 const app = express();
+createPreferences();
 
 // CONFIG URL STATICS
 

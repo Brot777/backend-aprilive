@@ -22,7 +22,8 @@ export const getUserProfile = async (req: Request, res: Response) => {
     const user = await userModel
       .findById(userId)
       .populate("photoUrl", "url")
-      .populate("videoUrl", "url");
+      .populate("videoUrl", "url")
+      .populate("preferences");
     if (!user) {
       return res.status(404).json({ error: "404 not found" });
     }

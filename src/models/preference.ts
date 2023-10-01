@@ -8,7 +8,6 @@ const preferenceSchema = new Schema(
     },
   },
   {
-    timestamps: true,
     versionKey: false,
   }
 );
