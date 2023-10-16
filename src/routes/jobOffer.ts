@@ -14,7 +14,7 @@ import { isValidToken } from "../middlewares/verifyToken";
 
 const router = Router();
 
-router.post("/", createJobOffer);
+router.post("/", isValidToken, createJobOffer);
 router.get("/", getJobOffers);
 router.get("/personalized", isValidToken, getPersonalizedJobOffers);
 router.get("/:jobOfferId", getJobOfferById);
