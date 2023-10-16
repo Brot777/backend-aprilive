@@ -75,7 +75,7 @@ export const getPersonalizedJobOffers = async (req: Request, res: Response) => {
 };
 export const getJobOffers = async (req: Request, res: Response) => {
   const limit = 10;
-  const queryPage = `${req.query.page}` || "1";
+  const queryPage = req.query.page ? `${req.query.page}` : "1";
   let page = parseInt(queryPage);
   try {
     const jobOffers = await jobOfferModel
