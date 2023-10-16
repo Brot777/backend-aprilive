@@ -2,6 +2,7 @@ import { Schema } from "mongoose";
 import { Avatar } from "./avata.interface";
 
 export interface User {
+  _id: string;
   firstName: string;
   lastName: string;
   username: string;
@@ -41,6 +42,7 @@ export interface User {
 
 export type RegisterUser = Omit<
   User,
+  | "_id"
   | "firstName"
   | "lastName"
   | "photoUrl"

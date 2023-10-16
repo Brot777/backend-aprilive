@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
+import { JobOffer } from "../interfaces/jobOffers";
 
-const jobOfferSchema = new Schema(
+const jobOfferSchema = new Schema<JobOffer>(
   {
     typePost: {
       type: String,
@@ -13,6 +14,26 @@ const jobOfferSchema = new Schema(
     },
 
     /* employment information */
+
+    isFavorite: {
+      type: Boolean,
+      default: false,
+    },
+    isLike: {
+      type: Boolean,
+      default: false,
+    },
+
+    numLikes: {
+      type: Number,
+      default: 0,
+    },
+
+    following: {
+      type: Boolean,
+      default: false,
+    },
+
     offerVideo: {
       type: String,
       default: "",
@@ -24,7 +45,17 @@ const jobOfferSchema = new Schema(
       required: true,
     },
 
-    /* publicador */
+    jobTitleNormalize: {
+      type: String,
+      default: "",
+      required: true,
+    },
+
+    publisher: {
+      type: String,
+      default: "",
+    },
+
     description: {
       type: String,
       default: "",
@@ -34,6 +65,11 @@ const jobOfferSchema = new Schema(
     allowComments: {
       type: Boolean,
       default: true,
+    },
+
+    expirationDate: {
+      type: Date,
+      default: "",
     },
 
     typeJob: {
@@ -78,11 +114,22 @@ const jobOfferSchema = new Schema(
       type: [],
       default: [],
     },
-
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+    WhoCanSee: {
+      type: String,
+      default: "",
+    },
+    remuneration: {
+      type: Schema.Types.Mixed,
+      default: {
+        type: "",
+        salary: "",
+        time: "",
+        money: "",
+      },
+    },
+    languages: {
+      type: [],
+      default: [],
     },
   },
   {
