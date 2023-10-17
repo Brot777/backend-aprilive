@@ -226,6 +226,8 @@ export const deleteJobOfferById = async (req: Request, res: Response) => {
 
     await jobOfferModel.findByIdAndDelete(jobOfferId);
     await commentJobOfferModel.deleteMany({ jobOfferId });
+    await likeJobOfferModel.deleteMany({ jobOfferId });
+    await favoriteJobOfferModel.deleteMany({ jobOfferId });
 
     res.status(204).json();
   } catch (error) {
