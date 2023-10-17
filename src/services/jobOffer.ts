@@ -44,7 +44,7 @@ export const addPropertiesWhenGetJobOfferPersonalized = async (
         // Verificamos si authorId es un objeto
         const authorId = jobOffer.authorId as User;
         // Usamos 'as' para decirle a TypeScript que estamos seguros de que authorId es un objeto con una propiedad 'userId'
-        return followerModel.find({
+        return followerModel.findOne({
           userId: authorId?._id,
           followerId: userId,
         });
@@ -63,8 +63,7 @@ export const addPropertiesWhenGetJobOfferPersonalized = async (
     );
     jobOffer.isLike = Boolean(isLike);
 
-    const isFavorite = Boolean(favorites[index]);
-    jobOffer.isFavorite = Boolean(isFavorite);
+    jobOffer.isFavorite = Boolean(favorites[index]);
     jobOffer.following = Boolean(followings[index]);
 
     return jobOffer;
