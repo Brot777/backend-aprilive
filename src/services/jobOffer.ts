@@ -33,6 +33,7 @@ export const addPropertiesWhenGetJobOfferPersonalized = async (
     }
   );
   const favorites = await Promise.all(promisesFavorites);
+  console.log(favorites);
 
   const promisesFollowing = jobOffers.map(
     (jobOffer: JobOffer, index: number) => {
@@ -64,6 +65,7 @@ export const addPropertiesWhenGetJobOfferPersonalized = async (
         favoriteJobOffer.userId == userId
     );
     jobOffer.isFavorite = Boolean(isFavorite);
+    jobOffer.following = Boolean(followings[index]);
 
     return jobOffer;
   });
