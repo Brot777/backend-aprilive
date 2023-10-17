@@ -16,23 +16,7 @@ export const convertTitleNormalize = (title: string): string => {
   return titleNormalize;
 };
 
-/* export const addPropertiesWhenGetJobOffer = async (
-  jobOffers: JobOffer[] | any,
-  userId: string
-) => {
-  if (!jobOffers?.length) return [];
-  const promises = jobOffers.map((jobOffer: JobOffer, index: number) => {
-    return likeJobOfferModel.findOne({ userId, jobOfferId: jobOffer._id });
-  });
-
-  const isLikes = await Promise.all(promises);
-  return jobOffers.map((jobOffer: JobOffer, index: number) => {
-    jobOffer.isLike = Boolean(isLikes[index]);
-    return jobOffer;
-  });
-}; */
-
-export const addPropertiesWhenGetJobOffer = async (
+export const addPropertiesWhenGetJobOfferPersonalized = async (
   jobOffers: JobOffer[] | any,
   userId: string
 ) => {
@@ -56,12 +40,16 @@ export const addPropertiesWhenGetJobOffer = async (
         // Verificamos si authorId es un objeto
         const authorId = jobOffer.authorId as User;
         // Usamos 'as' para decirle a TypeScript que estamos seguros de que authorId es un objeto con una propiedad 'userId'
-        return followerModel.find({ userId: authorId._id, followerId: userId });
+        return followerModel.find({
+          userId: authorId?._id,
+          followerId: userId,
+        });
       }
     }
   );
 
   const followings = await Promise.all(promisesFollowing);
+  console.log(followings);
 
   return jobOffers.map((jobOffer: JobOffer, index: number) => {
     jobOffer.numLikes = likes[index].length;
@@ -77,6 +65,23 @@ export const addPropertiesWhenGetJobOffer = async (
     );
     jobOffer.isFavorite = Boolean(isFavorite);
 
+    return jobOffer;
+  });
+};
+export const addPropertiesWhenGetJobOffer = async (
+  jobOffers: JobOffer[] | any
+) => {
+  if (!jobOffers?.length) return [];
+  const promisesCountLikes = jobOffers.map(
+    (jobOffer: JobOffer, index: number) => {
+      return likeJobOfferModel.count({ jobOfferId: jobOffer._id });
+    }
+  );
+
+  const countLikes = await Promise.all(promisesCountLikes);
+
+  return jobOffers.map((jobOffer: JobOffer, index: number) => {
+    jobOffer.numLikes = countLikes[index];
     return jobOffer;
   });
 };

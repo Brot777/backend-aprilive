@@ -2,10 +2,12 @@ import jobOfferModel from "../models/jobOffer";
 import mongoose from "mongoose";
 import likeJobOfferModel from "../models/likeJobOffer";
 import favoriteJobOfferModel from "../models/favoriteJobOffer";
+import commentJobOfferModel from "../models/commentJobOffer";
 import { handleHttp } from "../utils/error.handle";
 import { Request, Response } from "express";
 import {
   addPropertiesWhenGetJobOffer,
+  addPropertiesWhenGetJobOfferPersonalized,
   convertTitleNormalize,
 } from "../services/jobOffer";
 
@@ -57,7 +59,10 @@ export const getPersonalizedJobOffers = async (req: Request, res: Response) => {
         },
       });
 
-    const newJobOffers = await addPropertiesWhenGetJobOffer(jobOffers, userId); //user with autentication
+    const newJobOffers = await addPropertiesWhenGetJobOfferPersonalized(
+      jobOffers,
+      userId
+    ); //user with autentication
     console.timeEnd("consult");
     let totalDocs = await jobOfferModel.count(); //Possible performance improvement: cache the value
     let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
@@ -93,8 +98,9 @@ export const getJobOffers = async (req: Request, res: Response) => {
     let totalDocs = await jobOfferModel.count(); //Possible performance improvement: cache the value
     let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
 
+    const newJobOffers = await addPropertiesWhenGetJobOffer(jobOffers); //unauthenticated user
     return res.status(200).json({
-      docs: jobOffers,
+      docs: newJobOffers,
       currentPage: page,
       limit,
       totalDocs,
@@ -219,7 +225,7 @@ export const deleteJobOfferById = async (req: Request, res: Response) => {
     }
 
     await jobOfferModel.findByIdAndDelete(jobOfferId);
-    /* await commentModel.deleteMany({ resourceId }); */
+    await commentJobOfferModel.deleteMany({ jobOfferId });
 
     res.status(204).json();
   } catch (error) {
