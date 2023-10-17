@@ -11,7 +11,7 @@ import { isValidToken } from "../middlewares/verifyToken";
 const router = Router();
 
 router.post("/", isValidToken, createComment);
-router.get("/:resourceId", getCommentsByJobOfferId);
+router.get("/:jobOfferId", getCommentsByJobOfferId);
 router.put("/:commentId", isValidToken, updateCommentById);
 router.delete("/:commentId", isValidToken, deleteCommentById);
 

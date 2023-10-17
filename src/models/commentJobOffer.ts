@@ -17,11 +17,6 @@ const commentJobOfferSchema = new Schema(
       ref: "JobOffer",
       required: true,
     },
-    likes: {
-      type: Map,
-      of: Boolean,
-      default: new Map(),
-    },
   },
   {
     timestamps: true,
