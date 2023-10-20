@@ -13,25 +13,9 @@ import {
 
 export const createJobOffer = async (req: Request, res: Response) => {
   try {
-    const {
-      jobTitle,
-      authorId,
-      description,
-      typeJob,
-      typeContract,
-      typeLocationWorking,
-    } = req.body;
-    const jobTitleNormalize = convertTitleNormalize(jobTitle);
-
-    const jobOfferSaved = await jobOfferModel.create({
-      jobTitle,
-      jobTitleNormalize,
-      authorId,
-      description,
-      typeJob,
-      typeContract,
-      typeLocationWorking,
-    });
+    const jobOffer = req.body;
+    jobOffer.jobTitleNormalize = convertTitleNormalize(jobOffer.jobTitle);
+    const jobOfferSaved = await jobOfferModel.create(jobOffer);
     res.status(201).json(jobOfferSaved);
   } catch (error) {
     handleHttp(res, "Error_Create_Job_Offer", error);
@@ -45,7 +29,6 @@ export const getPersonalizedJobOffers = async (req: Request, res: Response) => {
   let page = parseInt(queryPage);
 
   try {
-    console.time("consult");
     const jobOffers = await jobOfferModel
       .find()
       .skip((page - 1) * limit)
@@ -63,7 +46,6 @@ export const getPersonalizedJobOffers = async (req: Request, res: Response) => {
       jobOffers,
       userId
     ); //user with autentication
-    console.timeEnd("consult");
     let totalDocs = await jobOfferModel.count(); //Possible performance improvement: cache the value
     let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
 
