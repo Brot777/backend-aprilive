@@ -1,0 +1,13 @@
+import { Schema } from "mongoose";
+
+export interface CompanyAccount {
+  _id: string;
+  nameCompany: string;
+  web: string;
+  remote: boolean;
+  address: string;
+  sector: string;
+  specialties: [];
+  userId: Schema.Types.ObjectId;
+  ownerId: Schema.Types.ObjectId;
+}

@@ -36,7 +36,6 @@ export const addPropertiesWhenGetJobOfferPersonalized = async (
     }
   );
   const favorites = await Promise.all(promisesFavorites);
-  console.log(favorites);
 
   const promisesFollowing = jobOffers.map(
     (jobOffer: JobOffer, index: number) => {
@@ -53,7 +52,6 @@ export const addPropertiesWhenGetJobOfferPersonalized = async (
   );
 
   const followings = await Promise.all(promisesFollowing);
-  console.log(followings);
 
   return jobOffers.map((jobOffer: JobOffer, index: number) => {
     jobOffer.numLikes = likes[index].length;

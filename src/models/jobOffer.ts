@@ -131,6 +131,21 @@ const jobOfferSchema = new Schema<JobOffer>(
       type: [],
       default: [],
     },
+
+    sharedLink: {
+      type: String,
+      default: "",
+    },
+
+    responsibilities: {
+      type: [{ type: String }],
+      default: [],
+    },
+
+    levelOfCompetence: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,

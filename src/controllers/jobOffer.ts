@@ -35,10 +35,22 @@ export const getPersonalizedJobOffers = async (req: Request, res: Response) => {
       .limit(limit)
       .populate({
         path: "authorId",
-        select: "_id firstName lastName photoUrl accountType",
+        select: "photoUrl",
         populate: {
           path: "photoUrl",
           select: "url",
+        },
+      })
+      .populate({
+        path: "authorId",
+        select: "name isCompany accountType",
+        populate: {
+          path: "accountType",
+          select: "role",
+          populate: {
+            path: "role",
+            select: "name",
+          },
         },
       });
 
@@ -71,10 +83,22 @@ export const getJobOffers = async (req: Request, res: Response) => {
       .limit(limit)
       .populate({
         path: "authorId",
-        select: "_id firstName lastName photoUrl accountType",
+        select: "photoUrl",
         populate: {
           path: "photoUrl",
           select: "url",
+        },
+      })
+      .populate({
+        path: "authorId",
+        select: "name isCompany accountType",
+        populate: {
+          path: "accountType",
+          select: "role",
+          populate: {
+            path: "role",
+            select: "name",
+          },
         },
       });
     let totalDocs = await jobOfferModel.count(); //Possible performance improvement: cache the value
@@ -139,6 +163,28 @@ export const updateJobOfferById = async (req: Request, res: Response) => {
   }
 };
 
+export const deleteJobOfferById = async (req: Request, res: Response) => {
+  const jobOfferId = req.params.jobOfferId;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(jobOfferId)) {
+      return res.status(400).json({ error: "invalid job offer id" });
+    }
+    const jobOffer = await jobOfferModel.findById(jobOfferId);
+    if (!jobOffer) {
+      return res.status(404).json({ error: "404 job offer not found" });
+    }
+
+    const jobOfferDeleted = await jobOfferModel.findByIdAndDelete(jobOfferId);
+    await commentJobOfferModel.deleteMany({ jobOfferId });
+    await likeJobOfferModel.deleteMany({ jobOfferId });
+    await favoriteJobOfferModel.deleteMany({ jobOfferId });
+
+    res.status(204).json(jobOfferDeleted);
+  } catch (error) {
+    handleHttp(res, "Error_Delete_Job_Offer", error);
+  }
+};
+
 export const likeJobOffer = async (req: Request, res: Response) => {
   try {
     const jobOfferId = req.params.jobOfferId;
@@ -195,9 +241,10 @@ export const favoriteJobOffer = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteJobOfferById = async (req: Request, res: Response) => {
-  const jobOfferId = req.params.jobOfferId;
+export const postulateJobOffer = async (req: Request, res: Response) => {
   try {
+    const jobOfferId = req.params.jobOfferId;
+    const userId = req.userId;
     if (!mongoose.Types.ObjectId.isValid(jobOfferId)) {
       return res.status(400).json({ error: "invalid job offer id" });
     }
@@ -206,13 +253,18 @@ export const deleteJobOfferById = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "404 job offer not found" });
     }
 
-    await jobOfferModel.findByIdAndDelete(jobOfferId);
-    await commentJobOfferModel.deleteMany({ jobOfferId });
-    await likeJobOfferModel.deleteMany({ jobOfferId });
-    await favoriteJobOfferModel.deleteMany({ jobOfferId });
+    const isFavoriteJobOffer = await favoriteJobOfferModel.findOne({
+      userId,
+      jobOfferId,
+    }); // return document favoriteJobOffer or null
 
+    if (isFavoriteJobOffer) {
+      await favoriteJobOfferModel.findByIdAndDelete(isFavoriteJobOffer._id);
+    } else {
+      await favoriteJobOfferModel.create({ userId, jobOfferId });
+    }
     res.status(204).json();
   } catch (error) {
-    handleHttp(res, "Error_Delete_Job_Offer", error);
+    handleHttp(res, "Error_Add_Favorite_Job_Offer", error);
   }
 };

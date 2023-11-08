@@ -28,4 +28,7 @@ export interface JobOffer {
   WhoCanSee: string;
   remuneration: Schema.Types.Mixed;
   languages: [];
+  sharedLink: string;
+  responsibilities: [];
+  levelOfCompetence: string;
 }

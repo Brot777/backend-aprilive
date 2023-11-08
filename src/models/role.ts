@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-const companySchema = new Schema(
+const roleSchema = new Schema(
   {
     name: {
       type: String,
@@ -8,9 +8,8 @@ const companySchema = new Schema(
     },
   },
   {
-    timestamps: true,
     versionKey: false,
   }
 );
 
-export default model("Company", companySchema);
+export default model("Role", roleSchema);

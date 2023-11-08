@@ -1,3 +1,15 @@
 1. HandleError mas robusto
 
 2. acutalizar texto normalizado al actualizar texto
+
+3. limitar numero de ofertas de trabajo
+
+4. Popular empresas
+
+5. Agregar campo de responsabilidades
+
+6. Crear Roles
+
+7. Crear Cambio de Sesion
+
+8. Crear Entidad Company

@@ -4,14 +4,6 @@ import { User } from "../interfaces/user.interface";
 const userSchema = new Schema<User>(
   {
     /* INICIO--- REQUERIDOS AL INICIAR SESION */
-    firstName: {
-      type: String,
-      default: "",
-    },
-    lastName: {
-      type: String,
-      default: "",
-    },
     username: {
       type: String,
       required: true,
@@ -30,6 +22,15 @@ const userSchema = new Schema<User>(
     },
     /* FIN ----REQUERIDOS AL INICIAR SESION */
 
+    accountType: {
+      type: Schema.Types.ObjectId,
+      ref: "AccountType",
+    },
+    name: {
+      type: String,
+      default: "",
+    },
+
     photoUrl: {
       type: Schema.Types.ObjectId,
       ref: "Avatar",
@@ -45,11 +46,6 @@ const userSchema = new Schema<User>(
       type: String,
       default: "",
     },
-    accountType: {
-      type: String,
-      default: "", // sting 0 o 1
-    },
-
     proTitle: {
       type: String,
       default: "",
@@ -58,14 +54,14 @@ const userSchema = new Schema<User>(
       type: Boolean,
       default: true,
     },
-    proEmail: {
+    /*     proEmail: {
       type: String,
       default: "",
     },
     proEmailVisible: {
       type: Boolean,
       default: true,
-    },
+    }, */
     phoneArea: {
       type: String,
       default: "",
@@ -78,14 +74,14 @@ const userSchema = new Schema<User>(
       type: Boolean,
       default: true,
     },
-    sex: {
+    /*  sex: {
       type: String,
       default: "",
     },
     sexVisible: {
       type: Boolean,
       default: true,
-    },
+    }, */
     country: {
       type: String,
       default: "",
@@ -100,23 +96,23 @@ const userSchema = new Schema<User>(
       default: "",
     },
 
-    compensation: {
+    /*    compensation: {
       type: Schema.Types.Mixed,
       default: {
         payment_currency: "",
         payment_amount: 0,
         payment_date: "",
       },
-    },
+    }, */
 
     status: {
-      type: Boolean,
-      default: true,
+      type: String,
+      default: "",
     },
-    birthday: {
+    /*     birthday: {
       type: Date,
       default: new Date(),
-    },
+    }, */
 
     about: {
       type: String,
@@ -148,7 +144,20 @@ const userSchema = new Schema<User>(
       type: [{ type: Schema.Types.ObjectId, ref: "Network" }],
       default: [],
     },
-    workExperience: {
+
+    personAccount: {
+      type: Schema.Types.ObjectId,
+      ref: "PersonAccount",
+    },
+    companyAccount: {
+      type: Schema.Types.ObjectId,
+      ref: "CompanyAccount",
+    },
+    isCompany: {
+      type: Boolean,
+      default: false,
+    },
+    /*  workExperience: {
       type: [{ type: Schema.Types.ObjectId, ref: "WorkExperience" }],
       default: [],
     },
@@ -160,11 +169,11 @@ const userSchema = new Schema<User>(
     languages: {
       type: [{ type: Schema.Types.ObjectId, ref: "Languaje" }],
       default: [],
-    },
-    myCompanies: {
+    }, */
+    /*  myCompanies: {
       type: [{ type: Schema.Types.ObjectId, ref: "Company" }],
       default: [], //array de referencia de id {id, npmbre}
-    },
+    }, */
   },
   {
     timestamps: true,
@@ -219,4 +228,37 @@ export default model("User", userSchema);
   education: []|any,
   language: []|any
 
+} */
+
+/* 
+
+New User
+User {
+  _id: string;
+  username: string;
+  email:string;
+  password: string;
+  photoUrl: Schema.Types.ObjectId | Avatar;
+  profileUrl: string;
+  accountType: string;
+  videoUrl: Schema.Types.ObjectId;
+  proTitle: string;
+  proTitleVisible: boolean;
+  phoneArea: string;
+  phone: string;
+  phoneVisible: boolean;
+  country: string;
+  provinceDepartmentState: string;
+  cityId: string;
+  status: string;
+  about: string;
+  numberFollowers: number;
+  numberFollowing: number;
+  views: number;
+  preferences: Schema.Types.ObjectId[];
+  networks: Schema.Types.ObjectId[];
+  networkMore: Schema.Types.ObjectId[];
+  personalAccount:'';// si es cuenta personal se inyecta la data de la cuenta persona, si no es null
+  companyAcount:''; // si es cuenta de compañia se inyecta la data de la cuenta compañia, si no es null
+  isCompany:boolean;
 } */
