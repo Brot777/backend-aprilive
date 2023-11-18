@@ -89,10 +89,6 @@ const userSchema = new Schema<User>(
       type: String,
       default: "",
     },
-    views: {
-      type: Number,
-      default: 0,
-    },
 
     preferences: {
       type: [{ type: Schema.Types.ObjectId, ref: "Preference" }],

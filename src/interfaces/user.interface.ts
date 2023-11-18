@@ -23,7 +23,6 @@ export interface User {
   cityId: string;
   status: string;
   about: string;
-  views: number;
   preferences: Schema.Types.ObjectId[];
   networks: Schema.Types.ObjectId[];
   networkMore: Schema.Types.ObjectId[];
@@ -58,7 +57,6 @@ export type RegisterUser = Omit<
   | "status"
   | "birthday"
   | "about"
-  | "views"
   | "preferences"
   | "networks"
   | "networkMore"
