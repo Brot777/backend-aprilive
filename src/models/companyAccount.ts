@@ -42,6 +42,15 @@ const companyAccountSchema = new Schema<CompanyAccount>(
       ref: "User",
       required: true,
     },
+
+    companyFoundation: {
+      type: Date,
+      default: "",
+    },
+    sizeOfCompany: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: false,

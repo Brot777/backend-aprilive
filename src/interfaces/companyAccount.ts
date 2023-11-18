@@ -10,4 +10,6 @@ export interface CompanyAccount {
   specialties: [];
   userId: Schema.Types.ObjectId;
   ownerId: Schema.Types.ObjectId;
+  companyFoundation: Date | string;
+  sizeOfCompany: string;
 }

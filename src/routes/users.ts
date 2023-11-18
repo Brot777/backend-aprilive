@@ -5,14 +5,12 @@ import {
   getUserProfile,
   updateUserById,
   deleteUserById,
-  followUser,
-} from "../controllers/ùsers";
+} from "../controllers/users";
 const router = Router();
 
 router.get("/", getUsers);
 router.get("/profile/:userId", getUserProfile);
 router.put("/:userId", isValidToken, updateUserById);
 router.delete("/:userId", isValidToken, deleteUserById);
-router.patch("/follow/:userId", isValidToken, followUser);
 
 export { router };

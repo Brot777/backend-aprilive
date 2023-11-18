@@ -51,14 +51,6 @@ export const getUserProfile = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "404 not found" });
     }
 
-    const [numberFollowers, numberFollowing] = await Promise.all([
-      followerModel.count({ userId }),
-      followerModel.count({ followerId: userId }),
-    ]);
-
-    user.numberFollowers = numberFollowers;
-    user.numberFollowing = numberFollowing;
-
     res.status(200).json(user);
   } catch (error) {
     handleHttp(res, "Error_Get_User", error);
@@ -114,28 +106,5 @@ export const deleteUserById = async (req: Request, res: Response) => {
     res.status(200).json(response);
   } catch (error) {
     handleHttp(res, "Error_Delete_User", error);
-  }
-};
-
-export const followUser = async (req: Request, res: Response) => {
-  const userId = req.params.userId;
-  const followerId = req.userId;
-  try {
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ error: "Invalid Id" });
-    }
-    const user = await userModel.findOne({ _id: userId });
-    if (!user) {
-      return res.status(404).json({ error: "404 user not found" });
-    }
-    const isFollower = await followerModel.findOne({ userId, followerId }); //return document Follower or null
-    if (isFollower) {
-      await followerModel.findByIdAndDelete(isFollower._id);
-    } else {
-      await followerModel.create({ userId, followerId });
-    }
-    res.status(204).json();
-  } catch (error) {
-    handleHttp(res, "Error_Following_User", error);
   }
 };

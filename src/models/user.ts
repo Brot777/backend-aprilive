@@ -54,14 +54,6 @@ const userSchema = new Schema<User>(
       type: Boolean,
       default: true,
     },
-    /*     proEmail: {
-      type: String,
-      default: "",
-    },
-    proEmailVisible: {
-      type: Boolean,
-      default: true,
-    }, */
     phoneArea: {
       type: String,
       default: "",
@@ -74,14 +66,7 @@ const userSchema = new Schema<User>(
       type: Boolean,
       default: true,
     },
-    /*  sex: {
-      type: String,
-      default: "",
-    },
-    sexVisible: {
-      type: Boolean,
-      default: true,
-    }, */
+
     country: {
       type: String,
       default: "",
@@ -96,36 +81,13 @@ const userSchema = new Schema<User>(
       default: "",
     },
 
-    /*    compensation: {
-      type: Schema.Types.Mixed,
-      default: {
-        payment_currency: "",
-        payment_amount: 0,
-        payment_date: "",
-      },
-    }, */
-
     status: {
       type: String,
       default: "",
     },
-    /*     birthday: {
-      type: Date,
-      default: new Date(),
-    }, */
-
     about: {
       type: String,
       default: "",
-    },
-
-    numberFollowers: {
-      type: Number,
-      default: 0,
-    },
-    numberFollowing: {
-      type: Number,
-      default: 0,
     },
     views: {
       type: Number,
@@ -157,23 +119,6 @@ const userSchema = new Schema<User>(
       type: Boolean,
       default: false,
     },
-    /*  workExperience: {
-      type: [{ type: Schema.Types.ObjectId, ref: "WorkExperience" }],
-      default: [],
-    },
-
-    education: {
-      type: [{ type: Schema.Types.ObjectId, ref: "Education" }],
-      default: [],
-    },
-    languages: {
-      type: [{ type: Schema.Types.ObjectId, ref: "Languaje" }],
-      default: [],
-    }, */
-    /*  myCompanies: {
-      type: [{ type: Schema.Types.ObjectId, ref: "Company" }],
-      default: [], //array de referencia de id {id, npmbre}
-    }, */
   },
   {
     timestamps: true,

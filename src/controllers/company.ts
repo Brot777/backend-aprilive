@@ -123,14 +123,6 @@ export const getCompanyProfileById = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "404 company not found" });
     }
 
-    const [numberFollowers, numberFollowing] = await Promise.all([
-      followerModel.count({ userId: companyUserId }),
-      followerModel.count({ followerId: companyUserId }),
-    ]);
-
-    companyUser.numberFollowers = numberFollowers;
-    companyUser.numberFollowing = numberFollowing;
-
     res.status(200).json(companyUser);
   } catch (error) {
     handleHttp(res, "Error_Get_User", error);

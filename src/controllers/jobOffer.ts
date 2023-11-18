@@ -1,8 +1,5 @@
 import jobOfferModel from "../models/jobOffer";
 import mongoose from "mongoose";
-import likeJobOfferModel from "../models/likeJobOffer";
-import favoriteJobOfferModel from "../models/favoriteJobOffer";
-import commentJobOfferModel from "../models/commentJobOffer";
 import { handleHttp } from "../utils/error.handle";
 import { Request, Response } from "express";
 import {
@@ -10,6 +7,10 @@ import {
   addPropertiesWhenGetJobOfferPersonalized,
   convertTitleNormalize,
 } from "../services/jobOffer";
+import likeJobOfferModel from "../models/likeJobOffer";
+import favoriteJobOfferModel from "../models/favoriteJobOffer";
+import commentJobOfferModel from "../models/commentJobOffer";
+import applicationModel from "../models/application";
 
 export const createJobOffer = async (req: Request, res: Response) => {
   try {
@@ -241,30 +242,31 @@ export const favoriteJobOffer = async (req: Request, res: Response) => {
   }
 };
 
-export const postulateJobOffer = async (req: Request, res: Response) => {
+export const getMyJobbOffers = async (req: Request, res: Response) => {
+  console.log("entro al controller");
+
+  const authorId = req.userId;
+
+  const limit = 10;
+  const queryPage = req.query.page ? `${req.query.page}` : "1";
+  let page = parseInt(queryPage);
   try {
-    const jobOfferId = req.params.jobOfferId;
-    const userId = req.userId;
-    if (!mongoose.Types.ObjectId.isValid(jobOfferId)) {
-      return res.status(400).json({ error: "invalid job offer id" });
-    }
-    const jobOffer = await jobOfferModel.findById(jobOfferId);
-    if (!jobOffer) {
-      return res.status(404).json({ error: "404 job offer not found" });
-    }
+    const jobOffers = await jobOfferModel
+      .find({ authorId })
+      .skip((page - 1) * limit)
+      .limit(limit);
 
-    const isFavoriteJobOffer = await favoriteJobOfferModel.findOne({
-      userId,
-      jobOfferId,
-    }); // return document favoriteJobOffer or null
+    let totalDocs = await jobOfferModel.count({ authorId }); //Possible performance improvement: cache the value
+    let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
 
-    if (isFavoriteJobOffer) {
-      await favoriteJobOfferModel.findByIdAndDelete(isFavoriteJobOffer._id);
-    } else {
-      await favoriteJobOfferModel.create({ userId, jobOfferId });
-    }
-    res.status(204).json();
+    return res.status(200).json({
+      docs: jobOffers,
+      currentPage: page,
+      limit,
+      totalDocs,
+      totalPages,
+    });
   } catch (error) {
-    handleHttp(res, "Error_Add_Favorite_Job_Offer", error);
+    handleHttp(res, "Error_Get_My_Job_Offers", error);
   }
 };

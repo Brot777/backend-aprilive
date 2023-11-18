@@ -5,8 +5,6 @@ import { CompanyAccount } from "./companyAccount";
 
 export interface User {
   _id: Schema.Types.ObjectId;
-  /* firstName: string;
-  lastName: string; */
   accountType: Schema.Types.ObjectId;
   name: string;
   username: string;
@@ -17,30 +15,18 @@ export interface User {
   videoUrl: Schema.Types.ObjectId;
   proTitle: string;
   proTitleVisible: boolean;
-  /* proEmail: string;
-  proEmailVisible: boolean; */
   phoneArea: string;
   phone: string;
   phoneVisible: boolean;
-  /*  sex: string;
-  sexVisible: boolean; */
   country: string;
   provinceDepartmentState: string;
   cityId: string;
-  /* compensation: Schema.Types.Mixed; */
   status: string;
-  /* birthday: Date; */
   about: string;
-  numberFollowers: number;
-  numberFollowing: number;
   views: number;
   preferences: Schema.Types.ObjectId[];
   networks: Schema.Types.ObjectId[];
   networkMore: Schema.Types.ObjectId[];
-  /* workExperience: Schema.Types.ObjectId[];
-  education: Schema.Types.ObjectId[];
-  languages: Schema.Types.ObjectId[];
-  myCompanies: Schema.Types.ObjectId[]; */
   personAccount: Schema.Types.ObjectId | PersonAccount;
   companyAccount: Schema.Types.ObjectId | CompanyAccount;
   isCompany: boolean;
@@ -72,8 +58,6 @@ export type RegisterUser = Omit<
   | "status"
   | "birthday"
   | "about"
-  | "numberFollowers"
-  | "numberFollowing"
   | "views"
   | "preferences"
   | "networks"
