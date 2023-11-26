@@ -4,3 +4,10 @@
 
 3. limitar numero de ofertas de trabajo
 
+4. añadir 3 preguntas al postular y sus respuestas
+
+5. crear una ruta para la subida de cv
+
+6. permitir repetir correo para las cuentas de empresa.
+
+7. crear endpoints para los otros post

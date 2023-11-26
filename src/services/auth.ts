@@ -57,7 +57,7 @@ export const registerNewUser = async (user: RegisterUser) => {
 };
 
 export const loginUser = async ({ email, password }: LoginUser) => {
-  const userFound = await userModel.findOne({ email });
+  const userFound = await userModel.findOne({ email, isCompany: false });
   if (!userFound) {
     return {
       response: { error: "correo electronico o contraseña invalido" },
