@@ -1,35 +1,35 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 import { handleHttp } from "../utils/error.handle";
-import jobOfferModel from "../models/jobOffer";
-import commentJobOfferModel from "./../models/commentJobOffer";
+import serviceModel from "../models/service";
+import commentServiceModel from "./../models/commentService";
 
 export const createComment = async (req: Request, res: Response) => {
   try {
-    const { jobOfferId } = req.params;
-    const commentJobOffer = req.body;
-    const jobOffer = await jobOfferModel.findById(jobOfferId);
-    if (!jobOffer) {
-      return res.status(404).json({
-        error: "No se puede crear el comentario, 404 job offer not found",
-      });
+    const { serviceId } = req.params;
+    const commentService = req.body;
+    const service = await serviceModel.findById(serviceId);
+    if (!service) {
+      return res
+        .status(404)
+        .json({ error: "Cannot create comment, 404 not found" });
     }
-    commentJobOffer.jobOfferId = jobOfferId;
-    const commentSaved = await commentJobOfferModel.create(commentJobOffer);
+    commentService.serviceId = serviceId;
+    const commentSaved = await commentServiceModel.create(commentService);
     res.status(201).json(commentSaved);
   } catch (error) {
-    handleHttp(res, "Error_Create_Comment_Job_Offer", error);
+    handleHttp(res, "Error_Create_Comment_Service", error);
   }
 };
 
-export const getCommentsByJobOfferId = async (req: Request, res: Response) => {
+export const getCommentsByServiceId = async (req: Request, res: Response) => {
   try {
-    const { jobOfferId } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(jobOfferId)) {
-      return res.status(400).json({ error: "Invalid job Offer id" });
+    const serviceId = req.params.serviceId;
+    if (!mongoose.Types.ObjectId.isValid(serviceId)) {
+      return res.status(400).json({ error: "Invalid service id" });
     }
-    const commentsJobOffer = await commentJobOfferModel
-      .find({ jobOfferId })
+    const commentsService = await commentServiceModel
+      .find({ serviceId })
       .populate({
         path: "authorId",
         select: "photoUrl",
@@ -51,9 +51,9 @@ export const getCommentsByJobOfferId = async (req: Request, res: Response) => {
         },
       });
 
-    res.status(200).json(commentsJobOffer);
+    res.status(200).json(commentsService);
   } catch (error) {
-    handleHttp(res, "Error_Get_Comments_By_Job_Offer_Id", error);
+    handleHttp(res, "Error_Get_Comments_By_Service_Id", error);
   }
 };
 
@@ -63,12 +63,12 @@ export const updateCommentById = async (req: Request, res: Response) => {
     if (!mongoose.Types.ObjectId.isValid(commentId)) {
       return res.status(400).json({ error: "Invalid comment Id" });
     }
-    const comment = await commentJobOfferModel.findById(commentId);
+    const comment = await commentServiceModel.findById(commentId);
     if (!comment) {
-      return res.status(404).json({ error: "404, job offernot found" });
+      return res.status(404).json({ error: "404 comment not found" });
     }
 
-    const commentUpdated = await commentJobOfferModel.findByIdAndUpdate(
+    const commentUpdated = await commentServiceModel.findByIdAndUpdate(
       commentId,
       req.body,
       { new: true }
@@ -86,12 +86,12 @@ export const deleteCommentById = async (req: Request, res: Response) => {
     if (!mongoose.Types.ObjectId.isValid(commentId)) {
       return res.status(400).json({ error: "Invalid comment Id" });
     }
-    const comment = await commentJobOfferModel.findById(commentId);
+    const comment = await commentServiceModel.findById(commentId);
     if (!comment) {
-      return res.status(404).json({ error: "404 job offer not found" });
+      return res.status(404).json({ error: "404, comment not found" });
     }
 
-    await commentJobOfferModel.findByIdAndDelete(commentId);
+    await commentServiceModel.findByIdAndDelete(commentId);
 
     res.status(200).json({ msj: "comment successfully deleted" });
   } catch (error) {

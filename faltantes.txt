@@ -8,6 +8,6 @@
 
 5. crear una ruta para la subida de cv
 
-6. permitir repetir correo para las cuentas de empresa.
+6. crear endpoints para los otros post
 
-7. crear endpoints para los otros post
+7. cambiar la forma de almacenamiento temporal de archivos

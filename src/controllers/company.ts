@@ -2,15 +2,12 @@ import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 import { handleHttp } from "../utils/error.handle";
-import { PersonAccount } from "../interfaces/personAccount";
 import companyAccountModel from "../models/companyAccount";
 import userModel from "../models/user";
 import avatarModel from "../models/avatar";
 import presentationVideoModel from "../models/presentationVideo";
 import roleModel from "../models/role";
 import accountTypeModel from "../models/accountType";
-import followerModel from "../models/follower";
-import personAccountModel from "../models/personAccount";
 import { CompanyAccount } from "../interfaces/companyAccount";
 
 export const createCompany = async (req: Request, res: Response) => {
@@ -63,15 +60,6 @@ export const createCompany = async (req: Request, res: Response) => {
       companyAccount: companyAccountSaved._id,
       accountType: accountTypeSaved._id,
       isCompany: true,
-    });
-
-    // Add company in companies of Owner
-    const personAccountOwner = ownerUser.personAccount as PersonAccount;
-
-    personAccountOwner.myCompanies.push(companyUserSaved._id);
-
-    await personAccountModel.findByIdAndUpdate(personAccountOwner?._id, {
-      myCompanies: personAccountOwner.myCompanies,
     });
 
     //Token
@@ -162,32 +150,13 @@ export const deleteCompanyById = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "invalid company user id" });
     }
 
-    const companyUser = await userModel
-      .findById(companyUserId)
-      .populate("companyAccount");
+    const companyUser = await userModel.findById(companyUserId);
 
     if (!companyUser) {
       return res.status(404).json({ error: "404 company not found" });
     }
 
-    const companyAccountOwner = companyUser.companyAccount as CompanyAccount;
-    const ownerUser = await userModel
-      .findById(companyAccountOwner.ownerId)
-      .populate("personAccount");
-
-    // delete company in companies of Owner
-    const personAccountOwner = ownerUser?.personAccount as PersonAccount;
-    const myCompanies = personAccountOwner.myCompanies.filter(
-      (id: mongoose.ObjectId) => {
-        id != companyUser._id;
-      }
-    );
-    await personAccountModel.findByIdAndUpdate(personAccountOwner?._id, {
-      myCompanies,
-    });
-
     const response = await userModel.findByIdAndDelete(companyUserId);
-
     await companyAccountModel.deleteOne({ userId: companyUserId });
     await avatarModel.deleteOne({ userId: companyUserId });
     await presentationVideoModel.deleteOne({ userId: companyUserId });
@@ -210,23 +179,21 @@ export const switchToCompanyAccountById = async (
       return res.status(400).json({ error: "Invalid user id" });
     }
 
-    const companyUser = await userModel.findById(companyUserId);
+    const companyUser = await userModel
+      .findById(companyUserId)
+      .populate("companyAccount");
     if (!companyUser) {
       return res.status(404).json({ error: "404 company not found" });
     }
 
-    const ownerUser = await userModel
-      .findById(userId)
-      .populate("personAccount");
+    const companyAccount = companyUser.companyAccount as CompanyAccount;
 
-    const personAccountOwner = ownerUser?.personAccount as PersonAccount;
-
-    const isMyCompany = personAccountOwner.myCompanies.find(
-      (id) => id.toString() == companyUserId
-    );
+    const isMyCompany = userId == companyAccount.ownerId.toString();
 
     if (!isMyCompany) {
-      return res.status(401).json({ error: "unauthorized company" });
+      return res
+        .status(401)
+        .json({ error: "you do not have access to this company" });
     }
 
     //Token

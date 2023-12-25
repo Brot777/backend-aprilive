@@ -20,4 +20,8 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: any) => {
   }
 };
 
-export const uploadAvatar = multer({ storage, fileFilter });
+export const uploadImagesService = multer({
+  storage,
+  fileFilter,
+  limits: { files: 3 },
+});

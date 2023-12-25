@@ -1,4 +1,6 @@
 export const folders = {
   avatars: "avatars",
-  presentationVideo: "presentationVideo",
+  presentationVideo: "presentation_video",
+  cv: "cv",
+  imagesOfService: "images_Of_Service",
 };

@@ -13,6 +13,6 @@ export interface PersonAccount {
   workExperience: Schema.Types.ObjectId[];
   education: Schema.Types.ObjectId[];
   languages: Schema.Types.ObjectId[];
-  myCompanies: Schema.Types.ObjectId[];
+  cv: Schema.Types.ObjectId;
   userId: Schema.Types.ObjectId;
 }

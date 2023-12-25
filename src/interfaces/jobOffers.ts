@@ -15,7 +15,6 @@ export interface JobOffer {
   publisher: string;
   description: string;
   allowComments: boolean;
-  commets: Schema.Types.ObjectId[];
   expirationDate: Date | string;
   typeJob: string;
   typeContract: string;

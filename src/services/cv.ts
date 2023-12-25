@@ -1,9 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../config/s3Client";
-import avatarModel from "../models/avatar";
+import cvModel from "../models/cv";
+import personAccountModel from "../models/personAccount";
 
-export const uploadPhotoToS3 = async (
+export const uploadCvToS3 = async (
   file: Express.Multer.File | undefined,
   destinationFolder: string,
   userId: string
@@ -14,11 +15,9 @@ export const uploadPhotoToS3 = async (
       status: 400,
     };
   }
-
   // Set the parameters
   const BUKET = process.env.AWS_BUCKET_NAME;
 
-  const avatar = await avatarModel.findOne({ userId });
   const name = `${uuidv4()}-${file.originalname}`; // create name
   const params = {
     Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.
@@ -35,19 +34,23 @@ export const uploadPhotoToS3 = async (
     };
   }
 
-  const avatarSaved = await avatarModel.findByIdAndUpdate(
-    avatar?._id,
+  const cvSaved = await cvModel.create({
+    url: `${process.env.PREFIX_URI_UPLOADS_S3}/${params.Key}`,
+    name,
+    userId,
+  });
+
+  await personAccountModel.findOneAndUpdate(
     {
-      url: `${process.env.PREFIX_URI_UPLOADS_S3}/${params.Key}`,
-      name,
+      userId,
     },
     {
-      new: true,
+      cv: cvSaved?._id,
     }
   );
 
   return {
-    response: avatarSaved,
+    response: cvSaved,
     status: 200,
   };
 };

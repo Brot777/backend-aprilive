@@ -10,7 +10,6 @@ import {
 import likeJobOfferModel from "../models/likeJobOffer";
 import favoriteJobOfferModel from "../models/favoriteJobOffer";
 import commentJobOfferModel from "../models/commentJobOffer";
-import applicationModel from "../models/application";
 
 export const createJobOffer = async (req: Request, res: Response) => {
   try {
@@ -127,7 +126,7 @@ export const getJobOfferById = async (req: Request, res: Response) => {
       .findById(req.params.jobOfferId)
       .populate({
         path: "authorId",
-        select: "_id firstName lastName photoUrl accountType",
+        select: "_id name photoUrl accountType",
         populate: {
           path: "photoUrl",
           select: "url",
@@ -143,6 +142,7 @@ export const getJobOfferById = async (req: Request, res: Response) => {
 };
 
 export const updateJobOfferById = async (req: Request, res: Response) => {
+  const { jobTitle } = req.body;
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.jobOfferId)) {
       return res.status(400).json({ error: "invalid job offer id" });
@@ -150,6 +150,10 @@ export const updateJobOfferById = async (req: Request, res: Response) => {
     const jobOffer = await jobOfferModel.findById(req.params.jobOfferId);
     if (!jobOffer) {
       return res.status(404).json({ error: "404 job offer not found" });
+    }
+
+    if (jobTitle) {
+      req.body.jobTitleNormalize = convertTitleNormalize(jobTitle);
     }
 
     const jobOfferUpdated = await jobOfferModel.findByIdAndUpdate(
@@ -243,8 +247,6 @@ export const favoriteJobOffer = async (req: Request, res: Response) => {
 };
 
 export const getMyJobbOffers = async (req: Request, res: Response) => {
-  console.log("entro al controller");
-
   const authorId = req.userId;
 
   const limit = 10;

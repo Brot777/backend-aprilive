@@ -2,16 +2,16 @@ import { Router } from "express";
 
 import {
   createComment,
-  getCommentsByJobOfferId,
+  getCommentsByServiceId,
   updateCommentById,
   deleteCommentById,
-} from "../controllers/commentJobOffer";
+} from "../controllers/commentService";
 import { isValidToken } from "../middlewares/verifyToken";
 
 const router = Router();
 
-router.post("/:jobOfferId", isValidToken, createComment);
-router.get("/:jobOfferId", getCommentsByJobOfferId);
+router.post("/:serviceId", isValidToken, createComment);
+router.get("/:serviceId", getCommentsByServiceId);
 router.put("/:commentId", isValidToken, updateCommentById);
 router.delete("/:commentId", isValidToken, deleteCommentById);
 

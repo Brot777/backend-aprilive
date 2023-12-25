@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 import { PersonAccount } from "../interfaces/personAccount";
 
 const personAccountSchema = new Schema<PersonAccount>(
@@ -55,15 +55,16 @@ const personAccountSchema = new Schema<PersonAccount>(
       type: [{ type: Schema.Types.ObjectId, ref: "Languaje" }],
       default: [],
     },
-    myCompanies: {
-      type: [{ type: Schema.Types.ObjectId, ref: "User" }],
-      default: [], //array de referencia de id {id, npmbre}
-    },
-
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+
+    cv: {
+      type: Schema.Types.ObjectId,
+      ref: "Cv",
+      default: mongoose.Types.ObjectId,
     },
   },
   {

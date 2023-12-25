@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import { JobOffer } from "../interfaces/jobOffers";
+import { convertTitleNormalize } from "../services/jobOffer";
 
 const jobOfferSchema = new Schema<JobOffer>(
   {

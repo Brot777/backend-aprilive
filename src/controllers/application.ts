@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { ObjectId } from "mongoose";
 import { Request, Response } from "express";
 import applicationModel from "../models/application";
 import jobOfferModel from "../models/jobOffer";
@@ -14,6 +14,13 @@ export const applyJobOffer = async (req: Request, res: Response) => {
     const jobOffer = await jobOfferModel.findById(jobOfferId);
     if (!jobOffer) {
       return res.status(404).json({ error: "404 job offer not found" });
+    }
+
+    const authorId = jobOffer.authorId as ObjectId;
+    if (applicantId == authorId.toString()) {
+      return res
+        .status(400)
+        .json({ error: "the creator cannot apply to your job offer" });
     }
 
     const currentDate = new Date();
