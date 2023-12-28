@@ -1,20 +1,18 @@
 import { Schema } from "mongoose";
 import { User } from "./user.interface";
-export interface Service {
+export interface Portfolio {
   _id: Schema.Types.ObjectId;
   typePost: string;
   authorId: Schema.Types.ObjectId | User;
+  sharedLink: string;
   isLike: boolean;
   numLikes: number;
   following: boolean;
   title: string;
-  categories: string[];
   description: string;
-  allowComments: boolean;
+  characteristics: String[];
+  hashtags: String[];
   video: Schema.Types.ObjectId;
   images: Schema.Types.ObjectId[];
-  price: String;
-  deliberyTime: String;
-  contratame: Boolean;
-  contratanos: Boolean;
+  externalWebsite: String;
 }

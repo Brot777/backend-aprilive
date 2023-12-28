@@ -26,7 +26,7 @@ export const getPersonalizedJobOffers = async (req: Request, res: Response) => {
   const userId = req.userId;
   const limit = 10;
   const queryPage = req.query.page ? `${req.query.page}` : "1";
-  let page = parseInt(queryPage);
+  let page = Number(queryPage);
 
   try {
     const jobOffers = await jobOfferModel
@@ -75,7 +75,7 @@ export const getPersonalizedJobOffers = async (req: Request, res: Response) => {
 export const getJobOffers = async (req: Request, res: Response) => {
   const limit = 10;
   const queryPage = req.query.page ? `${req.query.page}` : "1";
-  let page = parseInt(queryPage);
+  let page = Number(queryPage);
   try {
     const jobOffers = await jobOfferModel
       .find()
@@ -212,7 +212,7 @@ export const likeJobOffer = async (req: Request, res: Response) => {
     } else {
       await likeJobOfferModel.create({ userId, jobOfferId });
     }
-    res.status(204).json();
+    res.status(201).json({ like: Boolean(!isLikeJobOffer) });
   } catch (error) {
     handleHttp(res, "Error_Like_Job_Offer", error);
   }
@@ -240,7 +240,7 @@ export const favoriteJobOffer = async (req: Request, res: Response) => {
     } else {
       await favoriteJobOfferModel.create({ userId, jobOfferId });
     }
-    res.status(204).json();
+    res.status(201).json({ favorite: Boolean(!isFavoriteJobOffer) });
   } catch (error) {
     handleHttp(res, "Error_Add_Favorite_Job_Offer", error);
   }
@@ -251,7 +251,7 @@ export const getMyJobbOffers = async (req: Request, res: Response) => {
 
   const limit = 10;
   const queryPage = req.query.page ? `${req.query.page}` : "1";
-  let page = parseInt(queryPage);
+  let page = Number(queryPage);
   try {
     const jobOffers = await jobOfferModel
       .find({ authorId })

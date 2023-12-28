@@ -32,7 +32,7 @@ export const getPersonalizedServices = async (req: Request, res: Response) => {
   const userId = req.userId;
   const limit = 10;
   const queryPage = req.query.page ? `${req.query.page}` : "1";
-  let page = parseInt(queryPage);
+  let page = Number(queryPage);
 
   try {
     const services = await serviceModel
@@ -85,7 +85,7 @@ export const getPersonalizedServices = async (req: Request, res: Response) => {
 export const getServices = async (req: Request, res: Response) => {
   const limit = 10;
   const queryPage = req.query.page ? `${req.query.page}` : "1";
-  let page = parseInt(queryPage);
+  let page = Number(queryPage);
   try {
     const services = await serviceModel
       .find()
@@ -127,7 +127,7 @@ export const getServices = async (req: Request, res: Response) => {
       totalPages,
     });
   } catch (error) {
-    handleHttp(res, "Error_Get_Job_Offers", error);
+    handleHttp(res, "Error_Get_Service", error);
   }
 };
 
@@ -217,14 +217,14 @@ export const likeService = async (req: Request, res: Response) => {
     const isLikeService = await likeServiceModel.findOne({
       userId,
       serviceId,
-    }); // return document likeJobOffer or null
+    }); // return document likeService or null
 
     if (isLikeService) {
       await likeServiceModel.findByIdAndDelete(isLikeService._id);
     } else {
       await likeServiceModel.create({ userId, serviceId });
     }
-    res.status(204).json();
+    res.status(201).json({ like: Boolean(!isLikeService) });
   } catch (error) {
     handleHttp(res, "Error_Like_Service", error);
   }

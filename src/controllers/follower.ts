@@ -24,7 +24,7 @@ export const followById = async (req: Request, res: Response) => {
     } else {
       await followerModel.create({ userId, followerId });
     }
-    res.status(204).json();
+    res.status(201).json({ follow: Boolean(!isFollower) });
   } catch (error) {
     handleHttp(res, "Error_Following_User", error);
   }
