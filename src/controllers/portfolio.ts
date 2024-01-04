@@ -9,7 +9,6 @@ import {
   addPropertiesWhenGetPortfoliosPersonalized,
   uploadImagesPortfolioToS3,
 } from "../services/portfolio";
-import portfolio from "../models/portfolio";
 
 export const createPortfolio = async (req: Request, res: Response) => {
   try {
