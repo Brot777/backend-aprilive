@@ -1,5 +1,10 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
-export const logSeervice = (req: Request, res: Response) => {
+export const logSeervice = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   console.log(req.body);
+  next();
 };
