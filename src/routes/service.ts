@@ -12,10 +12,12 @@ import {
 } from "../controllers/service";
 import { isValidToken } from "../middlewares/verifyToken";
 import { uploadImagesService } from "../middlewares/multerService";
+import { logSeervice } from "../middlewares/logService";
 const router = Router();
 
 router.post(
   "/",
+  logSeervice,
   uploadImagesService.array("images"),
   isValidToken,
   createService

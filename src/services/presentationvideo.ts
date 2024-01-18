@@ -20,6 +20,14 @@ export const uploadVideoS3 = async (
   const presentationVideo = await presentationVideoModel.findOne({
     userId,
   });
+
+  if (!presentationVideo) {
+    return {
+      response: { error: "404, user not found" },
+      status: 404,
+    };
+  }
+
   const name = `${uuidv4()}-${file.originalname}`; // create name
   const params = {
     Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.
@@ -49,6 +57,6 @@ export const uploadVideoS3 = async (
 
   return {
     response: presentationVideoSaved,
-    status: 200,
+    status: 201,
   };
 };

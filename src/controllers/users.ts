@@ -30,6 +30,10 @@ export const getUserProfile = async (req: Request, res: Response) => {
       .populate("preferences")
       .populate({
         path: "personAccount",
+        populate: {
+          path: "cv",
+          select: "url -_id",
+        },
       })
       .populate({
         path: "accountType",
