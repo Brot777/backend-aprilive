@@ -5,6 +5,6 @@ export const logSeervice = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log(req.body);
+  console.log(req);
   next();
 };
