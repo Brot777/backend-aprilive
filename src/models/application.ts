@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 
 const applicationSchema = new Schema(
   {
@@ -11,6 +11,15 @@ const applicationSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+    answers: {
+      type: [{ type: Schema.Types.ObjectId, ref: "JobOfferAnswer" }],
+      default: [], //array de referencias de id {id, value}
+    },
+    cv: {
+      type: Schema.Types.ObjectId,
+      ref: "Cv",
+      default: mongoose.Types.ObjectId,
     },
   },
   {

@@ -8,7 +8,6 @@ import routes from "./routes/index";
 const app = express();
 
 // CONFIG URL STATICS
-
 const urlStatic = join(__dirname, "dist");
 
 // MIDDLEWARES
