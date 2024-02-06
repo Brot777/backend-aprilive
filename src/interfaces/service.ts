@@ -13,8 +13,10 @@ export interface Service {
   allowComments: boolean;
   video: Schema.Types.ObjectId;
   images: Schema.Types.ObjectId[];
-  price: String;
-  deliberyTime: String;
-  contratame: Boolean;
-  contratanos: Boolean;
+  price: string;
+  money: string;
+  wayToPay: string;
+  deliberyTime: string;
+  contratame: string;
+  serviceDetails: string[];
 }

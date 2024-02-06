@@ -58,6 +58,10 @@ const portfolioSchema = new Schema<Portfolio>(
       type: String,
       default: "",
     },
+    portfolioDetails: {
+      type: [{ type: String }],
+      default: [],
+    },
   },
   {
     timestamps: true,

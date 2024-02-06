@@ -65,6 +65,14 @@ const serviceSchema = new Schema<Service>(
       type: String,
       default: "",
     },
+    money: {
+      type: String,
+      default: "",
+    },
+    wayToPay: {
+      type: String,
+      default: "",
+    },
 
     deliberyTime: {
       type: String,
@@ -72,13 +80,12 @@ const serviceSchema = new Schema<Service>(
     },
 
     contratame: {
-      type: Boolean,
-      default: false,
+      type: String,
+      default: "",
     },
-
-    contratanos: {
-      type: Boolean,
-      default: false,
+    serviceDetails: {
+      type: [{ type: String }],
+      default: [],
     },
   },
   {

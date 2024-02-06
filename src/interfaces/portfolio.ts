@@ -10,9 +10,10 @@ export interface Portfolio {
   following: boolean;
   title: string;
   description: string;
-  characteristics: String[];
-  hashtags: String[];
+  characteristics: string[];
+  hashtags: string[];
   video: Schema.Types.ObjectId;
   images: Schema.Types.ObjectId[];
-  externalWebsite: String;
+  externalWebsite: string;
+  portfolioDetails: string[];
 }
