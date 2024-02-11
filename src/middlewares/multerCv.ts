@@ -13,8 +13,6 @@ import { v4 as uuidv4 } from "uuid";
 const storage = multer.memoryStorage();
 
 const fileFilter = (req: Request, file: Express.Multer.File, cb: any) => {
-  console.log(file.mimetype.split("/"));
-
   if (
     file.mimetype.split("/")[0] === "application" ||
     file.mimetype.split("/")[1] === "pdf"

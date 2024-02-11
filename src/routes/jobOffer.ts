@@ -9,7 +9,7 @@ import {
   likeJobOffer,
   favoriteJobOffer,
   updateJobOfferById,
-  getMyJobbOffers,
+  getJobbOffersByAuthorId,
 } from "../controllers/jobOffer";
 import { isValidToken } from "../middlewares/verifyToken";
 
@@ -18,7 +18,7 @@ const router = Router();
 router.post("/", isValidToken, createJobOffer);
 router.get("/", getJobOffers);
 router.get("/personalized", isValidToken, getPersonalizedJobOffers);
-router.get("/myJobOffers", isValidToken, getMyJobbOffers);
+router.get("/jobOffers/:authorId", isValidToken, getJobbOffersByAuthorId);
 router.get("/:jobOfferId", getJobOfferById);
 router.put("/:jobOfferId", isValidToken, updateJobOfferById);
 router.patch("/like/:jobOfferId", isValidToken, likeJobOffer);

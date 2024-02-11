@@ -246,9 +246,11 @@ export const favoriteJobOffer = async (req: Request, res: Response) => {
   }
 };
 
-export const getMyJobbOffers = async (req: Request, res: Response) => {
-  const authorId = req.userId;
-
+export const getJobbOffersByAuthorId = async (req: Request, res: Response) => {
+  const authorId = req.params.authorId;
+  if (!mongoose.Types.ObjectId.isValid(authorId)) {
+    return res.status(400).json({ error: "invalid author id" });
+  }
   const limit = 10;
   const queryPage = req.query.page ? `${req.query.page}` : "1";
   let page = Number(queryPage);
@@ -269,6 +271,6 @@ export const getMyJobbOffers = async (req: Request, res: Response) => {
       totalPages,
     });
   } catch (error) {
-    handleHttp(res, "Error_Get_My_Job_Offers", error);
+    handleHttp(res, "Error_Get_Job_Offers_By_Author", error);
   }
 };

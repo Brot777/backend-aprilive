@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import {
   createCompany,
-  getCompanies,
+  getMyCompanies,
   getCompanyProfileById,
   updatecompanyById,
   deleteCompanyById,
@@ -16,7 +16,7 @@ import { isCompany, isOwnerAccountCompany } from "../middlewares/company";
 const router = Router();
 
 router.post("/", [isValidToken, isUser], createCompany);
-router.get("/", isValidToken, getCompanies);
+router.get("/myCompanies", isValidToken, getMyCompanies);
 router.get("/profile/:companyUserId", getCompanyProfileById);
 router.put(
   "/:companyUserId",

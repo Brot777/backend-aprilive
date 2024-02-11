@@ -1,20 +1,10 @@
 import { Router } from "express";
 
-/* import {
-  createPortfolio,
-   deleteServiceById,
-  getMyServices,
-  getPersonalizedServices,
-  getServiceById,
-  getServices,
-  likeService,
-  updateServiceById,
-} from "../controllers/portfolio"; */
 import { isValidToken } from "../middlewares/verifyToken";
 import {
   createPortfolio,
   deletePortfolioById,
-  getMyPortfolios,
+  getPortfoliosByAuthorId,
   getPersonalizedPortfolios,
   getPortfolioById,
   getPortfolios,
@@ -32,7 +22,7 @@ router.post(
 );
 router.get("/", getPortfolios);
 router.get("/personalized", isValidToken, getPersonalizedPortfolios);
-router.get("/myPortfolios", isValidToken, getMyPortfolios);
+router.get("/portfolios/:authorId", isValidToken, getPortfoliosByAuthorId);
 router.get("/:portfolioId", getPortfolioById);
 router.put("/:portfolioId", isValidToken, updatePortfolioById);
 router.patch("/like/:portfolioId", isValidToken, likePortfolio);

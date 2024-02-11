@@ -233,8 +233,11 @@ export const likePortfolio = async (req: Request, res: Response) => {
   }
 };
 
-export const getMyPortfolios = async (req: Request, res: Response) => {
-  const authorId = req.userId;
+export const getPortfoliosByAuthorId = async (req: Request, res: Response) => {
+  const authorId = req.params.authorId;
+  if (!mongoose.Types.ObjectId.isValid(authorId)) {
+    return res.status(400).json({ error: "invalid author id" });
+  }
 
   const limit = 10;
   const queryPage = req.query.page ? `${req.query.page}` : "1";
@@ -256,6 +259,6 @@ export const getMyPortfolios = async (req: Request, res: Response) => {
       totalPages,
     });
   } catch (error) {
-    handleHttp(res, "Error_Get_My_Portfolios", error);
+    handleHttp(res, "Error_Get_Portfolios_By_Author", error);
   }
 };

@@ -230,8 +230,12 @@ export const likeService = async (req: Request, res: Response) => {
   }
 };
 
-export const getMyServices = async (req: Request, res: Response) => {
-  const authorId = req.userId;
+export const getServicesByAuthorId = async (req: Request, res: Response) => {
+  const authorId = req.params.authorId;
+
+  if (!mongoose.Types.ObjectId.isValid(authorId)) {
+    return res.status(400).json({ error: "invalid author id" });
+  }
 
   const limit = 10;
   const queryPage = req.query.page ? `${req.query.page}` : "1";
@@ -239,6 +243,7 @@ export const getMyServices = async (req: Request, res: Response) => {
   try {
     const services = await serviceModel
       .find({ authorId })
+      .populate("images")
       .skip((page - 1) * limit)
       .limit(limit);
 
@@ -253,6 +258,6 @@ export const getMyServices = async (req: Request, res: Response) => {
       totalPages,
     });
   } catch (error) {
-    handleHttp(res, "Error_Get_My_Services", error);
+    handleHttp(res, "Error_Services_By_Author", error);
   }
 };

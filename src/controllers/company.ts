@@ -78,9 +78,19 @@ export const createCompany = async (req: Request, res: Response) => {
   }
 };
 
-export const getCompanies = async (req: Request, res: Response) => {
+export const getMyCompanies = async (req: Request, res: Response) => {
+  const ownerId = req.userId;
   try {
-    const companyUsers = await userModel.find({ isCompany: true });
+    if (!mongoose.Types.ObjectId.isValid(ownerId)) {
+      return res.status(400).json({ error: "invalid author id" });
+    }
+    const companyAccounts = await companyAccountModel.find({ ownerId });
+    const companyIds = companyAccounts.map(
+      (companyAccount) => companyAccount.userId
+    );
+    const companyUsers = await userModel
+      .find({ _id: { $in: companyIds } }, "_id name photoUrl")
+      .populate("photoUrl", "url");
     res.status(200).json(companyUsers);
   } catch (error) {
     handleHttp(res, "Error_Get_Companies", error);
