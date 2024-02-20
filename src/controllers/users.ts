@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import userModel from "../models/user";
-import followerModel from "../models/follower";
 import personAccountModel from "../models/personAccount";
 import avatarModel from "../models/avatar";
 import accountTypeModel from "../models/accountType";
@@ -32,7 +31,7 @@ export const getUserProfile = async (req: Request, res: Response) => {
         path: "personAccount",
         populate: {
           path: "cv",
-          select: "url -_id",
+          select: "url",
         },
       })
       .populate({

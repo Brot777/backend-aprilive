@@ -57,6 +57,71 @@ export const applyJobOffer = async (req: Request, res: Response) => {
   }
 };
 
+export const getAplicantionById = async (req: Request, res: Response) => {
+  const applicationId = req.params.applicationId;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(applicationId)) {
+      return res.status(400).json({ error: "invalid application id" });
+    }
+    const application = await applicationModel
+      .findById(applicationId)
+      .populate({
+        path: "applicantId",
+        select: "name photoUrl",
+        populate: {
+          path: "photoUrl",
+          select: "url",
+        },
+      })
+      .populate({
+        path: "answers",
+        select: "-_id questionId answer",
+        populate: {
+          path: "questionId",
+          select: "-_id question",
+        },
+      })
+      .populate({
+        path: "cv",
+        select: "url",
+      });
+    if (!application) {
+      return res.status(404).json({ error: "404 not found" });
+    }
+
+    res.status(200).json(application);
+  } catch (error) {
+    handleHttp(res, "Error_Get_Application", error);
+  }
+};
+
+export const updateStepId = async (req: Request, res: Response) => {
+  const applicationId = req.params.applicationId;
+  let { step } = req.body;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(applicationId)) {
+      return res.status(400).json({ error: "Invalid application Id" });
+    }
+    const application = await applicationModel.findById(applicationId);
+
+    if (!application) {
+      return res.status(404).json({ error: "404 application not found" });
+    }
+    const applicationUpdated = await applicationModel.findByIdAndUpdate(
+      applicationId,
+      { step },
+      {
+        new: true,
+      }
+    );
+    res.status(200).json(applicationUpdated);
+  } catch (error) {
+    handleHttp(res, "Error_Update_Step", error);
+  }
+};
+export const updateJobOffer = async (req: Request, response: Response) => {};
+
 export const isApplicant = async (req: Request, res: Response) => {
   const jobOfferId = req.params.jobOfferId;
   const applicantId = req.userId;

@@ -21,6 +21,10 @@ const applicationSchema = new Schema(
       ref: "Cv",
       default: mongoose.Types.ObjectId,
     },
+    step: {
+      type: Number,
+      default: 1,
+    },
   },
   {
     timestamps: true,
