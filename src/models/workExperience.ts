@@ -4,19 +4,22 @@ const workExperienceSchema = new Schema(
   {
     companyName: {
       type: String,
+      default: "",
       required: true,
     },
-    ocupation: {
+    occupation: {
       type: String,
+      default: "",
       required: true,
     },
     dateStart: {
       type: Date,
+      default: "",
       required: true,
     },
     dateEnd: {
       type: Date,
-      required: true,
+      default: "",
     },
   },
   {

@@ -4,15 +4,12 @@ const languajeSchema = new Schema(
   {
     name: {
       type: String,
-      required: true,
-    },
-    level: {
-      type: String,
+      default: "",
       required: true,
     },
   },
   {
-    timestamps: true,
+    timestamps: false,
     versionKey: false,
   }
 );

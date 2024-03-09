@@ -120,7 +120,6 @@ export const updateStepId = async (req: Request, res: Response) => {
     handleHttp(res, "Error_Update_Step", error);
   }
 };
-export const updateJobOffer = async (req: Request, response: Response) => {};
 
 export const isApplicant = async (req: Request, res: Response) => {
   const jobOfferId = req.params.jobOfferId;

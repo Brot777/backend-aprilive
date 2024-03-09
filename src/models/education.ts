@@ -2,9 +2,24 @@ import { model, Schema } from "mongoose";
 
 const educationSchema = new Schema(
   {
-    title: {
+    titleEducation: {
       type: String,
+      default: "",
       required: true,
+    },
+    institution: {
+      type: String,
+      default: "",
+      required: true,
+    },
+    dateStart: {
+      type: Date,
+      default: "",
+      required: true,
+    },
+    dateEnd: {
+      type: Date,
+      default: "",
     },
   },
   {

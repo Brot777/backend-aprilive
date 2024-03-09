@@ -52,7 +52,7 @@ const personAccountSchema = new Schema<PersonAccount>(
       default: [],
     },
     languages: {
-      type: [{ type: Schema.Types.ObjectId, ref: "Languaje" }],
+      type: [{ type: Schema.Types.ObjectId, ref: "UserLanguaje" }],
       default: [],
     },
     userId: {
