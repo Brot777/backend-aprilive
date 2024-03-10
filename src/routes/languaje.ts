@@ -11,7 +11,7 @@ const router = Router();
 
 router.get("/", getAllLanguajes);
 router.post("/:userId", isValidToken, createUserLanguajeByUserId);
-router.put("/:experienceId", isValidToken, updateUserLanguajenById);
-router.delete("/:experienceId", isValidToken, deleteUserLanguajeById);
+router.put("/:userLanguajeId", isValidToken, updateUserLanguajenById);
+router.delete("/:userLanguajeId", isValidToken, deleteUserLanguajeById);
 
 export { router };

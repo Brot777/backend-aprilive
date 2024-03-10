@@ -9,8 +9,6 @@ import languajeModel from "./../models/languaje";
 export const getAllLanguajes = async (req: Request, res: Response) => {
   try {
     const languajes = await languajeModel.find({});
-    console.log(languajes);
-
     res.status(200).json(languajes);
   } catch (error) {
     handleHttp(res, "Error_Get_Languajes", error);
@@ -27,10 +25,11 @@ export const createUserLanguajeByUserId = async (
     const user = await userModel.findById(userId);
     if (!user) {
       return res.status(404).json({
-        error: "No user languaje, user not found",
+        error: "404, user not found",
       });
     }
     const userLanguajeSaved = await userLanguajeModel.create(userLanguaje);
+
     const personAccountUpdated = await personAccountModel.findOneAndUpdate(
       { userId },
       { $addToSet: { languages: userLanguajeSaved._id } }
@@ -50,7 +49,9 @@ export const updateUserLanguajenById = async (req: Request, res: Response) => {
     }
     const userLanguaje = await userLanguajeModel.findById(userLanguajeId);
     if (!userLanguaje) {
-      return res.status(404).json({ error: "404 user languaje not found" });
+      return res
+        .status(404)
+        .json({ error: "404 user user languaje not found" });
     }
 
     const userLanguajeUpdated = await userLanguajeModel.findByIdAndUpdate(
