@@ -20,7 +20,8 @@ export const createExperienceByUserId = async (req: Request, res: Response) => {
     );
     const personAccountUpdated = await personAccountModel.findOneAndUpdate(
       { userId },
-      { $addToSet: { workExperience: workExperiencesSaved._id } }
+      { $addToSet: { workExperience: workExperiencesSaved._id } },
+      { new: true }
     );
 
     res.status(200).json(personAccountUpdated);

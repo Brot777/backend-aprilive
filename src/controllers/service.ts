@@ -148,7 +148,7 @@ export const getServiceById = async (req: Request, res: Response) => {
       })
       .populate({
         path: "images",
-        select: "-_id url", // Especifica el campo que deseas recuperar
+        select: "url", // Especifica el campo que deseas recuperar
       });
     if (!service) {
       return res.status(404).json({ error: "404 service not found" });

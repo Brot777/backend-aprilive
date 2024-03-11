@@ -32,7 +32,8 @@ export const createUserLanguajeByUserId = async (
 
     const personAccountUpdated = await personAccountModel.findOneAndUpdate(
       { userId },
-      { $addToSet: { languages: userLanguajeSaved._id } }
+      { $addToSet: { languages: userLanguajeSaved._id } },
+      { new: true }
     );
 
     res.status(200).json(personAccountUpdated);

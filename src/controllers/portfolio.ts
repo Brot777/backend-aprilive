@@ -150,7 +150,7 @@ export const getPortfolioById = async (req: Request, res: Response) => {
       })
       .populate({
         path: "images",
-        select: "-_id url", // Especifica el campo que deseas recuperar
+        select: "url", // Especifica el campo que deseas recuperar
       });
     if (!portfolio) {
       return res.status(404).json({ error: "404 portfolio not found" });

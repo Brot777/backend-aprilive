@@ -31,8 +31,10 @@ const personAccountSchema = new Schema<PersonAccount>(
     compensation: {
       type: Schema.Types.Mixed,
       default: {
+        type: "",
         payment_currency: "",
-        payment_amount: 0,
+        payment_amount_min: 0,
+        payment_amount_max: 0,
         payment_date: "",
       },
     },
