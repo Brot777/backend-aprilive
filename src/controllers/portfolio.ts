@@ -246,7 +246,8 @@ export const getPortfoliosByAuthorId = async (req: Request, res: Response) => {
     const portfolios = await portfolioModel
       .find({ authorId })
       .skip((page - 1) * limit)
-      .limit(limit);
+      .limit(limit)
+      .populate("images", "url");
 
     const totalDocs = await portfolioModel.count({ authorId }); //Possible performance improvement: cache the value
     const totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value

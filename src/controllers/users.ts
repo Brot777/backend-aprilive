@@ -28,6 +28,14 @@ export const getUserProfile = async (req: Request, res: Response) => {
       .populate("videoUrl", "url")
       .populate("preferences")
       .populate({
+        path: "accountType",
+        select: "role",
+        populate: {
+          path: "role",
+          select: "name -_id",
+        },
+      })
+      .populate({
         path: "personAccount",
         populate: {
           path: "cv",
@@ -35,11 +43,21 @@ export const getUserProfile = async (req: Request, res: Response) => {
         },
       })
       .populate({
-        path: "accountType",
-        select: "role",
+        path: "personAccount",
         populate: {
-          path: "role",
-          select: "name -_id",
+          path: "workExperience",
+        },
+      })
+      .populate({
+        path: "personAccount",
+        populate: {
+          path: "education",
+        },
+      })
+      .populate({
+        path: "personAccount",
+        populate: {
+          path: "languages",
         },
       });
     if (!user) {
