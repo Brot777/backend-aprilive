@@ -58,6 +58,9 @@ export const getUserProfile = async (req: Request, res: Response) => {
         path: "personAccount",
         populate: {
           path: "languages",
+          populate: {
+            path: "languaje",
+            },
         },
       });
     if (!user) {

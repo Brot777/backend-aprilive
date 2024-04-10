@@ -160,6 +160,7 @@ export const getServiceById = async (req: Request, res: Response) => {
 };
 
 export const updateServiceById = async (req: Request, res: Response) => {
+  const files = req.files;
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.serviceId)) {
       return res.status(400).json({ error: "invalid service id" });
@@ -167,6 +168,9 @@ export const updateServiceById = async (req: Request, res: Response) => {
     const service = await serviceModel.findById(req.params.serviceId);
     if (!service) {
       return res.status(404).json({ error: "404 service not found" });
+    }
+
+    if (req.files) {
     }
 
     const serviceUpdated = await serviceModel.findByIdAndUpdate(
