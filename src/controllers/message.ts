@@ -9,8 +9,8 @@ import { handleHttp } from "../utils/error.handle";
 export const sendMessage = async (req: Request, res: Response) => {
   const receiverId = req.params.receiverId;
   const senderId = req.userId;
-  let { conversationId, value } = req.body;
-  console.log(receiverId, conversationId, value, senderId);
+  const { value } = req.body;
+  let conversationId;
 
   try {
     if (!mongoose.Types.ObjectId.isValid(receiverId)) {
@@ -21,13 +21,19 @@ export const sendMessage = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "404 receiver not found" });
     }
 
-    if (!conversationId) {
+    const conversation = await conversationModel.findOne({
+      participants: { $all: [receiverId, senderId] },
+    });
+
+    if (!conversation) {
       console.log("no hay conversacion todavia");
 
       const conversationSaved = await conversationModel.create({
         participants: [senderId, receiverId],
       });
       conversationId = conversationSaved._id;
+    } else {
+      conversationId = conversation._id;
     }
 
     const messageSaved = await messageModel.create({
