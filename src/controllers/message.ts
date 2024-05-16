@@ -5,6 +5,7 @@ import messageModel from "../models/message";
 import conversationModel from "../models/conversation";
 import userModel from "../models/user";
 import { handleHttp } from "../utils/error.handle";
+import { io } from "../socket/socket";
 
 export const sendMessage = async (req: Request, res: Response) => {
   const receiverId = req.params.receiverId;
@@ -46,6 +47,8 @@ export const sendMessage = async (req: Request, res: Response) => {
     await conversationModel.findByIdAndUpdate(conversationId, {
       lastMessage: messageSaved._id,
     });
+
+    /*  io.to(socketId).emit("newMessage", messageSaved); */
     res.status(200).json(messageSaved);
   } catch (error) {
     handleHttp(res, "Error_Send_Message", error);
