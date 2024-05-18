@@ -48,7 +48,7 @@ export const sendMessage = async (req: Request, res: Response) => {
       lastMessage: messageSaved._id,
     });
 
-    /*  io.to(socketId).emit("newMessage", messageSaved); */
+     /* io.to(socketId).emit("newMessage", messageSaved); */
     res.status(200).json(messageSaved);
   } catch (error) {
     handleHttp(res, "Error_Send_Message", error);
