@@ -50,7 +50,9 @@ export const sendMessage = async (req: Request, res: Response) => {
 
     const reseiverSocketId = getSocketIdByUserId(receiverId);
 
-    io.to(reseiverSocketId).emit("newMessage", messageSaved);
+    if (reseiverSocketId)
+      io.to(reseiverSocketId).emit("newMessage", messageSaved);
+
     res.status(200).json(messageSaved);
   } catch (error) {
     handleHttp(res, "Error_Send_Message", error);
