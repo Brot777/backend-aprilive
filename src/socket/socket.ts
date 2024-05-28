@@ -1,9 +1,6 @@
-import express from "express";
 import { Server } from "socket.io";
 import http from "http";
-
-// INITIAL EXPRESS
-const app = express();
+import { app } from "../app";
 
 // CONFIG URL STATICS
 
@@ -26,4 +23,4 @@ io.on("connetion", (socket) => {
   });
 });
 
-export { app, io, server };
+export { io, server };

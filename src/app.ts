@@ -3,7 +3,8 @@ import { join } from "path";
 import morgan from "morgan";
 import cors from "cors";
 import routes from "./routes/index";
-import { app } from "./socket/socket";
+
+const app = express();
 
 // CONFIG URL STATICS
 const urlStatic = join(__dirname, "dist");
@@ -19,4 +20,4 @@ app.use("/api/", routes);
 /* STATIC FILES */
 app.use(express.static(urlStatic));
 
-export default app;
+export { app };
