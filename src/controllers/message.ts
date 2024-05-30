@@ -83,3 +83,27 @@ export const getMessagesByReceiverId = async (req: Request, res: Response) => {
     handleHttp(res, "Error_Get_Messages", error);
   }
 };
+
+export const updateReadMessageById = async (req: Request, res: Response) => {
+  const messageId = req.params.messageId;
+  const { read } = req.body;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(messageId)) {
+      return res.status(400).json({ error: "invalid message id" });
+    }
+    const message = await messageModel.findById(messageId);
+    if (!message) {
+      return res.status(404).json({ error: "404 message not found" });
+    }
+
+    const messageUpdated = await messageModel.findByIdAndUpdate(
+      messageId,
+      { read },
+      { new: true }
+    );
+
+    res.status(200).json(messageUpdated);
+  } catch (error) {
+    handleHttp(res, "Error_Update_Messages", error);
+  }
+};

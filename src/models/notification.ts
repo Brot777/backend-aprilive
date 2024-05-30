@@ -2,13 +2,17 @@ import mongoose, { model, Schema } from "mongoose";
 
 const notificationSchema = new Schema(
   {
-    title: {
-      type: String,
-      default: "",
-    },
     description: {
       type: String,
       default: "",
+    },
+    type: {
+      type: String,
+      default: "",
+    },
+    read: {
+      type: Boolean,
+      default: false,
     },
     reference: {
       type: String,
