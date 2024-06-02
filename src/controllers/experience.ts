@@ -24,7 +24,7 @@ export const createExperienceByUserId = async (req: Request, res: Response) => {
       { new: true }
     );
 
-    res.status(200).json(personAccountUpdated);
+    res.status(200).json({ msj: "200" });
   } catch (error) {
     handleHttp(res, "Error_Create_work_Experiences", error);
   }

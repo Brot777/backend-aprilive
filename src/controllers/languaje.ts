@@ -36,7 +36,7 @@ export const createUserLanguajeByUserId = async (
       { new: true }
     );
 
-    res.status(200).json(personAccountUpdated);
+    res.status(200).json({ msj: "200" });
   } catch (error) {
     handleHttp(res, "Error_Create_User_Languaje", error);
   }
