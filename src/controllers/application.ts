@@ -4,6 +4,8 @@ import applicationModel from "../models/application";
 import jobOfferModel from "../models/jobOffer";
 import jobOfferAnswerModel from "../models/jobOfferAnswer";
 import { handleHttp } from "../utils/error.handle";
+import notificationModel from "../models/notification";
+import { getSocketIdByUserId, io } from "../socket/socket";
 
 export const applyJobOffer = async (req: Request, res: Response) => {
   const jobOfferId = req.params.jobOfferId;
@@ -51,6 +53,20 @@ export const applyJobOffer = async (req: Request, res: Response) => {
       answers: answerIds,
       cv,
     });
+
+    // REAL TIME
+    const notificationSaved = await notificationModel.create({
+      description: "Alguien aplico a tu oferta de trabajo",
+      type: "Postulacion",
+      referenceId: jobOfferId,
+      receiverId: authorId,
+    });
+    const reseiverSocketId = getSocketIdByUserId(authorId);
+
+    if (reseiverSocketId)
+      io.to(reseiverSocketId).emit("newNotification", notificationSaved);
+    // FINISH REAL TIME
+
     res.status(200).json(applicationSaved);
   } catch (error) {
     handleHttp(res, "Error_Apply_Job_Offer", error);

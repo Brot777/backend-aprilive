@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import http from "http";
 import { app } from "../app";
+import { ObjectId } from "mongoose";
 
 // CONFIG URL STATICS
 
@@ -9,7 +10,7 @@ const io = new Server(server);
 
 const usersConnected = new Map();
 
-export const getSocketIdByUserId = (userId: String) =>
+export const getSocketIdByUserId = (userId: String | ObjectId) =>
   usersConnected.get(userId);
 
 io.on("connetion", (socket) => {

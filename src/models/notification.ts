@@ -14,9 +14,9 @@ const notificationSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    reference: {
-      type: String,
-      default: "",
+    referenceId: {
+      type: Schema.Types.ObjectId,
+      require: true,
     },
     receiverId: {
       type: Schema.Types.ObjectId,
