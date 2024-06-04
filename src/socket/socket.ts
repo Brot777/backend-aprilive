@@ -13,7 +13,7 @@ const usersConnected = new Map();
 export const getSocketIdByUserId = (userId: String | ObjectId) =>
   usersConnected.get(userId);
 
-io.on("connetion", (socket) => {
+io.on("connection", (socket) => {
   console.log("a user connected", socket.id);
   const userId = socket.handshake.query.userId;
   if (userId) usersConnected.set(userId, socket.id);
