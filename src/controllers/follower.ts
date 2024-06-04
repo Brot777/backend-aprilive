@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import userModel from "../models/user";
 import followerModel from "../models/follower";
 import { handleHttp } from "../utils/error.handle";
+import notificationModel from "../models/notification";
+import { getSocketIdByUserId, io } from "../socket/socket";
 
 export const followById = async (req: Request, res: Response) => {
   const userId = req.params.userId;
@@ -23,6 +25,19 @@ export const followById = async (req: Request, res: Response) => {
       await followerModel.findByIdAndDelete(isFollower._id);
     } else {
       await followerModel.create({ userId, followerId });
+
+      // REAL TIME
+      const notificationSaved = await notificationModel.create({
+        description: `${user.name} acaba de seguirte`,
+        type: "Follow",
+        referenceId: userId,
+        receiverId: followerId,
+      });
+      const reseiverSocketId = getSocketIdByUserId(followerId);
+
+      if (reseiverSocketId)
+        io.to(reseiverSocketId).emit("follow", notificationSaved);
+      // FINISH REAL TIME
     }
     res.status(201).json({ follow: Boolean(!isFollower) });
   } catch (error) {
