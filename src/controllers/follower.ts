@@ -36,7 +36,7 @@ export const followById = async (req: Request, res: Response) => {
       const reseiverSocketId = getSocketIdByUserId(followerId);
 
       if (reseiverSocketId)
-        io.to(reseiverSocketId).emit("follow", notificationSaved);
+        io.to(reseiverSocketId).emit("newNotification", notificationSaved);
       // FINISH REAL TIME
     }
     res.status(201).json({ follow: Boolean(!isFollower) });
