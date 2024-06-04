@@ -62,6 +62,7 @@ export const applyJobOffer = async (req: Request, res: Response) => {
       receiverId: authorId,
     });
     const reseiverSocketId = getSocketIdByUserId(authorId);
+    console.log(reseiverSocketId);
 
     if (reseiverSocketId)
       io.to(reseiverSocketId).emit("application", notificationSaved);
