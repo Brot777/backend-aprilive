@@ -64,7 +64,7 @@ export const applyJobOffer = async (req: Request, res: Response) => {
     const reseiverSocketId = getSocketIdByUserId(authorId);
 
     if (reseiverSocketId)
-      io.to(reseiverSocketId).emit("newNotification", notificationSaved);
+      io.to(reseiverSocketId).emit("application", notificationSaved);
     // FINISH REAL TIME
 
     res.status(200).json(applicationSaved);
