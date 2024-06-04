@@ -18,7 +18,7 @@ io.on("connection", (socket) => {
   const userId = socket.handshake.query.userId;
   if (userId) usersConnected.set(userId, socket.id);
 
-  socket.on("disconnet", () => {
+  socket.on("disconnect", () => {
     console.log("user disconnected", socket.id);
     usersConnected.delete(userId);
   });
