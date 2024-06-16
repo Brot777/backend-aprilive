@@ -57,12 +57,11 @@ export const applyJobOffer = async (req: Request, res: Response) => {
     // REAL TIME
     const notificationSaved = await notificationModel.create({
       description: "Alguien aplico a tu oferta de trabajo",
-      type: "Application",
+      type: "application",
       referenceId: jobOfferId,
       receiverId: authorId,
     });
     const reseiverSocketId = getSocketIdByUserId(authorId);
-    console.log(reseiverSocketId);
 
     if (reseiverSocketId)
       io.to(reseiverSocketId).emit("newNotification", notificationSaved);

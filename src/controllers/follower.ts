@@ -25,15 +25,14 @@ export const followById = async (req: Request, res: Response) => {
       await followerModel.findByIdAndDelete(isFollower._id);
     } else {
       await followerModel.create({ userId, followerId });
-
       // REAL TIME
       const notificationSaved = await notificationModel.create({
-        description: `${user.name} acaba de seguirte`,
-        type: "Follow",
-        referenceId: userId,
-        receiverId: followerId,
+        description: `Tienes un nuevo seguidor`,
+        type: "follow",
+        referenceId: followerId,
+        receiverId: userId,
       });
-      const reseiverSocketId = getSocketIdByUserId(followerId);
+      const reseiverSocketId = getSocketIdByUserId(userId);
 
       if (reseiverSocketId)
         io.to(reseiverSocketId).emit("newNotification", notificationSaved);
