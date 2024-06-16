@@ -23,6 +23,10 @@ const notificationSchema = new Schema(
       ref: "User",
       require: true,
     },
+    initiatorUser: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   {
     timestamps: false,
