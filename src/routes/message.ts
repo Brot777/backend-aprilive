@@ -11,6 +11,6 @@ const router = Router();
 
 router.post("/:receiverId", isValidToken, sendMessage);
 router.get("/:receiverId", isValidToken, getMessagesByReceiverId);
-router.get("/:messageId", isValidToken, updateReadMessageById);
+router.patch("/:messageId", isValidToken, updateReadMessageById);
 
 export { router };

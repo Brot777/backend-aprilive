@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
 import notificationModel from "../models/notification";
+import mongoose from "mongoose";
 
 export const getMyNotifications = async (req: Request, res: Response) => {
   const receiverId = req.userId;
@@ -26,5 +27,32 @@ export const getMyNotifications = async (req: Request, res: Response) => {
     });
   } catch (error) {
     handleHttp(res, "Error_Get_Notifications", error);
+  }
+};
+
+export const updateReadNotificationById = async (
+  req: Request,
+  res: Response
+) => {
+  const notificationId = req.params.notificationId;
+  const { read } = req.body;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(notificationId)) {
+      return res.status(400).json({ error: "invalid notification id" });
+    }
+    const message = await notificationModel.findById(notificationId);
+    if (!message) {
+      return res.status(404).json({ error: "404 notification not found" });
+    }
+
+    const messageUpdated = await notificationModel.findByIdAndUpdate(
+      notificationId,
+      { read },
+      { new: true }
+    );
+
+    res.status(200).json(messageUpdated);
+  } catch (error) {
+    handleHttp(res, "Error_Update_Messages", error);
   }
 };
