@@ -154,4 +154,6 @@ const jobOfferSchema = new Schema<JobOffer>(
   }
 );
 
+jobOfferSchema.index({ jobTitle: "text" });
+
 export default model("JobOffer", jobOfferSchema);
