@@ -68,5 +68,6 @@ const portfolioSchema = new Schema<Portfolio>(
     versionKey: false,
   }
 );
+portfolioSchema.index({ title: "text", description: "text" });
 
 export default model("Portfolio", portfolioSchema);

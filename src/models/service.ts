@@ -94,4 +94,6 @@ const serviceSchema = new Schema<Service>(
   }
 );
 
+serviceSchema.index({ title: "text", description: "text" });
+
 export default model("Service", serviceSchema);

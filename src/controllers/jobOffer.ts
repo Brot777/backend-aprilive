@@ -5,16 +5,16 @@ import { Request, Response } from "express";
 import {
   addPropertiesWhenGetJobOffer,
   addPropertiesWhenGetJobOfferPersonalized,
-  convertTitleNormalize,
 } from "../services/jobOffer";
 import likeJobOfferModel from "../models/likeJobOffer";
 import favoriteJobOfferModel from "../models/favoriteJobOffer";
 import commentJobOfferModel from "../models/commentJobOffer";
+import { convertTextNormalize } from "../utils/normalizeText";
 
 export const createJobOffer = async (req: Request, res: Response) => {
   try {
     const jobOffer = req.body;
-    jobOffer.jobTitleNormalize = convertTitleNormalize(jobOffer.jobTitle);
+    jobOffer.jobTitleNormalize = convertTextNormalize(jobOffer.jobTitle);
     const jobOfferSaved = await jobOfferModel.create(jobOffer);
     res.status(201).json(jobOfferSaved);
   } catch (error) {
@@ -153,7 +153,7 @@ export const updateJobOfferById = async (req: Request, res: Response) => {
     }
 
     if (jobTitle) {
-      req.body.jobTitleNormalize = convertTitleNormalize(jobTitle);
+      req.body.jobTitleNormalize = convertTextNormalize(jobTitle);
     }
 
     const jobOfferUpdated = await jobOfferModel.findByIdAndUpdate(

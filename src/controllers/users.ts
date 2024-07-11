@@ -9,7 +9,9 @@ import { Request, Response } from "express";
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
-    const users = await userModel.find({ isCompany: false });
+    const users = await userModel
+      .find({ isCompany: false })
+      .select("-password");
     res.status(200).json(users);
   } catch (error) {
     handleHttp(res, "Error_Get_Users", error);
@@ -60,7 +62,7 @@ export const getUserProfile = async (req: Request, res: Response) => {
           path: "languages",
           populate: {
             path: "languaje",
-            },
+          },
         },
       });
     if (!user) {

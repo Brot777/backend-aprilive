@@ -1,6 +1,5 @@
 import { model, Schema } from "mongoose";
 import { JobOffer } from "../interfaces/jobOffers";
-import { convertTitleNormalize } from "../services/jobOffer";
 
 const jobOfferSchema = new Schema<JobOffer>(
   {
@@ -154,6 +153,6 @@ const jobOfferSchema = new Schema<JobOffer>(
   }
 );
 
-jobOfferSchema.index({ jobTitle: "text" });
+jobOfferSchema.index({ jobTitle: "text", description: "text" });
 
 export default model("JobOffer", jobOfferSchema);

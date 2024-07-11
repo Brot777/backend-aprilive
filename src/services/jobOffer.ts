@@ -4,17 +4,6 @@ import favoriteJobOfferModel from "../models/favoriteJobOffer";
 import followerModel from "../models/follower";
 import { LikeJobOffer } from "../interfaces/likeJobOffer";
 import { User } from "../interfaces/user.interface";
-import { FavoriteJobOffer } from "../interfaces/favoriteJobOffer";
-
-export const convertTitleNormalize = (title: string): string => {
-  // Replace accented characters
-  let titleNormalize = title.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  // Convert to lowercase
-  titleNormalize = titleNormalize.toLowerCase();
-  // Delete especial characters
-  titleNormalize = titleNormalize.replace(/[^\w\s]/gi, "");
-  return titleNormalize;
-};
 
 export const addPropertiesWhenGetJobOfferPersonalized = async (
   jobOffers: JobOffer[] | any,
