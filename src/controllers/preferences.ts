@@ -38,6 +38,6 @@ export const updatePreferences = async (req: Request, res: Response) => {
 
     res.status(200).json(userUpdated && req.body.preferences);
   } catch (error) {
-    handleHttp(res, "Error_Get_Preferences", error);
+    handleHttp(res, "Error_Update_Preferences", error);
   }
 };

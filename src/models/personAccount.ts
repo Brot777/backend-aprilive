@@ -57,6 +57,10 @@ const personAccountSchema = new Schema<PersonAccount>(
       type: [{ type: Schema.Types.ObjectId, ref: "UserLanguaje" }],
       default: [],
     },
+    skills: {
+      type: [{ type: Schema.Types.ObjectId, ref: "Skill" }],
+      default: [], //array de referencias de id {id, value}
+    },
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
