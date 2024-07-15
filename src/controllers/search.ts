@@ -78,6 +78,30 @@ export const searchServices = async (req: Request, res: Response) => {
       )
       .skip((page - 1) * limit)
       .limit(limit)
+      .populate({
+        path: "authorId",
+        select: "photoUrl",
+        populate: {
+          path: "photoUrl",
+          select: "url",
+        },
+      })
+      .populate({
+        path: "authorId",
+        select: "name isCompany accountType",
+        populate: {
+          path: "accountType",
+          select: "role",
+          populate: {
+            path: "role",
+            select: "name",
+          },
+        },
+      })
+      .populate({
+        path: "images",
+        select: "-_id url", // Especifica el campo que deseas recuperar
+      })
       .sort({ score: { $meta: "textScore" } });
 
     let totalDocs = await serviceModel.count({
@@ -113,6 +137,30 @@ export const searchPortfolios = async (req: Request, res: Response) => {
       )
       .skip((page - 1) * limit)
       .limit(limit)
+      .populate({
+        path: "authorId",
+        select: "photoUrl",
+        populate: {
+          path: "photoUrl",
+          select: "url",
+        },
+      })
+      .populate({
+        path: "authorId",
+        select: "name isCompany accountType",
+        populate: {
+          path: "accountType",
+          select: "role",
+          populate: {
+            path: "role",
+            select: "name",
+          },
+        },
+      })
+      .populate({
+        path: "images",
+        select: "-_id url", // Especifica el campo que deseas recuperar
+      })
       .sort({ score: { $meta: "textScore" } });
 
     let totalDocs = await portfolioModel.count({
