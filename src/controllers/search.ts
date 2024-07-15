@@ -23,6 +23,26 @@ export const searchJobOffers = async (req: Request, res: Response) => {
       )
       .skip((page - 1) * limit)
       .limit(limit)
+      .populate({
+        path: "authorId",
+        select: "photoUrl",
+        populate: {
+          path: "photoUrl",
+          select: "url",
+        },
+      })
+      .populate({
+        path: "authorId",
+        select: "name isCompany accountType",
+        populate: {
+          path: "accountType",
+          select: "role",
+          populate: {
+            path: "role",
+            select: "name",
+          },
+        },
+      })
       .sort({ score: { $meta: "textScore" } });
 
     let totalDocs = await jobOfferModel.count({
