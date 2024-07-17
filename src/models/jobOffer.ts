@@ -45,12 +45,6 @@ const jobOfferSchema = new Schema<JobOffer>(
       required: true,
     },
 
-    jobTitleNormalize: {
-      type: String,
-      default: "",
-      required: true,
-    },
-
     publisher: {
       type: String,
       default: "",

@@ -11,7 +11,6 @@ export interface JobOffer {
   following: boolean;
   offerVideo: string;
   jobTitle: string;
-  jobTitleNormalize: string;
   publisher: string;
   description: string;
   allowComments: boolean;

@@ -9,12 +9,10 @@ import {
 import likeJobOfferModel from "../models/likeJobOffer";
 import favoriteJobOfferModel from "../models/favoriteJobOffer";
 import commentJobOfferModel from "../models/commentJobOffer";
-import { convertTextNormalize } from "../utils/normalizeText";
 
 export const createJobOffer = async (req: Request, res: Response) => {
   try {
     const jobOffer = req.body;
-    jobOffer.jobTitleNormalize = convertTextNormalize(jobOffer.jobTitle);
     const jobOfferSaved = await jobOfferModel.create(jobOffer);
     res.status(201).json(jobOfferSaved);
   } catch (error) {
@@ -142,7 +140,6 @@ export const getJobOfferById = async (req: Request, res: Response) => {
 };
 
 export const updateJobOfferById = async (req: Request, res: Response) => {
-  const { jobTitle } = req.body;
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.jobOfferId)) {
       return res.status(400).json({ error: "invalid job offer id" });
@@ -150,10 +147,6 @@ export const updateJobOfferById = async (req: Request, res: Response) => {
     const jobOffer = await jobOfferModel.findById(req.params.jobOfferId);
     if (!jobOffer) {
       return res.status(404).json({ error: "404 job offer not found" });
-    }
-
-    if (jobTitle) {
-      req.body.jobTitleNormalize = convertTextNormalize(jobTitle);
     }
 
     const jobOfferUpdated = await jobOfferModel.findByIdAndUpdate(
