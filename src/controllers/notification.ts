@@ -12,6 +12,10 @@ export const getMyNotifications = async (req: Request, res: Response) => {
   try {
     const notifications = await notificationModel
       .find({ receiverId })
+      .populate({
+        path: "initiatorUser",
+        select: "name",
+      })
       .skip((page - 1) * limit)
       .limit(limit);
 
