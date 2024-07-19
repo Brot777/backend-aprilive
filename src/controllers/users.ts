@@ -6,6 +6,7 @@ import accountTypeModel from "../models/accountType";
 import presentationVideoModel from "../models/presentationVideo";
 import { handleHttp } from "../utils/error.handle";
 import { Request, Response } from "express";
+import { comparePassword } from "../utils/bcrypt.handle";
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
@@ -129,23 +130,31 @@ export const deleteUserById = async (req: Request, res: Response) => {
 };
 
 export const updatePasswordByUserId = async (req: Request, res: Response) => {
-  const userId = req.params.userId;
+  const userId = req.userId;
+  const { oldPassword, newPassword } = req.body;
   try {
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(404).json({ error: "404 not found" });
-    }
-    const user = await userModel.findOne({ _id: userId });
-    if (!user) {
-      return res.status(404).json({ error: "404 not found" });
-    }
-    const response = await userModel.findByIdAndDelete(userId);
+    const userFound = await userModel.findOne({
+      _id: userId,
+      isCompany: false,
+    });
+    console.log(userFound);
 
-    await personAccountModel.deleteOne({ userId });
-    await avatarModel.deleteOne({ userId });
-    await presentationVideoModel.deleteOne({ userId });
-    await accountTypeModel.deleteOne({ userId });
-    res.status(200).json(response);
+    if (!userFound) {
+      return res.status(404).json({ error: "404 user not found" });
+    }
+    const matchPassword = await comparePassword(
+      oldPassword,
+      userFound.password
+    );
+
+    if (!matchPassword) {
+      return res.status(403).json({ error: "contraseña invalida" });
+    }
+
+    await userModel.findByIdAndUpdate(userId, { password: newPassword });
+
+    res.status(200).json({ msj: "password updated successfully" });
   } catch (error) {
-    handleHttp(res, "Error_Delete_User", error);
+    handleHttp(res, "Error_Update_Password", error);
   }
 };
