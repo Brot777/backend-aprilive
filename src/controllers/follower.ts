@@ -32,10 +32,16 @@ export const followById = async (req: Request, res: Response) => {
         referenceId: followerId,
         receiverId: userId,
       });
+      const notificationWithUser = await notificationModel
+        .findById(notificationSaved._id)
+        .populate({
+          path: "initiatorUser",
+          select: "name",
+        });
       const reseiverSocketId = getSocketIdByUserId(userId);
 
       if (reseiverSocketId)
-        io.to(reseiverSocketId).emit("newNotification", notificationSaved);
+        io.to(reseiverSocketId).emit("newNotification", notificationWithUser);
       // FINISH REAL TIME
     }
     res.status(201).json({ follow: Boolean(!isFollower) });
