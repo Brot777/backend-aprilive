@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectsCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../config/s3Client";
 import likeServiceModel from "../models/likeService";
 import followerModel from "../models/follower";
@@ -8,6 +8,8 @@ import imageServiceModel from "../models/imageService";
 import { LikeService } from "../interfaces/likeService";
 import { User } from "../interfaces/user.interface";
 import { Service } from "../interfaces/service";
+import { ImageService } from "../interfaces/imageService";
+import { Schema } from "mongoose";
 
 export const addPropertiesWhenGetServicesPersonalized = async (
   services: Service[] | any,
@@ -115,8 +117,14 @@ export const uploadImagesServiceToS3 = async (
 
 export const updateImagesService = async (
   files: Express.Multer.File[],
-  destinationFolder: string
+  destinationFolder: string,
+  service: Service
 ) => {
+  // Get Old Images
+  const oldImages = service.images as ImageService[];
+  oldImages.map((image: ImageService) => {
+    console.log(image);
+  });
   // Set the parameters
   const BUKET = process.env.AWS_BUCKET_NAME;
 

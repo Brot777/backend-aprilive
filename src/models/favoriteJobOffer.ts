@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
+import { FavoriteJobOffer } from "../interfaces/favoriteJobOffer";
 
-const favoriteJobOfferSchema = new Schema(
+const favoriteJobOfferSchema = new Schema<FavoriteJobOffer>(
   {
     userId: {
       type: Schema.Types.ObjectId,

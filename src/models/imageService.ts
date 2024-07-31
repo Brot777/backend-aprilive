@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
+import { ImageService } from "../interfaces/imageService";
 
-const imageServiceSchema = new Schema(
+const imageServiceSchema = new Schema<ImageService>(
   {
     url: {
       type: String,

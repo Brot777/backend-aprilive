@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
+import { LikeService } from "../interfaces/likeService";
 
-const likeServiceSchema = new Schema(
+const likeServiceSchema = new Schema<LikeService>(
   {
     userId: {
       type: Schema.Types.ObjectId,

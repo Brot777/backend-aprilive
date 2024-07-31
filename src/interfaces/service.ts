@@ -1,5 +1,6 @@
 import { Schema } from "mongoose";
 import { User } from "./user.interface";
+import { ImageService } from "./imageService";
 export interface Service {
   _id: Schema.Types.ObjectId;
   typePost: string;
@@ -12,7 +13,7 @@ export interface Service {
   description: string;
   allowComments: boolean;
   video: Schema.Types.ObjectId;
-  images: Schema.Types.ObjectId[];
+  images: Schema.Types.ObjectId[] | ImageService[];
   price: string;
   money: string;
   wayToPay: string;

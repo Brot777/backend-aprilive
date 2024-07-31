@@ -7,6 +7,7 @@ import commentServiceModel from "../models/commentService";
 import {
   addPropertiesWhenGetServices,
   addPropertiesWhenGetServicesPersonalized,
+  updateImagesService,
   uploadImagesServiceToS3,
 } from "../services/service";
 import { folders } from "../consts/s3Folders";
@@ -161,20 +162,28 @@ export const getServiceById = async (req: Request, res: Response) => {
 
 export const updateServiceById = async (req: Request, res: Response) => {
   const files = (req.files as Express.Multer.File[]) || [];
+  const serviceId = req.params.serviceId;
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.serviceId)) {
       return res.status(400).json({ error: "invalid service id" });
     }
-    const service = await serviceModel.findById(req.params.serviceId);
+    const service = await serviceModel
+      .findById(req.params.serviceId)
+      .populate("images");
     if (!service) {
       return res.status(404).json({ error: "404 service not found" });
     }
 
     if (files) {
+      const { response, status } = await updateImagesService(
+        files,
+        folders.imagesOfService,
+        service
+      );
     }
 
     const serviceUpdated = await serviceModel.findByIdAndUpdate(
-      req.params.serviceId,
+      serviceId,
       req.body,
       { new: true }
     );
