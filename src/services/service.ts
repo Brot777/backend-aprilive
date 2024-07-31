@@ -117,13 +117,6 @@ export const updateImagesService = async (
   files: Express.Multer.File[],
   destinationFolder: string
 ) => {
-  if (!files) {
-    return {
-      response: { error: "No files provided" },
-      status: 400,
-    };
-  }
-
   // Set the parameters
   const BUKET = process.env.AWS_BUCKET_NAME;
 
