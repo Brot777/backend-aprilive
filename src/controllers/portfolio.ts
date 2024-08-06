@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import { handleHttp } from "../utils/error.handle";
 import { Request, Response } from "express";
 import likePortfolioModel from "../models/likePortfolio";
-import { folders } from "../consts/s3Folders";
+
 import {
   addPropertiesWhenGetPortfolios,
   addPropertiesWhenGetPortfoliosPersonalized,
@@ -13,10 +13,7 @@ import {
 export const createPortfolio = async (req: Request, res: Response) => {
   try {
     const files = (req.files as Express.Multer.File[]) || [];
-    const { response, status } = await uploadImagesPortfolioToS3(
-      files,
-      folders.imagesOfPortfolio
-    );
+    const { response, status } = await uploadImagesPortfolioToS3(files);
     if (status !== 200) return res.status(status).json(response);
     const portfolio = req.body;
     portfolio.images = response;

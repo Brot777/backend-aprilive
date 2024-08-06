@@ -18,6 +18,9 @@ export interface Service {
   money: string;
   wayToPay: string;
   deliberyTime: string;
+  quantity: number;
+  hashtags: [];
   contratame: string;
   serviceDetails: string[];
+  WhoCanSee: string;
 }

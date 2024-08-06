@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { uploadPhotoToS3 } from "../services/avatar";
-import { folders } from "../consts/s3Folders";
+
 import { handleHttp } from "../utils/error.handle";
 
 export const createAvatar = async (
@@ -8,11 +8,7 @@ export const createAvatar = async (
   res: Response
 ) => {
   try {
-    const { response, status } = await uploadPhotoToS3(
-      file,
-      folders.avatars,
-      params.userId
-    );
+    const { response, status } = await uploadPhotoToS3(file, params.userId);
     res.status(status).json(response);
   } catch (error) {
     handleHttp(res, "Error_Upload_Photo", error);

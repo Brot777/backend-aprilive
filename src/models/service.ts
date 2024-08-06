@@ -78,7 +78,10 @@ const serviceSchema = new Schema<Service>(
       type: String,
       default: "",
     },
-
+    quantity: {
+      type: Number,
+      default: 0,
+    },
     contratame: {
       type: String,
       default: "",
@@ -86,6 +89,14 @@ const serviceSchema = new Schema<Service>(
     serviceDetails: {
       type: [{ type: String }],
       default: [],
+    },
+    hashtags: {
+      type: [],
+      default: [],
+    },
+    WhoCanSee: {
+      type: String,
+      default: "",
     },
   },
   {

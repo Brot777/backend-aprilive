@@ -10,15 +10,11 @@ import {
   updateImagesService,
   uploadImagesServiceToS3,
 } from "../services/service";
-import { folders } from "../consts/s3Folders";
 
 export const createService = async (req: Request, res: Response) => {
   try {
     const files = (req.files as Express.Multer.File[]) || [];
-    const { response, status } = await uploadImagesServiceToS3(
-      files,
-      folders.imagesOfService
-    );
+    const { response, status } = await uploadImagesServiceToS3(files);
     if (status !== 200) return res.status(status).json(response);
     const service = req.body;
     service.images = response;
@@ -163,28 +159,24 @@ export const getServiceById = async (req: Request, res: Response) => {
 export const updateServiceById = async (req: Request, res: Response) => {
   const files = (req.files as Express.Multer.File[]) || [];
   const serviceId = req.params.serviceId;
-  try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.serviceId)) {
-      return res.status(400).json({ error: "invalid service id" });
-    }
-    const service = await serviceModel
-      .findById(req.params.serviceId)
-      .populate("images");
-    if (!service) {
-      return res.status(404).json({ error: "404 service not found" });
-    }
+  const newService = req.body;
 
-    if (files) {
-      const { response, status } = await updateImagesService(
-        files,
-        folders.imagesOfService,
-        service
-      );
-    }
+  try {
+    if (!mongoose.Types.ObjectId.isValid(serviceId))
+      return res.status(400).json({ error: "invalid service id" });
+
+    const service = await serviceModel.findById(serviceId).populate("images");
+
+    if (!service)
+      return res.status(404).json({ error: "404 service not found" });
+
+    const { response, status } = await updateImagesService(files, service);
+    if (status !== 200) return res.status(status).json(response);
+    newService.images = response;
 
     const serviceUpdated = await serviceModel.findByIdAndUpdate(
       serviceId,
-      req.body,
+      newService,
       { new: true }
     );
 

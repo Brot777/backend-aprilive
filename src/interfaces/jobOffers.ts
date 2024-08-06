@@ -20,7 +20,7 @@ export interface JobOffer {
   typeLocationWorking: string;
   allowedCountries: [];
   address: string;
-  jobSkills: [];
+  skills: [];
   benefits: [];
   hashtags: [];
   WhoCanSee: string;

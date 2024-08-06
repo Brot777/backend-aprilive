@@ -8,6 +8,7 @@ import imagePortfolioModel from "../models/imagePortfolio";
 import { LikePortfolio } from "../interfaces/likePortfolio";
 import { User } from "../interfaces/user.interface";
 import { Portfolio } from "../interfaces/portfolio";
+import { folders } from "../consts/s3Folders";
 
 export const addPropertiesWhenGetPortfoliosPersonalized = async (
   portfolios: Portfolio[] | any,
@@ -69,13 +70,12 @@ export const addPropertiesWhenGetPortfolios = async (
 };
 
 export const uploadImagesPortfolioToS3 = async (
-  files: Express.Multer.File[],
-  destinationFolder: string
+  files: Express.Multer.File[]
 ) => {
-  if (!files) {
+  if (files.length == 0) {
     return {
-      response: { error: "No files provided" },
-      status: 400,
+      response: [],
+      status: 200,
     };
   }
 
@@ -88,7 +88,7 @@ export const uploadImagesPortfolioToS3 = async (
     names.push(name);
     const params = {
       Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.
-      Key: `${destinationFolder}/${name}`, // The name of the object. For example, 'sample_upload.txt'.
+      Key: `${folders.imagesOfPortfolio}/${name}`, // The name of the object. For example, 'sample_upload.txt'.
       Body: file.buffer,
       contentType: file.mimetype, // The content of the object. For example, 'Hello world!".
     };
@@ -108,7 +108,7 @@ export const uploadImagesPortfolioToS3 = async (
   const imagesSaved = await imagePortfolioModel.insertMany(
     names.map((name: string) => {
       return {
-        url: `${process.env.PREFIX_URI_UPLOADS_S3}/${destinationFolder}/${name}`,
+        url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfPortfolio}/${name}`,
         name,
       };
     })

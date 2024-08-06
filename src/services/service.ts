@@ -1,15 +1,19 @@
 import { v4 as uuidv4 } from "uuid";
-import { DeleteObjectsCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectsCommand,
+  ObjectIdentifier,
+  PutObjectCommand,
+  S3,
+} from "@aws-sdk/client-s3";
 import { s3Client } from "../config/s3Client";
 import likeServiceModel from "../models/likeService";
 import followerModel from "../models/follower";
-import serviceModel from "../models/service";
 import imageServiceModel from "../models/imageService";
 import { LikeService } from "../interfaces/likeService";
 import { User } from "../interfaces/user.interface";
 import { Service } from "../interfaces/service";
 import { ImageService } from "../interfaces/imageService";
-import { Schema } from "mongoose";
+import { folders } from "../consts/s3Folders";
 
 export const addPropertiesWhenGetServicesPersonalized = async (
   services: Service[] | any,
@@ -63,14 +67,11 @@ export const addPropertiesWhenGetServices = async (
   });
 };
 
-export const uploadImagesServiceToS3 = async (
-  files: Express.Multer.File[],
-  destinationFolder: string
-) => {
-  if (!files) {
+export const uploadImagesServiceToS3 = async (files: Express.Multer.File[]) => {
+  if (files.length == 0) {
     return {
-      response: { error: "No files provided" },
-      status: 400,
+      response: [],
+      status: 200,
     };
   }
 
@@ -83,7 +84,7 @@ export const uploadImagesServiceToS3 = async (
     names.push(name);
     const params = {
       Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.
-      Key: `${destinationFolder}/${name}`, // The name of the object. For example, 'sample_upload.txt'.
+      Key: `${folders.imagesOfService}/${name}`, // The name of the object. For example, 'sample_upload.txt'.
       Body: file.buffer,
       contentType: file.mimetype, // The content of the object. For example, 'Hello world!".
     };
@@ -103,12 +104,11 @@ export const uploadImagesServiceToS3 = async (
   const imagesSaved = await imageServiceModel.insertMany(
     names.map((name: string) => {
       return {
-        url: `${process.env.PREFIX_URI_UPLOADS_S3}/${destinationFolder}/${name}`,
+        url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfService}/${name}`,
         name,
       };
     })
   );
-
   return {
     response: imagesSaved.map((imageSaved) => imageSaved._id),
     status: 200,
@@ -117,16 +117,44 @@ export const uploadImagesServiceToS3 = async (
 
 export const updateImagesService = async (
   files: Express.Multer.File[],
-  destinationFolder: string,
   service: Service
 ) => {
   // Get Old Images
   const oldImages = service.images as ImageService[];
-  oldImages.map((image: ImageService) => {
-    console.log(image);
-  });
+  if (files.length == 0) {
+    return {
+      response: oldImages,
+      status: 200,
+    };
+  }
+
   // Set the parameters
   const BUKET = process.env.AWS_BUCKET_NAME;
+  const Objects: ObjectIdentifier[] = oldImages.map(
+    (oldImage: ImageService) => {
+      return { Key: `${folders.imagesOfService}/${oldImage.name}` };
+    }
+  );
+  console.log(Objects);
+
+  const params = {
+    Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.
+    Delete: {
+      Objects,
+    },
+  };
+  const deleted = await s3Client.send(new DeleteObjectsCommand(params));
+
+  if (!(deleted.$metadata.httpStatusCode === 200)) {
+    return {
+      response: { error: "Error updating files" },
+      status: 400,
+    };
+  }
+  const promisesImagesDeleted = oldImages.map((oldImage: ImageService) =>
+    imageServiceModel.findByIdAndDelete(oldImage._id)
+  );
+  await Promise.all(promisesImagesDeleted);
 
   const names: string[] = [];
   const promisesSendToS3 = files.map((file: Express.Multer.File) => {
@@ -134,7 +162,7 @@ export const updateImagesService = async (
     names.push(name);
     const params = {
       Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.
-      Key: `${destinationFolder}/${name}`, // The name of the object. For example, 'sample_upload.txt'.
+      Key: `${folders.imagesOfService}/${name}`, // The name of the object. For example, 'sample_upload.txt'.
       Body: file.buffer,
       contentType: file.mimetype, // The content of the object. For example, 'Hello world!".
     };
@@ -154,7 +182,7 @@ export const updateImagesService = async (
   const imagesSaved = await imageServiceModel.insertMany(
     names.map((name: string) => {
       return {
-        url: `${process.env.PREFIX_URI_UPLOADS_S3}/${destinationFolder}/${name}`,
+        url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfService}/${name}`,
         name,
       };
     })

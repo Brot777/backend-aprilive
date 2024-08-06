@@ -24,7 +24,12 @@ router.get("/", getServices);
 router.get("/personalized", isValidToken, getPersonalizedServices);
 router.get("/services/:authorId", isValidToken, getServicesByAuthorId);
 router.get("/:serviceId", getServiceById);
-router.put("/:serviceId", isValidToken, updateServiceById);
+router.put(
+  "/:serviceId",
+  uploadImagesService.array("images"),
+  isValidToken,
+  updateServiceById
+);
 router.patch("/like/:serviceId", isValidToken, likeService);
 router.delete("/:serviceId", isValidToken, deleteServiceById);
 

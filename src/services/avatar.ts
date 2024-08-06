@@ -2,10 +2,10 @@ import { v4 as uuidv4 } from "uuid";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../config/s3Client";
 import avatarModel from "../models/avatar";
+import { folders } from "../consts/s3Folders";
 
 export const uploadPhotoToS3 = async (
   file: Express.Multer.File | undefined,
-  destinationFolder: string,
   userId: string
 ) => {
   if (!file) {
@@ -29,7 +29,7 @@ export const uploadPhotoToS3 = async (
   const name = `${uuidv4()}-${file.originalname}`; // create name
   const params = {
     Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.
-    Key: `${destinationFolder}/${name}`, // The name of the object. For example, 'sample_upload.txt'.
+    Key: `${folders.avatars}/${name}`, // The name of the object. For example, 'sample_upload.txt'.
     Body: file.buffer,
     contentType: file.mimetype, // The content of the object. For example, 'Hello world!".
   };

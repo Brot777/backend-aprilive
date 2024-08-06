@@ -94,7 +94,7 @@ const jobOfferSchema = new Schema<JobOffer>(
       default: "",
     },
 
-    jobSkills: {
+    skills: {
       type: [],
       default: [],
     },
