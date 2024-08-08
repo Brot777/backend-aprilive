@@ -7,6 +7,8 @@ import likePortfolioModel from "../models/likePortfolio";
 import {
   addPropertiesWhenGetPortfolios,
   addPropertiesWhenGetPortfoliosPersonalized,
+  deleteImagesPortfolio,
+  updateImagesPortfolio,
   uploadImagesPortfolioToS3,
 } from "../services/portfolio";
 
@@ -159,18 +161,28 @@ export const getPortfolioById = async (req: Request, res: Response) => {
 };
 
 export const updatePortfolioById = async (req: Request, res: Response) => {
+  const files = (req.files as Express.Multer.File[]) || [];
+  const portfolioId = req.params.portfolioId;
+  const newPortfolio = req.body;
+
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.portfolioId)) {
+    if (!mongoose.Types.ObjectId.isValid(portfolioId))
       return res.status(400).json({ error: "invalid portfolio id" });
-    }
-    const portfolio = await portfolioModel.findById(req.params.portfolioId);
-    if (!portfolio) {
+
+    const portfolio = await portfolioModel
+      .findById(portfolioId)
+      .populate("images");
+
+    if (!portfolio)
       return res.status(404).json({ error: "404 portfolio not found" });
-    }
+
+    const { response, status } = await updateImagesPortfolio(files, portfolio);
+    if (status !== 200) return res.status(status).json(response);
+    newPortfolio.images = response;
 
     const portfolioUpdated = await portfolioModel.findByIdAndUpdate(
-      req.params.portfolioId,
-      req.body,
+      portfolioId,
+      newPortfolio,
       { new: true }
     );
 
@@ -186,10 +198,15 @@ export const deletePortfolioById = async (req: Request, res: Response) => {
     if (!mongoose.Types.ObjectId.isValid(portfolioId)) {
       return res.status(400).json({ error: "invalid portfolio id" });
     }
-    const portfolio = await portfolioModel.findById(portfolioId);
+    const portfolio = await portfolioModel
+      .findById(portfolioId)
+      .populate("images");
     if (!portfolio) {
       return res.status(404).json({ error: "404 portfolio not found" });
     }
+
+    const { response, status } = await deleteImagesPortfolio(portfolio);
+    if (status !== 200) return res.status(status).json(response);
 
     const portfolioDeleted = await portfolioModel.findByIdAndDelete(
       portfolioId

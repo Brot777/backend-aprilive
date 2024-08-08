@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
+import { ImagePortfolio } from "../interfaces/imagePortfolio";
 
-const imagePorfolioSchema = new Schema(
+const imagePorfolioSchema = new Schema<ImagePortfolio>(
   {
     url: {
       type: String,

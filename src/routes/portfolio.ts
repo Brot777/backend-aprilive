@@ -24,7 +24,12 @@ router.get("/", getPortfolios);
 router.get("/personalized", isValidToken, getPersonalizedPortfolios);
 router.get("/portfolios/:authorId", isValidToken, getPortfoliosByAuthorId);
 router.get("/:portfolioId", getPortfolioById);
-router.put("/:portfolioId", isValidToken, updatePortfolioById);
+router.put(
+  "/:portfolioId",
+  uploadImagesPortfolio.array("images"),
+  isValidToken,
+  updatePortfolioById
+);
 router.patch("/like/:portfolioId", isValidToken, likePortfolio);
 router.delete("/:portfolioId", isValidToken, deletePortfolioById);
 

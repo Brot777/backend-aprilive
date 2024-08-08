@@ -1,15 +1,8 @@
 1. HandleError mas robusto
 
-2. acutalizar texto normalizado al actualizar texto
-
 3. limitar numero de ofertas de trabajo
 
-4. añadir 3 preguntas al postular y sus respuestas
+3. Expandir el limite de 8 mb
 
-5. crear una ruta para la subida de cv
+4. limitar las rutas para que solo puedan modificarse por el autor
 
-6. crear endpoints para los otros post
-
-7. cambiar la forma de almacenamiento temporal de archivos
-
-8. limitar las rutas para que solo puedan modificarse por el autor
