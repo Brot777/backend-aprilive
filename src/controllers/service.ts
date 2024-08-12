@@ -7,6 +7,7 @@ import commentServiceModel from "../models/commentService";
 import {
   addPropertiesWhenGetServices,
   addPropertiesWhenGetServicesPersonalized,
+  deleteImagesService,
   updateImagesService,
   uploadImagesServiceToS3,
 } from "../services/service";
@@ -192,10 +193,13 @@ export const deleteServiceById = async (req: Request, res: Response) => {
     if (!mongoose.Types.ObjectId.isValid(serviceId)) {
       return res.status(400).json({ error: "invalid service id" });
     }
-    const service = await serviceModel.findById(serviceId);
+    const service = await serviceModel.findById(serviceId).populate("images");
     if (!service) {
       return res.status(404).json({ error: "404 service not found" });
     }
+
+    const { response, status } = await deleteImagesService(service);
+    if (status !== 200) return res.status(status).json(response);
 
     const serviceDeleted = await serviceModel.findByIdAndDelete(serviceId);
     await commentServiceModel.deleteMany({ serviceId });

@@ -193,3 +193,47 @@ export const updateImagesService = async (
     status: 200,
   };
 };
+
+export const deleteImagesService = async (service: Service) => {
+  // Get Old Images
+  const oldImages = service.images as ImageService[];
+
+  if (oldImages.length == 0) {
+    return {
+      response: { message: "succes deliting files" },
+      status: 200,
+    };
+  }
+
+  // Set the parameters
+  const BUKET = process.env.AWS_BUCKET_NAME;
+  const Objects: ObjectIdentifier[] = oldImages.map(
+    (oldImage: ImageService) => {
+      return { Key: `${folders.imagesOfService}/${oldImage.name}` };
+    }
+  );
+
+  const params = {
+    Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.
+    Delete: {
+      Objects,
+    },
+  };
+  const deleted = await s3Client.send(new DeleteObjectsCommand(params));
+
+  if (!(deleted.$metadata.httpStatusCode === 200)) {
+    return {
+      response: { error: "Error deliting files" },
+      status: 400,
+    };
+  }
+  const promisesImagesDeleted = oldImages.map((oldImage: ImageService) =>
+    imageServiceModel.findByIdAndDelete(oldImage._id)
+  );
+  await Promise.all(promisesImagesDeleted);
+
+  return {
+    response: { message: "succes deliting files" },
+    status: 200,
+  };
+};
