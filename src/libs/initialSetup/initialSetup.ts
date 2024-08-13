@@ -1,11 +1,13 @@
 import preferenceModel from "../../models/preference";
 import roleModel from "../../models/role";
 import languajeModel from "../../models/languaje";
+import skillModel from "../../models/skill";
+import categoryModel from "../../models/category";
 import { preferencesArray } from "./InitialData/preferences";
 import { rolesArray } from "./InitialData/roles";
 import { languajeArray } from "./InitialData/languajes";
-import { skillArray } from "./InitialData/skill";
-import skillModel from "../../models/skill";
+import { skillsArray } from "./InitialData/skills";
+import { categoriesArray } from "./InitialData/categories";
 
 const createPreferences = async () => {
   const countPreferences = await preferenceModel.estimatedDocumentCount();
@@ -29,16 +31,23 @@ const createLanguajes = async () => {
 const createSkills = async () => {
   const countSkills = await skillModel.estimatedDocumentCount();
   if (countSkills > 0) return;
-  await skillModel.insertMany(skillArray);
+  await skillModel.insertMany(skillsArray);
   console.log("susses create skills in database");
 };
 
+const createCategories = async () => {
+  const countCategories = await categoryModel.estimatedDocumentCount();
+  if (countCategories > 0) return;
+  await categoryModel.insertMany(categoriesArray);
+  console.log("susses create categories in database");
+};
 export const createInitialData = async () => {
   try {
     await createPreferences();
     await createRoles();
     await createLanguajes();
     await createSkills();
+    await createCategories();
   } catch (error) {
     console.log(error);
   }

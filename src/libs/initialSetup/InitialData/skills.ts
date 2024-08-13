@@ -1,4 +1,4 @@
-export const skillArray = [
+export const skillsArray = [
   { value: "Análisis" },
   { value: "Análisis modal de fallos y efectos" },
   { value: "Análisis de peligros y puntos de control críticos" },

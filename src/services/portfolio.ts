@@ -208,6 +208,13 @@ export const deleteImagesPortfolio = async (portfolio: Portfolio) => {
   // Get Old Images
   const oldImages = portfolio.images as ImagePortfolio[];
 
+  if (oldImages.length == 0) {
+    return {
+      response: { message: "succes deliting files" },
+      status: 200,
+    };
+  }
+
   // Set the parameters
   const BUKET = process.env.AWS_BUCKET_NAME;
   const Objects: ObjectIdentifier[] = oldImages.map(
