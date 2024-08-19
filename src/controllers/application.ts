@@ -205,3 +205,17 @@ export const getApplicantsByJobOfferId = async (
     handleHttp(res, "Error_Get_Applicants", error);
   }
 };
+export const getMyApplications = async (req: Request, res: Response) => {
+  const applicantId = req.userId;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(applicantId)) {
+      return res.status(400).json({ error: "invalid user id" });
+    }
+    const applications = await applicationModel.findOne({ applicantId });
+
+    return res.status(200).json(applications);
+  } catch (error) {
+    handleHttp(res, "Error_Get_My_Applications", error);
+  }
+};
