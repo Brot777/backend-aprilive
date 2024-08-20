@@ -111,7 +111,10 @@ export const getAplicantionById = async (req: Request, res: Response) => {
   }
 };
 
-export const updateStepId = async (req: Request, res: Response) => {
+export const updateStepByApplicationId = async (
+  req: Request,
+  res: Response
+) => {
   const applicationId = req.params.applicationId;
   let { step } = req.body;
 
@@ -207,6 +210,7 @@ export const getApplicantsByJobOfferId = async (
 };
 export const getMyApplications = async (req: Request, res: Response) => {
   const applicantId = req.userId;
+  console.log(applicantId);
 
   try {
     if (!mongoose.Types.ObjectId.isValid(applicantId)) {
