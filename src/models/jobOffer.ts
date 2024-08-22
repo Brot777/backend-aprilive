@@ -140,6 +140,10 @@ const jobOfferSchema = new Schema<JobOffer>(
       type: String,
       default: "",
     },
+    status: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,

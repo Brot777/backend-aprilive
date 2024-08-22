@@ -1,9 +1,7 @@
 import { Request, Response } from "express";
 import categoryModel from "../models/category";
-import serviceModel from "../models/service";
-import personAccountModel from "../models/personAccount";
+
 import { handleHttp } from "../utils/error.handle";
-import mongoose from "mongoose";
 
 export const getCategories = async (req: Request, res: Response) => {
   try {

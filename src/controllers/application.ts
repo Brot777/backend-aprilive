@@ -216,7 +216,10 @@ export const getMyApplications = async (req: Request, res: Response) => {
     if (!mongoose.Types.ObjectId.isValid(applicantId)) {
       return res.status(400).json({ error: "invalid user id" });
     }
-    const applications = await applicationModel.findOne({ applicantId });
+    const applications = await applicationModel.find({ applicantId }).populate({
+      path: "jobOfferId",
+      select: "status jobTitle description",
+    });
 
     return res.status(200).json(applications);
   } catch (error) {

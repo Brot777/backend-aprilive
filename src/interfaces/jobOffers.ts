@@ -29,4 +29,5 @@ export interface JobOffer {
   sharedLink: string;
   responsibilities: [];
   levelOfCompetence: string;
+  status: string;
 }
