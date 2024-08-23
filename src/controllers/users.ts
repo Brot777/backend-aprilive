@@ -97,9 +97,11 @@ export const updateUserById = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "404 not found" });
     }
     await personAccountModel.findOneAndUpdate({ userId }, personAccount);
-    const userUpdated = await userModel.findByIdAndUpdate(userId, restUser, {
-      new: true,
-    });
+    const userUpdated = await userModel
+      .findByIdAndUpdate(userId, restUser, {
+        new: true,
+      })
+      .select("-password");
 
     res.status(200).json(userUpdated);
   } catch (error) {
