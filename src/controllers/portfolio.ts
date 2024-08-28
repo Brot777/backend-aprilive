@@ -62,7 +62,7 @@ export const getPersonalizedPortfolios = async (
       })
       .populate({
         path: "images",
-        select: "-_id url", // Especifica el campo que deseas recuperar
+        select: "url", // Especifica el campo que deseas recuperar
       });
 
     const newPortfolios = await addPropertiesWhenGetPortfoliosPersonalized(
@@ -114,7 +114,7 @@ export const getPortfolios = async (req: Request, res: Response) => {
       })
       .populate({
         path: "images",
-        select: "-_id url", // Especifica el campo que deseas recuperar
+        select: "url", // Especifica el campo que deseas recuperar
       });
     let totalDocs = await portfolioModel.count(); //Possible performance improvement: cache the value
     let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
