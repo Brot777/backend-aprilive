@@ -14,6 +14,7 @@ import { User } from "../interfaces/user.interface";
 import { Service } from "../interfaces/service";
 import { ImageService } from "../interfaces/imageService";
 import { folders } from "../consts/s3Folders";
+import { Schema } from "mongoose";
 
 export const addPropertiesWhenGetServicesPersonalized = async (
   services: Service[] | any,
@@ -117,7 +118,8 @@ export const uploadImagesServiceToS3 = async (files: Express.Multer.File[]) => {
 
 export const updateImagesService = async (
   files: Express.Multer.File[],
-  service: Service
+  service: Service,
+  deletedImages: Schema.Types.ObjectId[]
 ) => {
   // Get Old Images
   const oldImages = service.images as ImageService[];
@@ -128,6 +130,12 @@ export const updateImagesService = async (
     };
   }
 
+  //LOOKING DELETED IMAGES
+  const keys = await imageServiceModel
+    .find({
+      _id: { $in: deletedImages },
+    })
+    .select("name");
   // Set the parameters
   const BUKET = process.env.AWS_BUCKET_NAME;
   const Objects: ObjectIdentifier[] = oldImages.map(

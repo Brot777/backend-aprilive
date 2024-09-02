@@ -160,7 +160,7 @@ export const getServiceById = async (req: Request, res: Response) => {
 export const updateServiceById = async (req: Request, res: Response) => {
   const files = (req.files as Express.Multer.File[]) || [];
   const serviceId = req.params.serviceId;
-  const newService = req.body;
+  const [deletedImages, ...newService] = req.body;
 
   try {
     if (!mongoose.Types.ObjectId.isValid(serviceId))
@@ -171,7 +171,11 @@ export const updateServiceById = async (req: Request, res: Response) => {
     if (!service)
       return res.status(404).json({ error: "404 service not found" });
 
-    const { response, status } = await updateImagesService(files, service);
+    const { response, status } = await updateImagesService(
+      files,
+      service,
+      deletedImages
+    );
     if (status !== 200) return res.status(status).json(response);
     newService.images = response;
 
