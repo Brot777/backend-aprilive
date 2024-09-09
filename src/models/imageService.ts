@@ -11,6 +11,10 @@ const imageServiceSchema = new Schema<ImageService>(
       type: String,
       default: "",
     },
+    key: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,

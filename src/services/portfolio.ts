@@ -7,7 +7,6 @@ import {
 import { s3Client } from "../config/s3Client";
 import likePortfolioModel from "../models/likePortfolio";
 import followerModel from "../models/follower";
-import portfolioModel from "../models/portfolio";
 import imagePortfolioModel from "../models/imagePortfolio";
 import { LikePortfolio } from "../interfaces/likePortfolio";
 import { User } from "../interfaces/user.interface";
@@ -73,7 +72,6 @@ export const addPropertiesWhenGetPortfolios = async (
     return portfolio;
   });
 };
-
 export const uploadImagesPortfolioToS3 = async (
   files: Express.Multer.File[]
 ) => {
@@ -115,6 +113,7 @@ export const uploadImagesPortfolioToS3 = async (
       return {
         url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfPortfolio}/${name}`,
         name,
+        Key: `${folders.imagesOfPortfolio}/${name}`,
       };
     })
   );
@@ -124,7 +123,6 @@ export const uploadImagesPortfolioToS3 = async (
     status: 200,
   };
 };
-
 export const updateImagesPortfolio = async (
   files: Express.Multer.File[],
   portfolio: Portfolio
@@ -194,6 +192,7 @@ export const updateImagesPortfolio = async (
       return {
         url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfPortfolio}/${name}`,
         name,
+        Key: `${folders.imagesOfPortfolio}/${name}`,
       };
     })
   );
@@ -203,7 +202,6 @@ export const updateImagesPortfolio = async (
     status: 200,
   };
 };
-
 export const deleteImagesPortfolio = async (portfolio: Portfolio) => {
   // Get Old Images
   const oldImages = portfolio.images as ImagePortfolio[];
@@ -219,7 +217,7 @@ export const deleteImagesPortfolio = async (portfolio: Portfolio) => {
   const BUKET = process.env.AWS_BUCKET_NAME;
   const Objects: ObjectIdentifier[] = oldImages.map(
     (oldImage: ImagePortfolio) => {
-      return { Key: `${folders.imagesOfPortfolio}/${oldImage.name}` };
+      return { Key: oldImage.key };
     }
   );
 

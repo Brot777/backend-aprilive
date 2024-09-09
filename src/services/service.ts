@@ -107,6 +107,7 @@ export const uploadImagesServiceToS3 = async (files: Express.Multer.File[]) => {
       return {
         url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfService}/${name}`,
         name,
+        Key: `${folders.imagesOfService}/${name}`,
       };
     })
   );
@@ -135,7 +136,9 @@ export const updateImagesService = async (
     .find({
       _id: { $in: deletedImages },
     })
-    .select("name");
+    .select("key");
+  console.log(keys);
+
   // Set the parameters
   const BUKET = process.env.AWS_BUCKET_NAME;
   const Objects: ObjectIdentifier[] = oldImages.map(
@@ -217,7 +220,7 @@ export const deleteImagesService = async (service: Service) => {
   const BUKET = process.env.AWS_BUCKET_NAME;
   const Objects: ObjectIdentifier[] = oldImages.map(
     (oldImage: ImageService) => {
-      return { Key: `${folders.imagesOfService}/${oldImage.name}` };
+      return { Key: oldImage.name };
     }
   );
 

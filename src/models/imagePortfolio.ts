@@ -11,6 +11,10 @@ const imagePorfolioSchema = new Schema<ImagePortfolio>(
       type: String,
       default: "",
     },
+    key: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,
