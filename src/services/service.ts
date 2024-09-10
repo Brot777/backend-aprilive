@@ -3,7 +3,6 @@ import {
   DeleteObjectsCommand,
   ObjectIdentifier,
   PutObjectCommand,
-  S3,
 } from "@aws-sdk/client-s3";
 import { s3Client } from "../config/s3Client";
 import likeServiceModel from "../models/likeService";
@@ -107,10 +106,12 @@ export const uploadImagesServiceToS3 = async (files: Express.Multer.File[]) => {
       return {
         url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfService}/${name}`,
         name,
-        Key: `${folders.imagesOfService}/${name}`,
+        key: `${folders.imagesOfService}/${name}`,
       };
     })
   );
+  console.log(imagesSaved, names);
+
   return {
     response: imagesSaved.map((imageSaved) => imageSaved._id),
     status: 200,
@@ -124,34 +125,31 @@ export const updateImagesService = async (
 ) => {
   // Get Old Images
   const oldImages = service.images as ImageService[];
-  if (files.length == 0) {
+  console.log(files, oldImages, deletedImages);
+  //LOOKING DELETED IMAGES
+  const keys: ObjectIdentifier[] = await imageServiceModel
+    .find({
+      _id: { $in: deletedImages },
+    })
+    .select("key -_id")
+    .lean();
+
+  console.log(keys);
+
+  /* if (files.length == 0) {
     return {
       response: oldImages,
       status: 200,
     };
-  }
-
-  //LOOKING DELETED IMAGES
-  const keys = await imageServiceModel
-    .find({
-      _id: { $in: deletedImages },
-    })
-    .select("key");
-  console.log(keys);
+  } */
 
   // Set the parameters
   const BUKET = process.env.AWS_BUCKET_NAME;
-  const Objects: ObjectIdentifier[] = oldImages.map(
-    (oldImage: ImageService) => {
-      return { Key: `${folders.imagesOfService}/${oldImage.name}` };
-    }
-  );
-  console.log(Objects);
 
   const params = {
     Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.
     Delete: {
-      Objects,
+      Objects: keys,
     },
   };
   const deleted = await s3Client.send(new DeleteObjectsCommand(params));
@@ -162,10 +160,10 @@ export const updateImagesService = async (
       status: 400,
     };
   }
-  const promisesImagesDeleted = oldImages.map((oldImage: ImageService) =>
-    imageServiceModel.findByIdAndDelete(oldImage._id)
-  );
-  await Promise.all(promisesImagesDeleted);
+
+  await imageServiceModel.deleteMany({
+    _id: { $in: deletedImages },
+  });
 
   const names: string[] = [];
   const promisesSendToS3 = files.map((file: Express.Multer.File) => {
@@ -195,6 +193,7 @@ export const updateImagesService = async (
       return {
         url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfService}/${name}`,
         name,
+        key: `${folders.imagesOfService}/${name}`,
       };
     })
   );

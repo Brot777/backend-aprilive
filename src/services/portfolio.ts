@@ -113,7 +113,7 @@ export const uploadImagesPortfolioToS3 = async (
       return {
         url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfPortfolio}/${name}`,
         name,
-        Key: `${folders.imagesOfPortfolio}/${name}`,
+        key: `${folders.imagesOfPortfolio}/${name}`,
       };
     })
   );
@@ -192,7 +192,7 @@ export const updateImagesPortfolio = async (
       return {
         url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfPortfolio}/${name}`,
         name,
-        Key: `${folders.imagesOfPortfolio}/${name}`,
+        key: `${folders.imagesOfPortfolio}/${name}`,
       };
     })
   );

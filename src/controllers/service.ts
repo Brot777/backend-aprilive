@@ -1,5 +1,5 @@
 import serviceModel from "../models/service";
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { handleHttp } from "../utils/error.handle";
 import { Request, Response } from "express";
 import likeServiceModel from "../models/likeService";
@@ -160,7 +160,8 @@ export const getServiceById = async (req: Request, res: Response) => {
 export const updateServiceById = async (req: Request, res: Response) => {
   const files = (req.files as Express.Multer.File[]) || [];
   const serviceId = req.params.serviceId;
-  const [deletedImages, ...newService] = req.body;
+  let { deletedImages, ...newService } = req.body;
+  deletedImages = (deletedImages as Schema.Types.ObjectId[]) || [];
 
   try {
     if (!mongoose.Types.ObjectId.isValid(serviceId))
