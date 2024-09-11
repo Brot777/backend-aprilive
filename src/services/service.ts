@@ -106,7 +106,7 @@ export const uploadImagesServiceToS3 = async (files: Express.Multer.File[]) => {
       return {
         url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfService}/${name}`,
         name,
-        key: `${folders.imagesOfService}/${name}`,
+        Key: `${folders.imagesOfService}/${name}`,
       };
     })
   );
@@ -121,20 +121,20 @@ export const uploadImagesServiceToS3 = async (files: Express.Multer.File[]) => {
 export const updateImagesService = async (
   files: Express.Multer.File[],
   service: Service,
-  deletedImages: Schema.Types.ObjectId[]
+  deletedImages: string[]
 ) => {
   // Get Old Images
   const oldImages = service.images as ImageService[];
   console.log(files, oldImages, deletedImages);
   //LOOKING DELETED IMAGES
-  const keys: ObjectIdentifier[] = await imageServiceModel
+  const Keys: ObjectIdentifier[] = await imageServiceModel
     .find({
       _id: { $in: deletedImages },
     })
-    .select("key -_id")
+    .select("Key -_id")
     .lean();
 
-  console.log(keys);
+  console.log(Keys);
 
   /* if (files.length == 0) {
     return {
@@ -149,10 +149,11 @@ export const updateImagesService = async (
   const params = {
     Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.
     Delete: {
-      Objects: keys,
+      Objects: Keys,
     },
   };
   const deleted = await s3Client.send(new DeleteObjectsCommand(params));
+  console.log(deleted);
 
   if (!(deleted.$metadata.httpStatusCode === 200)) {
     return {
@@ -187,19 +188,31 @@ export const updateImagesService = async (
       };
     }
   });
+  console.log(results);
 
   const imagesSaved = await imageServiceModel.insertMany(
     names.map((name: string) => {
       return {
         url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfService}/${name}`,
         name,
-        key: `${folders.imagesOfService}/${name}`,
+        Key: `${folders.imagesOfService}/${name}`,
       };
     })
   );
 
+  const filterImages = oldImages.filter((oldImage: ImageService) => {
+    console.log(
+      !deletedImages.includes(oldImage._id.toString()),
+      deletedImages,
+      oldImage._id
+    );
+
+    return !deletedImages.includes(oldImage._id.toString());
+  });
+  filterImages.push(...imagesSaved);
+
   return {
-    response: imagesSaved.map((imageSaved) => imageSaved._id),
+    response: filterImages.map((filterImage) => filterImage._id),
     status: 200,
   };
 };

@@ -4,5 +4,5 @@ export interface ImageService {
   _id: Schema.Types.ObjectId;
   url: string;
   name: string;
-  key: string;
+  Key: string;
 }

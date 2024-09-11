@@ -11,7 +11,7 @@ const imageServiceSchema = new Schema<ImageService>(
       type: String,
       default: "",
     },
-    key: {
+    Key: {
       type: String,
       default: "",
     },
