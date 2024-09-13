@@ -146,25 +146,27 @@ export const updateImagesService = async (
   // Set the parameters
   const BUKET = process.env.AWS_BUCKET_NAME;
 
-  const params = {
-    Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.
-    Delete: {
-      Objects: Keys,
-    },
-  };
-  const deleted = await s3Client.send(new DeleteObjectsCommand(params));
-  console.log(deleted);
-
-  if (!(deleted.$metadata.httpStatusCode === 200)) {
-    return {
-      response: { error: "Error updating files" },
-      status: 400,
+  if (!(Keys.length == 0)) {
+    const params = {
+      Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.
+      Delete: {
+        Objects: Keys,
+      },
     };
-  }
+    const deleted = await s3Client.send(new DeleteObjectsCommand(params));
+    console.log(deleted);
 
-  await imageServiceModel.deleteMany({
-    _id: { $in: deletedImages },
-  });
+    if (!(deleted.$metadata.httpStatusCode === 200)) {
+      return {
+        response: { error: "Error updating files" },
+        status: 400,
+      };
+    }
+
+    await imageServiceModel.deleteMany({
+      _id: { $in: deletedImages },
+    });
+  }
 
   const names: string[] = [];
   const promisesSendToS3 = files.map((file: Express.Multer.File) => {
@@ -180,6 +182,8 @@ export const updateImagesService = async (
     return s3Client.send(new PutObjectCommand(params));
   });
   const results = await Promise.all(promisesSendToS3);
+  console.log(results);
+
   results.forEach((result) => {
     if (!(result.$metadata.httpStatusCode === 200)) {
       return {
