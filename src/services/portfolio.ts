@@ -125,44 +125,42 @@ export const uploadImagesPortfolioToS3 = async (
 };
 export const updateImagesPortfolio = async (
   files: Express.Multer.File[],
-  portfolio: Portfolio
+  portfolio: Portfolio,
+  deletedImages: string[]
 ) => {
   // Get Old Images
-  const oldImages = portfolio.images as ImagePortfolio[];
-  if (files.length == 0) {
-    return {
-      response: oldImages,
-      status: 200,
-    };
-  }
+  const oldImages = service.images as ImagePortfolio[];
+  //LOOKING DELETED IMAGES
+  const Keys: ObjectIdentifier[] = await imageServiceModel
+    .find({
+      _id: { $in: deletedImages },
+    })
+    .select("Key -_id")
+    .lean();
 
   // Set the parameters
   const BUKET = process.env.AWS_BUCKET_NAME;
-  const Objects: ObjectIdentifier[] = oldImages.map(
-    (oldImage: ImagePortfolio) => {
-      return { Key: `${folders.imagesOfPortfolio}/${oldImage.name}` };
-    }
-  );
-  console.log(Objects);
 
-  const params = {
-    Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.
-    Delete: {
-      Objects,
-    },
-  };
-  const deleted = await s3Client.send(new DeleteObjectsCommand(params));
-
-  if (!(deleted.$metadata.httpStatusCode === 200)) {
-    return {
-      response: { error: "Error updating files" },
-      status: 400,
+  if (!(Keys.length == 0)) {
+    const params = {
+      Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.
+      Delete: {
+        Objects: Keys,
+      },
     };
+    const deleted = await s3Client.send(new DeleteObjectsCommand(params));
+
+    if (!(deleted.$metadata.httpStatusCode === 200)) {
+      return {
+        response: { error: "Error updating files" },
+        status: 400,
+      };
+    }
+
+    await imageServiceModel.deleteMany({
+      _id: { $in: deletedImages },
+    });
   }
-  const promisesImagesDeleted = oldImages.map((oldImage: ImagePortfolio) =>
-    imagePortfolioModel.findByIdAndDelete(oldImage._id)
-  );
-  await Promise.all(promisesImagesDeleted);
 
   const names: string[] = [];
   const promisesSendToS3 = files.map((file: Express.Multer.File) => {
@@ -170,7 +168,7 @@ export const updateImagesPortfolio = async (
     names.push(name);
     const params = {
       Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.
-      Key: `${folders.imagesOfPortfolio}/${name}`, // The name of the object. For example, 'sample_upload.txt'.
+      Key: `${folders.imagesOfService}/${name}`, // The name of the object. For example, 'sample_upload.txt'.
       Body: file.buffer,
       contentType: file.mimetype, // The content of the object. For example, 'Hello world!".
     };
@@ -178,6 +176,7 @@ export const updateImagesPortfolio = async (
     return s3Client.send(new PutObjectCommand(params));
   });
   const results = await Promise.all(promisesSendToS3);
+
   results.forEach((result) => {
     if (!(result.$metadata.httpStatusCode === 200)) {
       return {
@@ -187,21 +186,33 @@ export const updateImagesPortfolio = async (
     }
   });
 
-  const imagesSaved = await imagePortfolioModel.insertMany(
+  const imagesSaved = await imageServiceModel.insertMany(
     names.map((name: string) => {
       return {
-        url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfPortfolio}/${name}`,
+        url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfService}/${name}`,
         name,
-        key: `${folders.imagesOfPortfolio}/${name}`,
+        Key: `${folders.imagesOfService}/${name}`,
       };
     })
   );
 
+  const filterImages = oldImages.filter((oldImage: ImageService) => {
+    console.log(
+      !deletedImages.includes(oldImage._id.toString()),
+      deletedImages,
+      oldImage._id
+    );
+
+    return !deletedImages.includes(oldImage._id.toString());
+  });
+  filterImages.push(...imagesSaved);
+
   return {
-    response: imagesSaved.map((imageSaved) => imageSaved._id),
+    response: filterImages.map((filterImage) => filterImage._id),
     status: 200,
   };
 };
+
 export const deleteImagesPortfolio = async (portfolio: Portfolio) => {
   // Get Old Images
   const oldImages = portfolio.images as ImagePortfolio[];

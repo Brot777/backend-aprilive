@@ -110,7 +110,6 @@ export const uploadImagesServiceToS3 = async (files: Express.Multer.File[]) => {
       };
     })
   );
-  console.log(imagesSaved, names);
 
   return {
     response: imagesSaved.map((imageSaved) => imageSaved._id),
@@ -125,7 +124,6 @@ export const updateImagesService = async (
 ) => {
   // Get Old Images
   const oldImages = service.images as ImageService[];
-  console.log(files, oldImages, deletedImages);
   //LOOKING DELETED IMAGES
   const Keys: ObjectIdentifier[] = await imageServiceModel
     .find({
@@ -133,15 +131,6 @@ export const updateImagesService = async (
     })
     .select("Key -_id")
     .lean();
-
-  console.log(Keys);
-
-  /* if (files.length == 0) {
-    return {
-      response: oldImages,
-      status: 200,
-    };
-  } */
 
   // Set the parameters
   const BUKET = process.env.AWS_BUCKET_NAME;
@@ -154,7 +143,6 @@ export const updateImagesService = async (
       },
     };
     const deleted = await s3Client.send(new DeleteObjectsCommand(params));
-    console.log(deleted);
 
     if (!(deleted.$metadata.httpStatusCode === 200)) {
       return {
@@ -182,7 +170,6 @@ export const updateImagesService = async (
     return s3Client.send(new PutObjectCommand(params));
   });
   const results = await Promise.all(promisesSendToS3);
-  console.log(results);
 
   results.forEach((result) => {
     if (!(result.$metadata.httpStatusCode === 200)) {
@@ -192,7 +179,6 @@ export const updateImagesService = async (
       };
     }
   });
-  console.log(results);
 
   const imagesSaved = await imageServiceModel.insertMany(
     names.map((name: string) => {

@@ -11,7 +11,7 @@ const imagePorfolioSchema = new Schema<ImagePortfolio>(
       type: String,
       default: "",
     },
-    key: {
+    Key: {
       type: String,
       default: "",
     },

@@ -1,5 +1,5 @@
 import portfolioModel from "../models/portfolio";
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { handleHttp } from "../utils/error.handle";
 import { Request, Response } from "express";
 import likePortfolioModel from "../models/likePortfolio";
@@ -163,7 +163,8 @@ export const getPortfolioById = async (req: Request, res: Response) => {
 export const updatePortfolioById = async (req: Request, res: Response) => {
   const files = (req.files as Express.Multer.File[]) || [];
   const portfolioId = req.params.portfolioId;
-  const newPortfolio = req.body;
+  let { deletedImages, ...newPortfolio } = req.body;
+  deletedImages = (deletedImages as Schema.Types.ObjectId[]) || [];
 
   try {
     if (!mongoose.Types.ObjectId.isValid(portfolioId))
@@ -176,7 +177,11 @@ export const updatePortfolioById = async (req: Request, res: Response) => {
     if (!portfolio)
       return res.status(404).json({ error: "404 portfolio not found" });
 
-    const { response, status } = await updateImagesPortfolio(files, portfolio);
+    const { response, status } = await updateImagesPortfolio(
+      files,
+      portfolio,
+      deletedImages
+    );
     if (status !== 200) return res.status(status).json(response);
     newPortfolio.images = response;
 
