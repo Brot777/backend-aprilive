@@ -113,7 +113,7 @@ export const uploadImagesPortfolioToS3 = async (
       return {
         url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfPortfolio}/${name}`,
         name,
-        key: `${folders.imagesOfPortfolio}/${name}`,
+        Key: `${folders.imagesOfPortfolio}/${name}`,
       };
     })
   );
@@ -129,9 +129,9 @@ export const updateImagesPortfolio = async (
   deletedImages: string[]
 ) => {
   // Get Old Images
-  const oldImages = service.images as ImagePortfolio[];
+  const oldImages = portfolio.images as ImagePortfolio[];
   //LOOKING DELETED IMAGES
-  const Keys: ObjectIdentifier[] = await imageServiceModel
+  const Keys: ObjectIdentifier[] = await imagePortfolioModel
     .find({
       _id: { $in: deletedImages },
     })
@@ -157,7 +157,7 @@ export const updateImagesPortfolio = async (
       };
     }
 
-    await imageServiceModel.deleteMany({
+    await imagePortfolioModel.deleteMany({
       _id: { $in: deletedImages },
     });
   }
@@ -168,7 +168,7 @@ export const updateImagesPortfolio = async (
     names.push(name);
     const params = {
       Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.
-      Key: `${folders.imagesOfService}/${name}`, // The name of the object. For example, 'sample_upload.txt'.
+      Key: `${folders.imagesOfPortfolio}/${name}`, // The name of the object. For example, 'sample_upload.txt'.
       Body: file.buffer,
       contentType: file.mimetype, // The content of the object. For example, 'Hello world!".
     };
@@ -186,17 +186,17 @@ export const updateImagesPortfolio = async (
     }
   });
 
-  const imagesSaved = await imageServiceModel.insertMany(
+  const imagesSaved = await imagePortfolioModel.insertMany(
     names.map((name: string) => {
       return {
-        url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfService}/${name}`,
+        url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfPortfolio}/${name}`,
         name,
-        Key: `${folders.imagesOfService}/${name}`,
+        Key: `${folders.imagesOfPortfolio}/${name}`,
       };
     })
   );
 
-  const filterImages = oldImages.filter((oldImage: ImageService) => {
+  const filterImages = oldImages.filter((oldImage: ImagePortfolio) => {
     console.log(
       !deletedImages.includes(oldImage._id.toString()),
       deletedImages,
@@ -228,7 +228,7 @@ export const deleteImagesPortfolio = async (portfolio: Portfolio) => {
   const BUKET = process.env.AWS_BUCKET_NAME;
   const Objects: ObjectIdentifier[] = oldImages.map(
     (oldImage: ImagePortfolio) => {
-      return { Key: oldImage.key };
+      return { Key: oldImage.Key };
     }
   );
 
