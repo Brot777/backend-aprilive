@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
 import jobOfferQuestionModel from "../models/jobOfferQuestion";
-import mongoose from "mongoose";
 
 export const updateQuestionsByJobOfferId = async (
   req: Request,
