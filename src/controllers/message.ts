@@ -50,8 +50,17 @@ export const sendMessage = async (req: Request, res: Response) => {
 
     const reseiverSocketId = getSocketIdByUserId(receiverId);
 
-    if (reseiverSocketId)
-      io.to(reseiverSocketId).emit("newMessage", messageSaved);
+    if (reseiverSocketId) {
+      const message = await messageModel.findById(messageSaved._id).populate({
+        path: "senderId",
+        select: "name photoUrl",
+        populate: {
+          path: "photoUrl",
+          select: "url",
+        },
+      });
+      io.to(reseiverSocketId).emit("newMessage", message);
+    }
 
     res.status(200).json(messageSaved);
   } catch (error) {
