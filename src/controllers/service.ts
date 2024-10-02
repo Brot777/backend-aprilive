@@ -138,7 +138,7 @@ export const getServiceById = async (req: Request, res: Response) => {
       .findById(req.params.serviceId)
       .populate({
         path: "authorId",
-        select: "_id name photoUrl accountType",
+        select: "_id name photoUrl accountType categories",
         populate: {
           path: "photoUrl",
           select: "url",
