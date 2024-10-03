@@ -98,6 +98,10 @@ const serviceSchema = new Schema<Service>(
       type: String,
       default: "",
     },
+    averageRating: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

@@ -24,4 +24,5 @@ export interface Service {
   contratame: string;
   serviceDetails: string[];
   WhoCanSee: string;
+  averageRating: number;
 }
