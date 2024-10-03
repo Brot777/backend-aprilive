@@ -1,6 +1,7 @@
 import { Schema } from "mongoose";
 import { User } from "./user.interface";
 import { ImageService } from "./imageService";
+import { Category } from "./category";
 export interface Service {
   _id: Schema.Types.ObjectId;
   typePost: string;
@@ -9,7 +10,7 @@ export interface Service {
   numLikes: number;
   following: boolean;
   title: string;
-  categories: string[];
+  categories: Schema.Types.ObjectId[] | Category[];
   description: string;
   allowComments: boolean;
   video: Schema.Types.ObjectId;

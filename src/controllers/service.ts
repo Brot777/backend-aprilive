@@ -136,9 +136,10 @@ export const getServiceById = async (req: Request, res: Response) => {
     }
     const service = await serviceModel
       .findById(req.params.serviceId)
+      .populate("categories")
       .populate({
         path: "authorId",
-        select: "_id name photoUrl accountType categories",
+        select: "_id name photoUrl accountType",
         populate: {
           path: "photoUrl",
           select: "url",
@@ -148,6 +149,7 @@ export const getServiceById = async (req: Request, res: Response) => {
         path: "images",
         select: "url", // Especifica el campo que deseas recuperar
       });
+
     if (!service) {
       return res.status(404).json({ error: "404 service not found" });
     }

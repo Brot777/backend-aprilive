@@ -31,7 +31,7 @@ const serviceSchema = new Schema<Service>(
     },
 
     categories: {
-      type: [{ type: String }],
+      type: [{ type: Schema.Types.ObjectId, ref: "Category" }],
       default: [],
     },
 
