@@ -14,6 +14,7 @@ import { Service } from "../interfaces/service";
 import { ImageService } from "../interfaces/imageService";
 import { folders } from "../consts/s3Folders";
 import { Schema } from "mongoose";
+import reviewModel from "../models/review";
 
 export const addPropertiesWhenGetServicesPersonalized = async (
   services: Service[] | any,
@@ -67,6 +68,14 @@ export const addPropertiesWhenGetServices = async (
   });
 };
 
+export const addValorationWhenGetServices = async (
+  services: Service[] | any
+) => {
+  if (!services?.length) return [];
+  const promisesReviews = services.map((service: Service, index: number) => {
+    return reviewModel.find({ serviceId: service._id });
+  });
+};
 export const uploadImagesServiceToS3 = async (files: Express.Multer.File[]) => {
   if (files.length == 0) {
     return {

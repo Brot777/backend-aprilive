@@ -89,24 +89,14 @@ export const getServices = async (req: Request, res: Response) => {
       .find()
       .skip((page - 1) * limit)
       .limit(limit)
+      .select("categories authorId images price money title description")
+      .populate("categories")
       .populate({
         path: "authorId",
-        select: "photoUrl",
+        select: "_id name photoUrl",
         populate: {
           path: "photoUrl",
           select: "url",
-        },
-      })
-      .populate({
-        path: "authorId",
-        select: "name isCompany accountType",
-        populate: {
-          path: "accountType",
-          select: "role",
-          populate: {
-            path: "role",
-            select: "name",
-          },
         },
       })
       .populate({
@@ -116,9 +106,8 @@ export const getServices = async (req: Request, res: Response) => {
     let totalDocs = await serviceModel.count(); //Possible performance improvement: cache the value
     let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
 
-    const newServices = await addPropertiesWhenGetServices(services); //unauthenticated user
     return res.status(200).json({
-      docs: newServices,
+      docs: services,
       currentPage: page,
       limit,
       totalDocs,

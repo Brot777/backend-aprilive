@@ -25,4 +25,5 @@ export interface Service {
   serviceDetails: string[];
   WhoCanSee: string;
   averageRating: number;
+  numReviews: number;
 }
