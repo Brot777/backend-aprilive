@@ -68,14 +68,31 @@ export const addPropertiesWhenGetServices = async (
   });
 };
 
-export const addValorationWhenGetServices = async (
-  services: Service[] | any
-) => {
+export const addRatingWhenGetServices = async (services: Service[] | any) => {
   if (!services?.length) return [];
-  const promisesReviews = services.map((service: Service, index: number) => {
-    return reviewModel.find({ serviceId: service._id });
+
+  const promiseAverageRatings = services.map(
+    (service: Service, index: number) => {
+      return reviewModel.aggregate([
+        { $match: { serviceId: service._id } },
+        {
+          $group: {
+            _id: "$serviceId",
+            averageRating: { $avg: "$value" },
+          },
+        },
+      ]);
+    }
+  );
+
+  const averages = await Promise.all(promiseAverageRatings);
+
+  return services.map((service: Service, index: number) => {
+    service.averageRating = averages.flat()[index].averageRating;
+    return service;
   });
 };
+
 export const uploadImagesServiceToS3 = async (files: Express.Multer.File[]) => {
   if (files.length == 0) {
     return {
