@@ -4,12 +4,10 @@ import serviceModel from "../models/service";
 import reviewModel from "../models/review";
 import mongoose from "mongoose";
 
-export const updateQuestionsByJobOfferId = async (
-  req: Request,
-  res: Response
-) => {
-  const rewiew = req.body;
+export const createReviewByServiceId = async (req: Request, res: Response) => {
+  let review = req.body;
   const serviceId = req.params.serviceId;
+  const userId = req.userId;
 
   try {
     if (!mongoose.Types.ObjectId.isValid(serviceId)) {
@@ -21,9 +19,19 @@ export const updateQuestionsByJobOfferId = async (
         error: "service not found",
       });
     }
-    const rewiewSaved = await reviewModel.create(rewiew);
+
+    const isTheReviewCreated = await reviewModel.findOne({ authorId: userId });
+    if (!isTheReviewCreated) {
+      return res.status(403).json({
+        error: "a review has already been created",
+      });
+    }
+
+    review.serviceId = serviceId;
+    review.authorId = userId;
+    const rewiewSaved = await reviewModel.create(review);
     res.status(201).json(rewiewSaved);
   } catch (error) {
-    handleHttp(res, "Error_Update_Job_Offer_Questions", error);
+    handleHttp(res, "Error_Create_Review", error);
   }
 };

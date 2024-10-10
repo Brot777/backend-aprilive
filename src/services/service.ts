@@ -88,7 +88,9 @@ export const addRatingWhenGetServices = async (services: Service[] | any) => {
   const averages = await Promise.all(promiseAverageRatings);
 
   return services.map((service: Service, index: number) => {
-    service.averageRating = averages.flat()[index].averageRating;
+    service.averageRating = averages.flat()[index]
+      ? averages.flat()[index].averageRating
+      : 0;
     return service;
   });
 };

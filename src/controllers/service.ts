@@ -7,6 +7,7 @@ import commentServiceModel from "../models/commentService";
 import {
   addPropertiesWhenGetServices,
   addPropertiesWhenGetServicesPersonalized,
+  addRatingWhenGetServices,
   deleteImagesService,
   updateImagesService,
   uploadImagesServiceToS3,
@@ -105,9 +106,10 @@ export const getServices = async (req: Request, res: Response) => {
       });
     let totalDocs = await serviceModel.count(); //Possible performance improvement: cache the value
     let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
+    const newServices = await addRatingWhenGetServices(services);
 
     return res.status(200).json({
-      docs: services,
+      docs: newServices,
       currentPage: page,
       limit,
       totalDocs,
