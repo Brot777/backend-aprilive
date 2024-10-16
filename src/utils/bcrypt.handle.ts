@@ -5,8 +5,8 @@ export const encryptPassword = async (password: string) => {
 };
 
 export const comparePassword = async (
-  password: string,
-  receivedPassword: string
+  passwordPlain: string,
+  hashPassword: string
 ) => {
-  return await compare(password, receivedPassword);
+  return await compare(passwordPlain, hashPassword);
 };
