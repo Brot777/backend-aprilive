@@ -6,7 +6,7 @@ import accountTypeModel from "../models/accountType";
 import presentationVideoModel from "../models/presentationVideo";
 import { handleHttp } from "../utils/error.handle";
 import { Request, Response } from "express";
-import { comparePassword } from "../utils/bcrypt.handle";
+import { comparePassword, encryptPassword } from "../utils/bcrypt.handle";
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
@@ -152,8 +152,8 @@ export const updatePasswordByUserId = async (req: Request, res: Response) => {
     if (!matchPassword) {
       return res.status(403).json({ error: "contraseña invalida" });
     }
-
-    await userModel.findByIdAndUpdate(userId, { password: newPassword });
+    const hashPassword = await encryptPassword(newPassword);
+    await userModel.findByIdAndUpdate(userId, { password: hashPassword });
 
     res.status(200).json({ msj: "password updated successfully" });
   } catch (error) {
