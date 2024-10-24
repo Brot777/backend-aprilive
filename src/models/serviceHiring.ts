@@ -1,27 +1,26 @@
 import mongoose, { model, Schema } from "mongoose";
 
-const reviewSchema = new Schema(
+const serviceHiringSchema = new Schema(
   {
     serviceId: {
       type: Schema.Types.ObjectId,
       ref: "Service",
       required: true,
     },
-    authorId: {
+    customerId: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    serviceHiringId: {
+    reviewId: {
       type: Schema.Types.ObjectId,
-      ref: "ServiceHiring",
-      required: true,
+      ref: "Review",
     },
-    value: {
-      type: Number,
-      required: true,
+    paymentId: {
+      type: Schema.Types.ObjectId,
+      ref: "Payment",
     },
-    comment: {
+    status: {
       type: String,
       default: "",
     },
@@ -32,4 +31,4 @@ const reviewSchema = new Schema(
   }
 );
 
-export default model("Review", reviewSchema);
+export default model("ServiceHiring", serviceHiringSchema);

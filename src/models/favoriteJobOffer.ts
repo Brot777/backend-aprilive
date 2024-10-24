@@ -20,4 +20,4 @@ const favoriteJobOfferSchema = new Schema<FavoriteJobOffer>(
   }
 );
 
-export default model("favoriteJobOffer", favoriteJobOfferSchema);
+export default model("FavoriteJobOffer", favoriteJobOfferSchema);
