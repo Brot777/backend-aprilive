@@ -21,7 +21,7 @@ export const createOrder = async (req: Request, res: Response) => {
         },
       ],
       application_context: {
-        brand_name: "EXAMPLE INC",
+        brand_name: "Aprilive",
         landing_page: "NO_PREFERENCE",
         user_action: "PAY_NOW",
         return_url: `${HOST}/api/paymentService/capture-order`,
@@ -29,7 +29,6 @@ export const createOrder = async (req: Request, res: Response) => {
       },
     };
     const access_token = await getPayPalToken();
-    console.log(access_token);
 
     const response = await axios.post(
       `${PAYPAL_API}/v2/checkout/orders`,
@@ -40,18 +39,18 @@ export const createOrder = async (req: Request, res: Response) => {
         },
       }
     );
+    console.log(response.data.id);
+
     if (response.status != 201) {
       return res.status(500).send({ error: "Error_Creating_Order" });
     }
     await serviceHiringModel.create({
       serviceId,
       customerId,
-      paymentId: response.data.id,
+      paymentId: response?.data?.id,
       totalAmout,
       totalHours,
     });
-    console.log(response);
-    console.log(response.data);
 
     const approvalUrl = response.data.links.find(
       (link: any) => link.rel === "approve"
@@ -63,7 +62,6 @@ export const createOrder = async (req: Request, res: Response) => {
 };
 export const captureOrder = async (req: Request, res: Response) => {
   const { token } = req.query;
-  console.log(token);
 
   try {
     const access_token = await getPayPalToken();
@@ -78,14 +76,16 @@ export const captureOrder = async (req: Request, res: Response) => {
         },
       }
     );
-    return res.json("capture");
+    return res.json({ succes: true });
   } catch (error) {
     handleHttp(res, "Error_Capture_Order", error);
   }
 };
 export const cancelOrder = async (req: Request, res: Response) => {
+  const { token } = req.query;
   try {
-    return res.json("cancel");
+    await serviceHiringModel.findOneAndDelete({ paymentId: token });
+    return res.json({ succes: false });
   } catch (error) {
     handleHttp(res, "Error_Cancel_Order", error);
   }

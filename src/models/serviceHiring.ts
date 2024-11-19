@@ -18,13 +18,12 @@ const serviceHiringSchema = new Schema(
       default: mongoose.Types.ObjectId,
     },
     paymentId: {
-      type: Schema.Types.ObjectId,
-      ref: "Payment",
+      type: String,
       default: "",
     },
     status: {
       type: String,
-      default: "",
+      default: "PENDING",
     },
     totalAmout: {
       type: String,

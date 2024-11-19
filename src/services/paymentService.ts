@@ -16,6 +16,5 @@ export const getPayPalToken = async () => {
       password: PAYPAL_API_SECRET_KEY,
     },
   });
-  console.log(access_token);
   return access_token;
 };

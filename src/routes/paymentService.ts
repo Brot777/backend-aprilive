@@ -7,7 +7,7 @@ import {
 } from "../controllers/paymentService";
 const router = Router();
 
-router.get("/create-order", createOrder);
+router.post("/create-order/:serviceId", isValidToken, createOrder);
 router.get("/capture-order", captureOrder);
 router.get("/cancel-order", cancelOrder);
 
