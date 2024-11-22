@@ -4,6 +4,6 @@ import { createReviewByServiceId } from "../controllers/review";
 import { isValidToken } from "../middlewares/verifyToken";
 const router = Router();
 
-router.post("/:serviceId", isValidToken, createReviewByServiceId);
+router.post("/", isValidToken, createReviewByServiceId);
 
 export { router };
