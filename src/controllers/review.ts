@@ -20,12 +20,6 @@ export const createReviewByServiceId = async (req: Request, res: Response) => {
       });
     }
 
-    const isTheReviewCreated = await reviewModel.findOne({ authorId: userId });
-    if (isTheReviewCreated) {
-      return res.status(403).json({
-        error: "a review has already been created",
-      });
-    }
     console.log("ëste es el userId" + userId);
 
     review.serviceId = serviceId;
