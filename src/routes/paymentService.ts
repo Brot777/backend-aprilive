@@ -5,9 +5,10 @@ import {
   captureOrder,
   createOrder,
 } from "../controllers/paymentService";
+import { isAuthAccount } from "../middlewares/service";
 const router = Router();
 
-router.post("/create-order/:serviceId", isValidToken, createOrder);
+router.post("/create-order/:serviceId", [isValidToken,isAuthAccount], createOrder);
 router.get("/capture-order", captureOrder);
 router.get("/cancel-order", cancelOrder);
 
