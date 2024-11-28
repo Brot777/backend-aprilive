@@ -1,9 +1,14 @@
 import { Router } from "express";
 
-import { createReviewByServiceId } from "../controllers/review";
+import { createReviewByServiceHiringId } from "../controllers/review";
 import { isValidToken } from "../middlewares/verifyToken";
+import { verrifyReviewCreated } from "../middlewares/review";
 const router = Router();
 
-router.post("/", isValidToken, createReviewByServiceId);
+router.post(
+  "/:serviceHiringId",
+  [isValidToken, verrifyReviewCreated],
+  createReviewByServiceHiringId
+);
 
 export { router };

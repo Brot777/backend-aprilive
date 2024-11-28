@@ -5,10 +5,14 @@ import {
   captureOrder,
   createOrder,
 } from "../controllers/paymentService";
-import { isAuthAccount } from "../middlewares/service";
+import { isAuthorAccount } from "../middlewares/service";
 const router = Router();
 
-router.post("/create-order/:serviceId", [isValidToken,isAuthAccount], createOrder);
+router.post(
+  "/create-order/:serviceId",
+  [isValidToken, isAuthorAccount],
+  createOrder
+);
 router.get("/capture-order", captureOrder);
 router.get("/cancel-order", cancelOrder);
 

@@ -250,9 +250,22 @@ export const getServicesByAuthorId = async (req: Request, res: Response) => {
   try {
     const services = await serviceModel
       .find({ authorId })
-      .populate("images")
       .skip((page - 1) * limit)
-      .limit(limit);
+      .limit(limit)
+      .select("categories authorId images price money title description")
+      .populate("categories")
+      .populate({
+        path: "authorId",
+        select: "_id name photoUrl",
+        populate: {
+          path: "photoUrl",
+          select: "url",
+        },
+      })
+      .populate({
+        path: "images",
+        select: "url", // Especifica el campo que deseas recuperar
+      });
 
     const totalDocs = await serviceModel.count({ authorId }); //Possible performance improvement: cache the value
     const totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value

@@ -1,36 +1,23 @@
 import { NextFunction, Request, Response } from "express";
-import userModel from "../models/user";
+import reviewModel from "../models/review";
 
-export const isCompany = async (
+export const verrifyReviewCreated = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  const userId = req.userId;
+  const serviceHiringId = req.params.serviceHiringId;
   try {
-    const companyUser = await userModel.findOne({
-      _id: req.userId,
-      isCompany: true,
+    const isTheReviewCreated = await reviewModel.findOne({
+      authorId: userId,
+      serviceHiringId,
     });
-    if (!companyUser) {
-      return res.status(401).json({ error: "only allowed for companies" });
+    if (isTheReviewCreated) {
+      return res.status(403).json({
+        error: "a review has already been created",
+      });
     }
-    next();
-  } catch (error) {
-    res.status(500).json({ error: "something went wrong" });
-  }
-};
-
-export const isOwnerAccountCompany = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const companyUserId = req.params.companyUserId;
-  try {
-    if (req.userId !== companyUserId) {
-      return res.status(401).json({ error: "unauthorized" });
-    }
-
     next();
   } catch (error) {
     res.status(500).json({ error: "something went wrong" });
