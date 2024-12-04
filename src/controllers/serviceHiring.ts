@@ -8,7 +8,7 @@ export const getMyServiceHiring = async (req: Request, res: Response) => {
   try {
     const serviceHirings = await serviceHiringModel
       .find({ customerId })
-      .populate("reviewId")
+      .populate({ path: "reviewId", select: "value" })
       .populate({
         path: "serviceId",
         select: "authorId title",

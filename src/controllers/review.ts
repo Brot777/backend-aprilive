@@ -26,8 +26,11 @@ export const createReviewByServiceHiringId = async (
     review.serviceHiringId = serviceHiringId;
     review.serviceId = serviceHiring.serviceId;
     review.authorId = userId;
-    const rewiewSaved = await reviewModel.create(review);
-    res.status(201).json(rewiewSaved);
+    const reviewSaved = await reviewModel.create(review);
+    await serviceHiringModel.findByIdAndUpdate(serviceHiringId, {
+      reviewId: reviewSaved._id,
+    });
+    res.status(201).json(reviewSaved);
   } catch (error) {
     handleHttp(res, "Error_Create_Review", error);
   }
