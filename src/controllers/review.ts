@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
-import serviceModel from "../models/service";
 import reviewModel from "../models/review";
 import mongoose from "mongoose";
+import serviceHiringModel from "../models/serviceHiring";
 
 export const createReviewByServiceHiringId = async (
   req: Request,
@@ -13,17 +13,18 @@ export const createReviewByServiceHiringId = async (
   const serviceHiringId = req.params.serviceHiringId;
 
   try {
-    if (!mongoose.Types.ObjectId.isValid(review.serviceId)) {
-      return res.status(400).json({ error: "invalid service id" });
+    if (!mongoose.Types.ObjectId.isValid(serviceHiringId)) {
+      return res.status(400).json({ error: "invalid service hiring id" });
     }
-    const service = await serviceModel.findById(review.serviceId);
-    if (!service) {
+    const serviceHiring = await serviceHiringModel.findById(serviceHiringId);
+    if (!serviceHiring) {
       return res.status(404).json({
-        error: "service not found",
+        error: "service hiring not found",
       });
     }
 
     review.serviceHiringId = serviceHiringId;
+    review.serviceId = serviceHiring.serviceId;
     review.authorId = userId;
     const rewiewSaved = await reviewModel.create(review);
     res.status(201).json(rewiewSaved);

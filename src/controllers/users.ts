@@ -91,7 +91,7 @@ export const updateUserById = async (req: Request, res: Response) => {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ error: "Invalid user Id" });
     }
-    const user = await userModel.findById(userId);
+    const user = await userModel.findOne({ _id: userId, isCompany: false });
 
     if (!user) {
       return res.status(404).json({ error: "404 not found" });

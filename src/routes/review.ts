@@ -2,12 +2,15 @@ import { Router } from "express";
 
 import { createReviewByServiceHiringId } from "../controllers/review";
 import { isValidToken } from "../middlewares/verifyToken";
-import { verrifyReviewCreated } from "../middlewares/review";
+import {
+  verrifyReviewCreated,
+  verrifyStatusCompleted,
+} from "../middlewares/review";
 const router = Router();
 
 router.post(
   "/:serviceHiringId",
-  [isValidToken, verrifyReviewCreated],
+  [isValidToken, verrifyStatusCompleted, verrifyReviewCreated],
   createReviewByServiceHiringId
 );
 
