@@ -17,7 +17,7 @@ export const getMyConversations = async (req: Request, res: Response) => {
 
     const conversations = await conversationModel
       .find({
-        participants: { $in: userId },
+        participants: { $in: [userId] },
       })
       .populate({
         path: "participants",

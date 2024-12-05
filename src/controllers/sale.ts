@@ -59,10 +59,10 @@ export const getSales = async (req: Request, res: Response) => {
     const services: Service[] = await serviceModel
       .find({ authorId })
       .select("_id");
-    const servoceIds = services.map((service: Service) => service._id);
+    const serviceIds = services.map((service: Service) => service._id);
 
     const serviceHirings = await serviceHiringModel
-      .find({ authorId })
+      .find({ seerviceId: { $in: serviceIds } })
       .skip((page - 1) * limit)
       .limit(limit)
       .select("categories authorId images price money title description")
