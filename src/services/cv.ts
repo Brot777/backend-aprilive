@@ -4,6 +4,7 @@ import { s3Client } from "../config/s3Client";
 import cvModel from "../models/cv";
 import personAccountModel from "../models/personAccount";
 import { folders } from "../consts/s3Folders";
+import path from "path";
 
 export const uploadCvToS3 = async (
   file: Express.Multer.File | undefined,
@@ -17,8 +18,9 @@ export const uploadCvToS3 = async (
   }
   // Set the parameters
   const BUKET = process.env.AWS_BUCKET_NAME;
+  const originalName = path.parse(file.originalname).name;
 
-  const name = `${uuidv4()}-${file.originalname}`; // create name
+  const name = `${uuidv4()}-${originalName}`; // create name
   const params = {
     Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.
     Key: `${folders.cv}/${name}`, // The name of the object. For example, 'sample_upload.txt'.

@@ -5,7 +5,6 @@ import userModel from "../models/user";
 import { handleHttp } from "../utils/error.handle";
 
 export const getMyConversations = async (req: Request, res: Response) => {
-  8;
   const userId = req.userId;
   try {
     if (!mongoose.Types.ObjectId.isValid(userId)) {

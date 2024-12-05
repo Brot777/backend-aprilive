@@ -25,7 +25,7 @@ const serviceHiringSchema = new Schema(
       type: String,
       default: "PENDING",
     },
-    totalAmout: {
+    totalAmount: {
       type: String,
       default: "",
     },

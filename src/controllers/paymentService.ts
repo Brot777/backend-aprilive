@@ -6,7 +6,7 @@ import { getPayPalToken } from "../services/paymentService";
 import serviceHiringModel from "../models/serviceHiring";
 
 export const createOrder = async (req: Request, res: Response) => {
-  const { totalAmout, currency, totalHours } = req.body;
+  const { totalAmount, currency, totalHours } = req.body;
   const customerId = req.userId;
   const serviceId = req.params.serviceId;
   try {
@@ -16,7 +16,7 @@ export const createOrder = async (req: Request, res: Response) => {
         {
           amount: {
             currency_code: currency,
-            value: totalAmout,
+            value: totalAmount,
           },
         },
       ],
@@ -48,7 +48,7 @@ export const createOrder = async (req: Request, res: Response) => {
       serviceId,
       customerId,
       paymentId: response?.data?.id,
-      totalAmout,
+      totalAmount,
       totalHours,
     });
 
