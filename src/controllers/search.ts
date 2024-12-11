@@ -6,21 +6,18 @@ import portfolioModel from "../models/portfolio";
 import { convertTextNormalize } from "../utils/normalizeText";
 
 export const searchJobOffers = async (req: Request, res: Response) => {
+  let { filter } = req.query;
   let query = req.query.filter?.toString() || "";
   query = convertTextNormalize(query);
-  console.log(query);
 
   const limit = 10;
   const queryPage = req.query.page ? `${req.query.page}` : "1";
   let page = Number(queryPage);
+
+  const filters = { $text: { $search: query } };
   try {
     const jobOffers = await jobOfferModel
-      .find(
-        {
-          $text: { $search: query },
-        },
-        { score: { $meta: "textScore" } }
-      )
+      .find(filters, { score: { $meta: "textScore" } })
       .skip((page - 1) * limit)
       .limit(limit)
       .populate({
