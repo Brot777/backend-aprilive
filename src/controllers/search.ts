@@ -6,7 +6,7 @@ import portfolioModel from "../models/portfolio";
 import { convertTextNormalize } from "../utils/normalizeText";
 
 export const searchJobOffers = async (req: Request, res: Response) => {
-  let { filter } = req.query;
+  const { typeJob } = req.query;
   let query = req.query.filter?.toString() || "";
   query = convertTextNormalize(query);
 

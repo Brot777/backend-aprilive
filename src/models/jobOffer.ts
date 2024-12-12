@@ -112,6 +112,22 @@ const jobOfferSchema = new Schema<JobOffer>(
       type: String,
       default: "",
     },
+    typeRemuneration: {
+      type: String,
+      default: "",
+    },
+    salary: {
+      type: String,
+      default: "",
+    },
+    WhoCanSee: {
+      type: String,
+      default: "",
+    },
+    WhoCanSee: {
+      type: String,
+      default: "",
+    },
     remuneration: {
       type: Schema.Types.Mixed,
       default: {
