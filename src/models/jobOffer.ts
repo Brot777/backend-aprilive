@@ -95,7 +95,7 @@ const jobOfferSchema = new Schema<JobOffer>(
     },
 
     skills: {
-      type: [],
+      type: [{ type: Schema.Types.ObjectId, ref: "Skill" }],
       default: [],
     },
 
@@ -116,27 +116,23 @@ const jobOfferSchema = new Schema<JobOffer>(
       type: String,
       default: "",
     },
-    salary: {
+    minSalary: {
       type: String,
       default: "",
     },
-    WhoCanSee: {
+    maxSalary: {
       type: String,
       default: "",
     },
-    WhoCanSee: {
+    timeRemuneration: {
       type: String,
       default: "",
     },
-    remuneration: {
-      type: Schema.Types.Mixed,
-      default: {
-        type: "",
-        salary: "",
-        time: "",
-        money: "",
-      },
+    currency: {
+      type: String,
+      default: "",
     },
+
     languages: {
       type: [],
       default: [],

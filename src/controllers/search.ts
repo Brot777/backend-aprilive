@@ -6,7 +6,7 @@ import portfolioModel from "../models/portfolio";
 import { convertTextNormalize } from "../utils/normalizeText";
 
 export const searchJobOffers = async (req: Request, res: Response) => {
-  const { typeJob } = req.query;
+  const { typeLocationWorking, minSalary, maxSalary, skill } = req.query;
   let query = req.query.filter?.toString() || "";
   query = convertTextNormalize(query);
 
@@ -14,10 +14,27 @@ export const searchJobOffers = async (req: Request, res: Response) => {
   const queryPage = req.query.page ? `${req.query.page}` : "1";
   let page = Number(queryPage);
 
-  const filters = { $text: { $search: query } };
+  let filters: any = { $text: { $search: query } };
+  let proyection: any = { score: { $meta: "textScore" } };
+  query == "" && (filters = {});
+  query == "" && (proyection = {});
+
+  /* TYPE LOCATION */
+  typeLocationWorking && (filters.typeLocationWorking = typeLocationWorking);
+  /* SALARY */
+  minSalary &&
+    maxSalary &&
+    (filters.minSalary = { $gte: minSalary, $lte: maxSalary });
+  !minSalary &&
+    maxSalary &&
+    (filters.minSalary = { $gte: minSalary, $lte: maxSalary });
+  /* SKILL */
+  skill && (filters.skills = skill);
+  console.log(filters);
+
   try {
     const jobOffers = await jobOfferModel
-      .find(filters, { score: { $meta: "textScore" } })
+      .find(filters, proyection)
       .skip((page - 1) * limit)
       .limit(limit)
       .populate({
@@ -40,11 +57,9 @@ export const searchJobOffers = async (req: Request, res: Response) => {
           },
         },
       })
-      .sort({ score: { $meta: "textScore" } });
+      .sort(proyection);
 
-    let totalDocs = await jobOfferModel.count({
-      $text: { $search: query },
-    });
+    let totalDocs = await jobOfferModel.count(filters);
     let totalPages = Math.ceil(totalDocs / limit);
 
     return res.status(200).json({

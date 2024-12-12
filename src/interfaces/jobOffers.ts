@@ -20,11 +20,15 @@ export interface JobOffer {
   typeLocationWorking: string;
   allowedCountries: [];
   address: string;
-  skills: [];
+  skills: Schema.Types.ObjectId[];
   benefits: [];
   hashtags: [];
   WhoCanSee: string;
-  remuneration: Schema.Types.Mixed;
+  typeRemuneration: string;
+  minSalary: string;
+  maxSalary: string;
+  timeRemuneration: string;
+  currency: string;
   languages: [];
   sharedLink: string;
   responsibilities: [];

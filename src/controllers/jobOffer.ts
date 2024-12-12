@@ -9,6 +9,7 @@ import {
 import likeJobOfferModel from "../models/likeJobOffer";
 import favoriteJobOfferModel from "../models/favoriteJobOffer";
 import commentJobOfferModel from "../models/commentJobOffer";
+import applicationModel from "../models/application";
 
 export const createJobOffer = async (req: Request, res: Response) => {
   try {
@@ -176,6 +177,7 @@ export const deleteJobOfferById = async (req: Request, res: Response) => {
     await commentJobOfferModel.deleteMany({ jobOfferId });
     await likeJobOfferModel.deleteMany({ jobOfferId });
     await favoriteJobOfferModel.deleteMany({ jobOfferId });
+    await applicationModel.deleteMany({ jobOfferId });
 
     res.status(204).json(jobOfferDeleted);
   } catch (error) {
