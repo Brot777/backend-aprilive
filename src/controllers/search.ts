@@ -6,7 +6,7 @@ import portfolioModel from "../models/portfolio";
 import { convertTextNormalize } from "../utils/normalizeText";
 
 export const searchJobOffers = async (req: Request, res: Response) => {
-  const { typeLocationWorking, minSalary, maxSalary, skill } = req.query;
+  const { typeJob, minSalary, maxSalary, skill } = req.query;
   let query = req.query.filter?.toString() || "";
   query = convertTextNormalize(query);
 
@@ -20,14 +20,13 @@ export const searchJobOffers = async (req: Request, res: Response) => {
   query == "" && (proyection = {});
 
   /* TYPE LOCATION */
-  typeLocationWorking && (filters.typeLocationWorking = typeLocationWorking);
+  typeJob && (filters.typeJob = typeJob);
   /* SALARY */
   minSalary &&
     maxSalary &&
     (filters.minSalary = { $gte: minSalary, $lte: maxSalary });
-  !minSalary &&
-    maxSalary &&
-    (filters.minSalary = { $gte: minSalary, $lte: maxSalary });
+  !minSalary && maxSalary && (filters.minSalary = { $lte: maxSalary });
+  minSalary && !maxSalary && (filters.minSalary = { $gte: minSalary });
   /* SKILL */
   skill && (filters.skills = skill);
   console.log(filters);
