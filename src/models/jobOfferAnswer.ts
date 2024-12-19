@@ -2,9 +2,9 @@ import { model, Schema } from "mongoose";
 
 const jobOfferAnswerSchema = new Schema(
   {
-    questionId: {
-      type: Schema.Types.ObjectId,
-      ref: "JobOfferQuestion",
+    question: {
+      type: String,
+      default: "",
       required: true,
     },
     answer: {

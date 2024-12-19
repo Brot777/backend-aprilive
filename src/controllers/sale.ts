@@ -36,9 +36,10 @@ export const getMyBalance = async (req: Request, res: Response) => {
       },
     ]);
 
-    res
-      .status(200)
-      .json({ totalBalance: arrayTotalBalance[0]?.totalBalance || 0 });
+    res.status(200).json({
+      totalBalance: arrayTotalBalance[0]?.totalBalance || 0,
+      currency: "USD",
+    });
   } catch (error) {
     handleHttp(res, "Error_Upload_Photo", error);
   }
@@ -49,11 +50,10 @@ export const getMySales = async (req: Request, res: Response) => {
   const queryPage = req.query.page ? `${req.query.page}` : "1";
   let page = Number(queryPage);
   try {
-
     if (!mongoose.Types.ObjectId.isValid(authorId)) {
       return res.status(400).json({ error: "invalid author id" });
     }
-    
+
     const sales = await serviceHiringModel.aggregate([
       {
         $lookup: {
@@ -70,27 +70,30 @@ export const getMySales = async (req: Request, res: Response) => {
           status: "COMPLETED",
         },
       }, // Filtrar por el autor
-      { $project: { _id: 1, paymentId:1, status:1, totalAmount:1, createdAt:1 } },
+      {
+        $project: {
+          _id: 1,
+          paymentId: 1,
+          status: 1,
+          totalAmount: 1,
+          createdAt: 1,
+        },
+      },
       {
         $facet: {
           metadata: [
             { $count: "total" }, // Conteo total de documentos
           ],
-          data: [
-            { $skip: (page - 1) * limit},
-            { $limit: limit },
-          ],
+          data: [{ $skip: (page - 1) * limit }, { $limit: limit }],
         },
       },
-      
-    ])
-      
+    ]);
+
     const totalDocs = sales[0].metadata[0]?.total || 0; //Possible performance improvement: cache the value
     const totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
-    
 
     return res.status(200).json({
-      docs:sales[0].data,
+      docs: sales[0].data,
       currentPage: page,
       limit,
       totalDocs,

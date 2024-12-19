@@ -2,8 +2,8 @@ import axios from "axios";
 import { HOST, PAYPAL_API } from "../config/paypal";
 import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
-import { getPayPalToken } from "../services/paymentService";
 import serviceHiringModel from "../models/serviceHiring";
+import { getPayPalToken } from "../utils/paypal";
 
 export const createOrder = async (req: Request, res: Response) => {
   const { totalAmount, currency, totalHours } = req.body;

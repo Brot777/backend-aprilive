@@ -6,6 +6,7 @@ import jobOfferAnswerModel from "../models/jobOfferAnswer";
 import { handleHttp } from "../utils/error.handle";
 import notificationModel from "../models/notification";
 import { getSocketIdByUserId, io } from "../socket/socket";
+import jobOfferQuestionModel from "../models/jobOfferQuestion";
 
 export const applyJobOffer = async (req: Request, res: Response) => {
   const jobOfferId = req.params.jobOfferId;
@@ -30,9 +31,7 @@ export const applyJobOffer = async (req: Request, res: Response) => {
 
     const currentDate = new Date();
     const dateExpiration = new Date(jobOffer.expirationDate);
-    const isExpired = jobOffer.expirationDate
-      ? currentDate.getTime() > dateExpiration.getTime()
-      : false;
+    const isExpired = currentDate.getTime() > dateExpiration.getTime();
 
     if (isExpired) {
       return res.status(400).json({ error: "This job offer has expired" });
@@ -45,6 +44,7 @@ export const applyJobOffer = async (req: Request, res: Response) => {
     if (isApplicant) {
       return res.status(400).json({ error: "This user has already applied" });
     }
+
     const answerSaved = await jobOfferAnswerModel.insertMany(answers);
     const answerIds = answerSaved.map((answer) => answer._id);
     const applicationSaved = await applicationModel.create({

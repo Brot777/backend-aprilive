@@ -218,15 +218,9 @@ export const updateImagesService = async (
     })
   );
 
-  const filterImages = oldImages.filter((oldImage: ImageService) => {
-    console.log(
-      !deletedImages.includes(oldImage._id.toString()),
-      deletedImages,
-      oldImage._id
-    );
-
-    return !deletedImages.includes(oldImage._id.toString());
-  });
+  const filterImages = oldImages.filter(
+    (oldImage: ImageService) => !deletedImages.includes(oldImage._id.toString())
+  );
   filterImages.push(...imagesSaved);
 
   return {
