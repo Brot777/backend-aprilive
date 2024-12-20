@@ -2,13 +2,17 @@ import { model, Schema } from "mongoose";
 
 const balanceTransactionSchema = new Schema(
   {
-    amunt: {
+    amount: {
       type: String,
       required: true,
     },
-    type: {
-      type: String,
+    increase: {
+      type: Boolean,
       required: true,
+    },
+    description: {
+      type: String,
+      default: "",
     },
     paymentId: {
       type: String,

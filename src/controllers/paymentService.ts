@@ -66,7 +66,7 @@ export const captureOrder = async (req: Request, res: Response) => {
   try {
     const access_token = await getPayPalToken();
 
-    const response = await axios.post(
+    await axios.post(
       `${process.env.PAYPAL_API}/v2/checkout/orders/${token}/capture`,
       {},
       {
@@ -76,6 +76,14 @@ export const captureOrder = async (req: Request, res: Response) => {
         },
       }
     );
+
+    await serviceHiringModel.findOneAndUpdate(
+      { paymentId: token },
+      {
+        status: "pendiente",
+      }
+    );
+
     return res.json({ succes: true });
   } catch (error) {
     handleHttp(res, "Error_Capture_Order", error);

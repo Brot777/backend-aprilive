@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
 import serviceHiringModel from "../models/serviceHiring";
 import mongoose from "mongoose";
+import balanceTransactionModel from "../models/balanceTransaction";
+import { Service } from "../interfaces/service";
 
 export const getMyServiceHiring = async (req: Request, res: Response) => {
   const customerId = req.userId;
@@ -28,7 +30,7 @@ export const getMyServiceHiring = async (req: Request, res: Response) => {
   }
 };
 
-export const updateServiceHiringStatusById = async (
+export const changeCompletedByServiceHiringId = async (
   req: Request,
   res: Response
 ) => {
@@ -45,16 +47,38 @@ export const updateServiceHiringStatusById = async (
         error: "service hiring not found",
       });
     }
+    if (status != "completado") {
+      return res.status(400).json({
+        error: "the status is not completed",
+      });
+    }
 
-    const serviceHiringUpdated = await serviceHiringModel.findByIdAndUpdate(
-      serviceHiringId,
-      {
-        status,
-      },
-      {
-        new: true,
-      }
-    );
+    const serviceHiringUpdated = await serviceHiringModel
+      .findByIdAndUpdate(
+        serviceHiringId,
+        {
+          status,
+        },
+        {
+          new: true,
+        }
+      )
+      .populate({
+        path: "serviceId",
+        select: "authorId",
+      });
+
+    const service = serviceHiringUpdated?.serviceId as Service;
+    console.log(serviceHiring);
+
+    await await balanceTransactionModel.create({
+      amount: serviceHiringUpdated?.totalAmount,
+      increase: true,
+      description: "prestación de servicio",
+      paymentId: serviceHiring?.paymentId,
+      userId: service.authorId,
+    });
+
     res.status(201).json(serviceHiringUpdated);
   } catch (error) {
     handleHttp(res, "Error_Update_Service_Hiring", error);

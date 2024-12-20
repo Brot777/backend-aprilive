@@ -2,7 +2,7 @@ import { Router } from "express";
 import { isValidToken } from "../middlewares/verifyToken";
 import {
   getMyServiceHiring,
-  updateServiceHiringStatusById,
+  changeCompletedByServiceHiringId,
 } from "../controllers/serviceHiring";
 const router = Router();
 
@@ -10,7 +10,7 @@ router.get("/myServiceHirings", isValidToken, getMyServiceHiring);
 router.put(
   "/update-status/:serviceHiringId",
   isValidToken,
-  updateServiceHiringStatusById
+  changeCompletedByServiceHiringId
 );
 
 export { router };

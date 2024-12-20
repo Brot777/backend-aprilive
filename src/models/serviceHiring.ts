@@ -1,6 +1,7 @@
 import mongoose, { model, Schema } from "mongoose";
+import { ServiceHiring } from "../interfaces/serviceHiring";
 
-const serviceHiringSchema = new Schema(
+const serviceHiringSchema = new Schema<ServiceHiring>(
   {
     serviceId: {
       type: Schema.Types.ObjectId,
@@ -23,7 +24,8 @@ const serviceHiringSchema = new Schema(
     },
     status: {
       type: String,
-      default: "PENDING",
+      enum: ["iniciado", "pendiente", "completado", "reembolsado"],
+      default: "iniciado",
     },
     totalAmount: {
       type: String,

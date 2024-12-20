@@ -13,7 +13,6 @@ import { User } from "../interfaces/user.interface";
 import { Service } from "../interfaces/service";
 import { ImageService } from "../interfaces/imageService";
 import { folders } from "../consts/s3Folders";
-import { Schema } from "mongoose";
 import reviewModel from "../models/review";
 
 export const addPropertiesWhenGetServicesPersonalized = async (

@@ -33,7 +33,12 @@ export const verrifyStatusCompleted = async (
   const serviceHiringId = req.params.serviceHiringId;
   try {
     const serviceHiring = await serviceHiringModel.findById(serviceHiringId);
-    if (serviceHiring?.status !== "COMPLETED") {
+    if (!serviceHiring) {
+      return res.status(404).json({
+        error: "service hiring not found",
+      });
+    }
+    if (serviceHiring?.status !== "completado") {
       return res.status(403).json({
         error: "This hiring has not been completed.",
       });
