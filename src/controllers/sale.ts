@@ -3,39 +3,48 @@ import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
 import serviceHiringModel from "../models/serviceHiring";
 import mongoose, { Types, ObjectId } from "mongoose";
-import balanceTransaction from "../models/balanceTransaction";
 
 export const getMyBalance = async (req: Request, res: Response) => {
   const authorId = req.userId;
   try {
-    const result = await balanceTransaction.aggregate([
+    const arrayTotalBalance = await serviceHiringModel.aggregate([
       {
-        $project: {
-          amount: {
-            $cond: [
-              { $eq: ["$increase", true] },
-              "$amount",
-              { $multiply: ["$amount", -1] },
-            ],
-          },
+        $lookup: {
+          from: "services",
+          localField: "serviceId",
+          foreignField: "_id",
+          as: "service",
+        },
+      },
+      { $unwind: "$service" }, // Asegurar que cada pago tenga un servicio relacionado
+      {
+        $match: {
+          "service.authorId": new mongoose.Types.ObjectId(authorId),
+          status: "completado",
+        },
+      }, // Filtrar por el autor
+      {
+        $addFields: {
+          numTotalAmount: { $toDouble: "$totalAmount" }, // Convierte el monto a número
         },
       },
       {
         $group: {
-          _id: null,
-          total: { $sum: "$amount" },
+          _id: null, // Usamos `null` si queremos una suma total; puedes cambiarlo para agrupar por otro criterio
+          totalBalance: { $sum: "$numTotalAmount" }, // Sumar los montos
         },
       },
     ]);
 
     res.status(200).json({
-      totalBalance: result || 0,
+      totalBalance: arrayTotalBalance[0]?.totalBalance || 0,
       currency: "USD",
     });
   } catch (error) {
     handleHttp(res, "Error_Upload_Photo", error);
   }
 };
+
 export const getMySales = async (req: Request, res: Response) => {
   const authorId = req.userId;
   const limit = 10;

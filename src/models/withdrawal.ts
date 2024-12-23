@@ -10,8 +10,8 @@ const withdrawalSchema = new Schema(
     amount: { type: Number, required: true },
     status: {
       type: String,
-      enum: ["pending", "completed", "failed"],
-      default: "pending",
+      enum: ["pendiente", "completado", "fallido"],
+      default: "pendiente",
     },
     transactionId: {
       type: String,

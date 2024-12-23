@@ -1,44 +1,49 @@
 import { Request, Response } from "express";
-
 import { handleHttp } from "../utils/error.handle";
-import serviceHiringModel from "../models/serviceHiring";
-import mongoose, { Types, ObjectId } from "mongoose";
-import balanceTransaction from "../models/balanceTransaction";
+import { Types } from "mongoose";
+import balanceTransactionModel from "../models/balanceTransaction";
 
 export const getMyBalance = async (req: Request, res: Response) => {
-  const authorId = req.userId;
+  const userId = req.userId;
   try {
-    const arrayTotalBalance = await serviceHiringModel.aggregate([
-      {
-        $lookup: {
-          from: "services",
-          localField: "serviceId",
-          foreignField: "_id",
-          as: "service",
-        },
-      },
-      { $unwind: "$service" }, // Asegurar que cada pago tenga un servicio relacionado
+    console.log("hola", userId);
+
+    const arrayTotalBalance = await balanceTransactionModel.aggregate([
       {
         $match: {
-          "service.authorId": new mongoose.Types.ObjectId(authorId),
-          status: "completado",
-        },
-      }, // Filtrar por el autor
-      {
-        $addFields: {
-          numTotalAmount: { $toDouble: "$totalAmount" }, // Convierte el monto a número
+          userId: new Types.ObjectId(userId),
         },
       },
       {
+        $addFields: {
+          numAmount: { $toDouble: "$amount" }, // Convierte el monto a número
+        },
+      },
+      {
+        $project: {
+          numAmount: {
+            $cond: [
+              { $eq: ["$increase", true] },
+              "$numAmount",
+              { $multiply: ["$numAmount", -1] },
+            ],
+          },
+        },
+      },
+
+      {
         $group: {
-          _id: null, // Usamos `null` si queremos una suma total; puedes cambiarlo para agrupar por otro criterio
-          totalBalance: { $sum: "$numTotalAmount" }, // Sumar los montos
+          _id: null,
+          total: { $sum: "$numAmount" },
         },
       },
     ]);
 
+    console.log(arrayTotalBalance);
+
     res.status(200).json({
-      totalBalance: arrayTotalBalance[0]?.totalBalance || 0,
+      totalBalance:
+        arrayTotalBalance.length > 0 ? arrayTotalBalance[0].total : 0,
       currency: "USD",
     });
   } catch (error) {
@@ -51,18 +56,18 @@ export const getMyTransactions = async (req: Request, res: Response) => {
   const queryPage = req.query.page ? `${req.query.page}` : "1";
   let page = Number(queryPage);
   try {
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
+    if (!Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ error: "invalid user id" });
     }
 
-    const transactions = await balanceTransaction
+    const transactions = await balanceTransactionModel
       .find({
         userId,
       })
       .skip((page - 1) * limit)
       .limit(limit);
 
-    let totalDocs = await balanceTransaction.count(); //Possible performance improvement: cache the value
+    let totalDocs = await balanceTransactionModel.count(); //Possible performance improvement: cache the value
     const totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
 
     return res.status(200).json({
