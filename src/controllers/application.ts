@@ -6,7 +6,6 @@ import jobOfferAnswerModel from "../models/jobOfferAnswer";
 import { handleHttp } from "../utils/error.handle";
 import notificationModel from "../models/notification";
 import { getSocketIdByUserId, io } from "../socket/socket";
-import jobOfferQuestionModel from "../models/jobOfferQuestion";
 
 export const applyJobOffer = async (req: Request, res: Response) => {
   const jobOfferId = req.params.jobOfferId;
@@ -28,10 +27,12 @@ export const applyJobOffer = async (req: Request, res: Response) => {
         .status(400)
         .json({ error: "the creator cannot apply to your job offer" });
     }
-
-    const currentDate = new Date();
-    const dateExpiration = new Date(jobOffer.expirationDate);
-    const isExpired = currentDate.getTime() > dateExpiration.getTime();
+    let isExpired = false;
+    if (jobOffer?.expirationDate) {
+      const currentDate = new Date();
+      const dateExpiration = new Date(jobOffer?.expirationDate);
+      isExpired = currentDate.getTime() > dateExpiration.getTime();
+    }
 
     if (isExpired) {
       return res.status(400).json({ error: "This job offer has expired" });
@@ -91,11 +92,7 @@ export const getAplicantionById = async (req: Request, res: Response) => {
       })
       .populate({
         path: "answers",
-        select: "-_id questionId answer",
-        populate: {
-          path: "questionId",
-          select: "-_id question",
-        },
+        select: "question answer",
       })
       .populate({
         path: "cv",
@@ -170,14 +167,11 @@ export const getApplicantsByJobOfferId = async (
     if (!jobOffer) {
       return res.status(404).json({ error: "404 job offer not found" });
     }
-
     if (jobOffer.authorId.toString() !== authorId) {
       return res.status(401).json({
         error: "unauthorized, you are not the author of this job offer",
       });
     }
-    console.log(jobOffer, authorId);
-
     const applicants = await applicationModel
       .find({
         jobOfferId,
@@ -192,11 +186,7 @@ export const getApplicantsByJobOfferId = async (
       })
       .populate({
         path: "answers",
-        select: "-_id questionId answer",
-        populate: {
-          path: "questionId",
-          select: "-_id question",
-        },
+        select: "question answer",
       })
       .populate({
         path: "cv",

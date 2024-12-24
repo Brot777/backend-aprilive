@@ -1,15 +1,26 @@
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 import { HOST, PAYPAL_API } from "../config/paypal";
 import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
 import serviceHiringModel from "../models/serviceHiring";
 import { getPayPalToken } from "../utils/paypal";
+import withdrawalModel from "../models/withdrawal";
+import balanceTransactionModel from "../models/balanceTransaction";
+import { getTotalBalance } from "../services/transaction";
 
 export const createPayout = async (req: Request, res: Response) => {
-  const { amount, email, senderBatchId } = req.body;
-  const customerId = req.userId;
-  const serviceId = req.params.serviceId;
+  const { amount, email } = req.body;
+  const userId = req.userId;
+  const senderBatchId = `payout_${uuidv4()}`;
   try {
+    const totalBalance = await getTotalBalance(userId);
+
+    if (totalBalance < Number(amount)) {
+      return res.status(400).send({
+        error: "the amount to be withdrawn exceeds the total balance",
+      });
+    }
     const access_token = await getPayPalToken();
 
     const payoutRequest = {
@@ -44,6 +55,21 @@ export const createPayout = async (req: Request, res: Response) => {
     if (response.status != 201) {
       return res.status(500).send({ error: "Error_Creating_Payout" });
     }
+    await withdrawalModel.create({
+      userId,
+      amount,
+      status: "completado",
+      senderBatchId,
+      paymentId: response?.data?.id,
+      email,
+    });
+    await balanceTransactionModel.create({
+      amount,
+      increase: false,
+      description: "retiro de dinero",
+      paymentId: response?.data?.id,
+      userId,
+    });
 
     return res.json({ message: "success" });
   } catch (error) {

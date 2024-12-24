@@ -13,7 +13,11 @@ const withdrawalSchema = new Schema(
       enum: ["pendiente", "completado", "fallido"],
       default: "pendiente",
     },
-    transactionId: {
+    senderBatchId: {
+      type: String,
+      default: "",
+    },
+    paymentId: {
       type: String,
       default: "",
     },

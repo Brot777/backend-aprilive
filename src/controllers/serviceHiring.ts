@@ -47,6 +47,11 @@ export const changeCompletedByServiceHiringId = async (
         error: "service hiring not found",
       });
     }
+    if (serviceHiring.status === "completado") {
+      return res.status(400).json({
+        error: "This hiring has already been marked as completed",
+      });
+    }
     if (status != "completado") {
       return res.status(400).json({
         error: "the status is not completed",

@@ -2,48 +2,15 @@ import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
 import { Types } from "mongoose";
 import balanceTransactionModel from "../models/balanceTransaction";
+import { getTotalBalance } from "../services/transaction";
 
 export const getMyBalance = async (req: Request, res: Response) => {
   const userId = req.userId;
   try {
-    console.log("hola", userId);
-
-    const arrayTotalBalance = await balanceTransactionModel.aggregate([
-      {
-        $match: {
-          userId: new Types.ObjectId(userId),
-        },
-      },
-      {
-        $addFields: {
-          numAmount: { $toDouble: "$amount" }, // Convierte el monto a número
-        },
-      },
-      {
-        $project: {
-          numAmount: {
-            $cond: [
-              { $eq: ["$increase", true] },
-              "$numAmount",
-              { $multiply: ["$numAmount", -1] },
-            ],
-          },
-        },
-      },
-
-      {
-        $group: {
-          _id: null,
-          total: { $sum: "$numAmount" },
-        },
-      },
-    ]);
-
-    console.log(arrayTotalBalance);
+    const totalBalance = await getTotalBalance(userId);
 
     res.status(200).json({
-      totalBalance:
-        arrayTotalBalance.length > 0 ? arrayTotalBalance[0].total : 0,
+      totalBalance,
       currency: "USD",
     });
   } catch (error) {

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { isValidToken } from "../middlewares/verifyToken";
-import { getMyBalance, getMyTransactions } from "../controllers/transacction";
+import { getMyBalance, getMyTransactions } from "../controllers/transaction";
 
 const router = Router();
 
