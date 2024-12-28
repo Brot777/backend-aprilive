@@ -4,6 +4,7 @@ import jobOfferModel from "../models/jobOffer";
 import serviceModel from "../models/service";
 import portfolioModel from "../models/portfolio";
 import { convertTextNormalize } from "../utils/normalizeText";
+import userModel from "../models/user";
 
 export const searchJobOffers = async (req: Request, res: Response) => {
   const { typeJob, minSalary, maxSalary, skill } = req.query;
@@ -188,5 +189,44 @@ export const searchPortfolios = async (req: Request, res: Response) => {
     });
   } catch (error) {
     handleHttp(res, "Error_Search_Portfolio", error);
+  }
+};
+export const searchUsers = async (req: Request, res: Response) => {
+  let query = req.query.filter?.toString() || "";
+  query = convertTextNormalize(query);
+  const limit = 10;
+  const queryPage = req.query.page ? `${req.query.page}` : "1";
+  let page = Number(queryPage);
+  try {
+    const users = await userModel
+      .find(
+        {
+          $text: { $search: query },
+        },
+        { score: { $meta: "textScore" } }
+      )
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .select("username name photoUrl")
+      .populate({
+        path: "photoUrl",
+        select: "url",
+      })
+      .sort({ score: { $meta: "textScore" } });
+
+    let totalDocs = await userModel.count({
+      $text: { $search: query },
+    });
+    let totalPages = Math.ceil(totalDocs / limit);
+
+    return res.status(200).json({
+      docs: users,
+      currentPage: page,
+      limit,
+      totalDocs,
+      totalPages,
+    });
+  } catch (error) {
+    handleHttp(res, "Error_Search_Services", error);
   }
 };

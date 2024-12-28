@@ -120,7 +120,7 @@ const userSchema = new Schema<User>(
     versionKey: false,
   }
 );
-
+userSchema.index({ name: "text", username: "text" });
 export default model("User", userSchema);
 
 /* 
