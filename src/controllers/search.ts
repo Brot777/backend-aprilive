@@ -207,7 +207,7 @@ export const searchUsers = async (req: Request, res: Response) => {
       )
       .skip((page - 1) * limit)
       .limit(limit)
-      .select("username name photoUrl")
+      .select("username name photoUrl isCompany")
       .populate({
         path: "photoUrl",
         select: "url",
