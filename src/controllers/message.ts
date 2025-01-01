@@ -6,6 +6,7 @@ import conversationModel from "../models/conversation";
 import userModel from "../models/user";
 import { handleHttp } from "../utils/error.handle";
 import { getSocketIdByUserId, io } from "../socket/socket";
+import { log } from "console";
 
 export const sendMessage = async (req: Request, res: Response) => {
   const receiverId = req.params.receiverId;
@@ -86,6 +87,7 @@ export const getMessagesByReceiverId = async (req: Request, res: Response) => {
         { $and: [{ receiverId: senderId }, { senderId: receiverId }] },
       ],
     });
+    log(messages);
 
     res.status(200).json(messages);
   } catch (error) {

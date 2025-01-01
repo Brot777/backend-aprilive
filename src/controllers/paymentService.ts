@@ -16,7 +16,7 @@ export const createOrder = async (req: Request, res: Response) => {
         {
           amount: {
             currency_code: currency,
-            value: totalAmount,
+            value: Number(totalAmount).toFixed(2),
           },
         },
       ],
