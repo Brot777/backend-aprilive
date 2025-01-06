@@ -32,6 +32,7 @@ export const getTotalBalance = async (userId: string) => {
       },
     },
   ]);
+  console.log(arrayTotalBalance);
 
   return arrayTotalBalance.length > 0
     ? Number(arrayTotalBalance[0].total).toFixed(2)

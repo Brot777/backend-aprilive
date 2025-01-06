@@ -77,17 +77,18 @@ export const searchJobOffers = async (req: Request, res: Response) => {
 export const searchServices = async (req: Request, res: Response) => {
   let query = req.query.filter?.toString() || "";
   query = convertTextNormalize(query);
+  let filters: any = { $text: { $search: query } };
+  let proyection: any = { score: { $meta: "textScore" } };
+  query == "" && (filters = {});
+  query == "" && (proyection = {});
+  console.log(filters, query);
+
   const limit = 10;
   const queryPage = req.query.page ? `${req.query.page}` : "1";
   let page = Number(queryPage);
   try {
     const services = await serviceModel
-      .find(
-        {
-          $text: { $search: query },
-        },
-        { score: { $meta: "textScore" } }
-      )
+      .find(filters, proyection)
       .skip((page - 1) * limit)
       .limit(limit)
       .populate({
@@ -114,11 +115,9 @@ export const searchServices = async (req: Request, res: Response) => {
         path: "images",
         select: "-_id url", // Especifica el campo que deseas recuperar
       })
-      .sort({ score: { $meta: "textScore" } });
+      .sort(proyection);
 
-    let totalDocs = await serviceModel.count({
-      $text: { $search: query },
-    });
+    let totalDocs = await serviceModel.count(filters);
     let totalPages = Math.ceil(totalDocs / limit);
 
     return res.status(200).json({

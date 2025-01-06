@@ -48,3 +48,27 @@ export const verrifyStatusCompleted = async (
     res.status(500).json({ error: "something went wrong" });
   }
 };
+
+export const isCustomer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const serviceHiringId = req.params.serviceHiringId;
+  try {
+    const serviceHiring = await serviceHiringModel.findById(serviceHiringId);
+    if (!serviceHiring) {
+      return res.status(404).json({
+        error: "service hiring not found",
+      });
+    }
+
+    if (req.userId !== serviceHiring.customerId.toString()) {
+      return res.status(403).json({ error: "forbidden" });
+    }
+
+    next();
+  } catch (error) {
+    res.status(500).json({ error: "something went wrong" });
+  }
+};
