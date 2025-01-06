@@ -16,7 +16,7 @@ export const createPayout = async (req: Request, res: Response) => {
   try {
     const totalBalance = await getTotalBalance(userId);
 
-    if (totalBalance < Number(amount)) {
+    if (Number(totalBalance) < Number(amount)) {
       return res.status(400).send({
         error: "the amount to be withdrawn exceeds the total balance",
       });
