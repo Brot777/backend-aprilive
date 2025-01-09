@@ -4,12 +4,21 @@ import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
 import serviceHiringModel from "../models/serviceHiring";
 import { getPayPalToken } from "../utils/paypal";
+import serviceModel from "../models/service";
 
 export const createOrder = async (req: Request, res: Response) => {
   const { totalAmount, currency, totalHours } = req.body;
   const customerId = req.userId;
   const serviceId = req.params.serviceId;
+
   try {
+    const service = await serviceModel.findById(serviceId);
+    if (!service) {
+      return res.status(404).json({
+        error: "service not found",
+      });
+    }
+
     const order = {
       intent: "CAPTURE",
       purchase_units: [

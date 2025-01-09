@@ -21,6 +21,11 @@ export const createPayout = async (req: Request, res: Response) => {
         error: "the amount to be withdrawn exceeds the total balance",
       });
     }
+    if (10 >= Number(amount)) {
+      return res.status(400).send({
+        error: "The minimum amount to withdraw is 10 USD",
+      });
+    }
     const access_token = await getPayPalToken();
 
     const payoutRequest = {
@@ -50,7 +55,7 @@ export const createPayout = async (req: Request, res: Response) => {
         },
       }
     );
-    console.log(response);
+    console.log(response.data);
 
     if (response.status != 201) {
       return res.status(500).send({ error: "Error_Creating_Payout" });
@@ -60,14 +65,14 @@ export const createPayout = async (req: Request, res: Response) => {
       amount,
       status: "completado",
       senderBatchId,
-      paymentId: response?.data?.id,
+      paymentId: response?.data?.batch_header?.payout_batch_id,
       email,
     });
     await balanceTransactionModel.create({
       amount,
       increase: false,
       description: "retiro de dinero",
-      paymentId: response?.data?.id,
+      paymentId: response?.data?.batch_header?.payout_batch_id,
       userId,
     });
 
