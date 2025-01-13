@@ -13,6 +13,7 @@ export const subscribeToPremiumCompany = async (
 ) => {
   const Id = req.userId;
   const cycle = req.query.cycle ? `${req.query.cycle}` : "monthly";
+  console.log("paso bien");
 
   try {
     const suscription = {
