@@ -25,7 +25,7 @@ export interface User {
   about: string;
   preferences: Schema.Types.ObjectId[];
   networks: Schema.Types.ObjectId[];
-  networkMore: Schema.Types.ObjectId[];
+  networkMore: string[];
   personAccount: Schema.Types.ObjectId | PersonAccount;
   companyAccount: Schema.Types.ObjectId | CompanyAccount;
   isCompany: boolean;

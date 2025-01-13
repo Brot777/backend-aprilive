@@ -5,52 +5,47 @@ import { handleHttp } from "../utils/error.handle";
 import serviceHiringModel from "../models/serviceHiring";
 import { getPayPalToken } from "../utils/paypal";
 
-export const createOrder = async (req: Request, res: Response) => {
-  const { totalAmount, currency, totalHours } = req.body;
-  const customerId = req.userId;
-  const serviceId = req.params.serviceId;
+import { premiumCompany } from "../consts/plans";
+
+export const subscribeToPremiumCompany = async (
+  req: Request,
+  res: Response
+) => {
+  const Id = req.userId;
+  const cycle = req.query.cycle ? `${req.query.cycle}` : "monthly";
+
   try {
-    const order = {
-      intent: "CAPTURE",
-      purchase_units: [
-        {
-          amount: {
-            currency_code: currency,
-            value: totalAmount,
-          },
-        },
-      ],
+    const suscription = {
+      plan_id:
+        cycle == "monthly"
+          ? premiumCompany.monthly.paypalId
+          : premiumCompany.annual.paypalId,
       application_context: {
         brand_name: "Aprilive",
-        landing_page: "NO_PREFERENCE",
-        user_action: "PAY_NOW",
-        return_url: `${HOST}/api/paymentService/capture-order`,
-        cancel_url: `${HOST}/api/paymentService/cancel-order`,
+        user_action: "SUBSCRIBE_NOW",
+        return_url: `${HOST}/api/paymentPlan/company/premium/capture-order`,
+        cancel_url: `${HOST}/api/paymentPlan/company/premium/cancel-order`,
       },
     };
+
     const access_token = await getPayPalToken();
 
     const response = await axios.post(
-      `${PAYPAL_API}/v2/checkout/orders`,
-      order,
+      `${PAYPAL_API}/v1/billing/subscriptions`,
+      suscription,
       {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
       }
     );
-    console.log(response.data.id);
+    console.log(response);
 
     if (response.status != 201) {
-      return res.status(500).send({ error: "Error_Creating_Order" });
+      return res
+        .status(500)
+        .send({ error: "Error_Subscribe_To_Premium_Company" });
     }
-    await serviceHiringModel.create({
-      serviceId,
-      customerId,
-      paymentId: response?.data?.id,
-      totalAmount,
-      totalHours,
-    });
 
     const approvalUrl = response.data.links.find(
       (link: any) => link.rel === "approve"
