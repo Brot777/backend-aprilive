@@ -40,7 +40,7 @@ export const subscribeToPremiumCompany = async (
         },
       }
     );
-    console.log(response);
+    console.log(response.data);
 
     if (response.status != 201) {
       return res

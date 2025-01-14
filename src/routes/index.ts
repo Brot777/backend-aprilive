@@ -13,7 +13,6 @@ readdirSync(PATH_ROUTER).map((fileName) => {
   const cleanName = cleanFileName(fileName);
 
   if (cleanName != "index") {
-    console.log(cleanName);
     import(`./${cleanName}`).then((moduleRouter) => {
       router.use(`/${cleanName}`, moduleRouter.router);
     });
