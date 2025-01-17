@@ -2,9 +2,7 @@ import axios from "axios";
 import { HOST, PAYPAL_API } from "../config/paypal";
 import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
-import serviceHiringModel from "../models/serviceHiring";
 import { getPayPalToken } from "../utils/paypal";
-
 import { premiumCompany } from "../consts/plans";
 
 export const subscribeToPremiumCompany = async (
@@ -13,7 +11,6 @@ export const subscribeToPremiumCompany = async (
 ) => {
   const Id = req.userId;
   const cycle = req.query.cycle ? `${req.query.cycle}` : "monthly";
-  console.log("paso bien");
 
   try {
     const suscription = {
@@ -24,8 +21,8 @@ export const subscribeToPremiumCompany = async (
       application_context: {
         brand_name: "Aprilive",
         user_action: "SUBSCRIBE_NOW",
-        return_url: `${HOST}/api/paymentPlan/company/premium/capture-order`,
-        cancel_url: `${HOST}/api/paymentPlan/company/premium/cancel-order`,
+        return_url: `${HOST}/api/paymentPlan/company/premium/success`,
+        cancel_url: `${HOST}/api/paymentPlan/company/premium/cancel`,
       },
     };
     const access_token = await getPayPalToken();
@@ -39,7 +36,7 @@ export const subscribeToPremiumCompany = async (
         },
       }
     );
-    console.log(response.data);
+    console.log(response);
 
     if (response.status != 201) {
       return res
@@ -55,39 +52,15 @@ export const subscribeToPremiumCompany = async (
     handleHttp(res, "Error_Create_Order", error);
   }
 };
-export const captureOrder = async (req: Request, res: Response) => {
-  const { token } = req.query;
-
+export const successSubscription = async (req: Request, res: Response) => {
   try {
-    const access_token = await getPayPalToken();
-
-    await axios.post(
-      `${process.env.PAYPAL_API}/v2/checkout/orders/${token}/capture`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    await serviceHiringModel.findOneAndUpdate(
-      { paymentId: token },
-      {
-        status: "pendiente",
-      }
-    );
-
-    return res.json({ succes: true });
+    return res.json({ success: true });
   } catch (error) {
     handleHttp(res, "Error_Capture_Order", error);
   }
 };
-export const cancelOrder = async (req: Request, res: Response) => {
-  const { token } = req.query;
+export const cancelSubscription = async (req: Request, res: Response) => {
   try {
-    await serviceHiringModel.findOneAndDelete({ paymentId: token });
     return res.json({ succes: false });
   } catch (error) {
     handleHttp(res, "Error_Cancel_Order", error);

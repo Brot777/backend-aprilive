@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { isValidToken } from "../middlewares/verifyToken";
-import { cancelOrder, captureOrder } from "../controllers/paymentService";
-import { subscribeToPremiumCompany } from "../controllers/paymentPlan";
+import {
+  cancelSubscription,
+  subscribeToPremiumCompany,
+  successSubscription,
+} from "../controllers/paymentPlan";
 const router = Router();
 
 router.post(
@@ -9,7 +12,7 @@ router.post(
   [isValidToken],
   subscribeToPremiumCompany
 );
-/* router.get("/capture-order", captureOrder);
-router.get("/cancel-order", cancelOrder); */
+router.get("/company/premium/success", successSubscription);
+router.get("/company/premium/cancel", cancelSubscription);
 
 export { router };

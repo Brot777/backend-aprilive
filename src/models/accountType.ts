@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 
 const accountTypeSchema = new Schema(
   {
@@ -12,9 +12,11 @@ const accountTypeSchema = new Schema(
       ref: "Role",
       required: true,
     },
-    accountTime: {
-      type: Date,
-      default: new Date(),
+    subscriptionId: {
+      type: Schema.Types.ObjectId,
+      ref: "Subscription",
+      required: true,
+      default: mongoose.Types.ObjectId,
     },
   },
   {
