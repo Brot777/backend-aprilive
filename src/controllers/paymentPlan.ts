@@ -28,7 +28,6 @@ export const subscribeToPremiumCompany = async (
         cancel_url: `${HOST}/api/paymentPlan/company/premium/cancel-order`,
       },
     };
-
     const access_token = await getPayPalToken();
 
     const response = await axios.post(
