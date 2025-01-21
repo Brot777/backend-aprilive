@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
 import { getPayPalToken } from "../utils/paypal";
 import { premiumCompany } from "../consts/plans";
+import subscriptionModel from "../models/subscription";
 
 export const subscribeToPremiumCompany = async (
   req: Request,
@@ -54,6 +55,25 @@ export const subscribeToPremiumCompany = async (
 };
 export const successSubscription = async (req: Request, res: Response) => {
   try {
+    const subscriptionId = req.query.subscription_id;
+    const access_token = await getPayPalToken();
+    const response = await axios.get(
+      `${PAYPAL_API}/v1/billing/subscriptions/${subscriptionId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
+    if (response.data.status != "ACTIVE") {
+      return res.status(500).json({ error: "Error_Capture_Order" });
+    }
+    await subscriptionModel.create({
+      createdAt: response.data.start_time,
+      updatedAt: response.data.status_update_time,
+    });
+    console.log(response.data);
+
     return res.json({ success: true });
   } catch (error) {
     handleHttp(res, "Error_Capture_Order", error);

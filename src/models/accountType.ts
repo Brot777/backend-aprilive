@@ -12,12 +12,6 @@ const accountTypeSchema = new Schema(
       ref: "Role",
       required: true,
     },
-    subscriptionId: {
-      type: Schema.Types.ObjectId,
-      ref: "Subscription",
-      required: true,
-      default: mongoose.Types.ObjectId,
-    },
   },
   {
     timestamps: true,

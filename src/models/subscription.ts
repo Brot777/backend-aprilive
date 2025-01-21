@@ -13,11 +13,11 @@ const userSchema = new Schema(
     },
     endedAt: {
       type: Date,
-      default: new Date(),
+      default: null,
     },
     startedAt: {
       type: Date,
-      default: new Date(),
+      default: null,
     },
     role: {
       type: Schema.Types.ObjectId,
@@ -27,10 +27,12 @@ const userSchema = new Schema(
     createdAt: {
       type: Date,
       default: new Date(),
+      require: true,
     },
     updatedAt: {
       type: Date,
       default: new Date(),
+      require: true,
     },
   },
   {
