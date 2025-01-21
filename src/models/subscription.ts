@@ -24,9 +24,16 @@ const userSchema = new Schema(
       ref: "Role",
       required: true,
     },
+    createdAt: {
+      type: Date,
+      default: new Date(),
+    },
+    updatedAt: {
+      type: Date,
+      default: new Date(),
+    },
   },
   {
-    timestamps: true,
     versionKey: false,
   }
 );

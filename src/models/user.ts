@@ -98,7 +98,7 @@ const userSchema = new Schema<User>(
       default: [], // por definir
     },
     networkMore: {
-      type: [{ type: String, ref: "Network" }],
+      type: [{ type: String }],
       default: [],
     },
 
