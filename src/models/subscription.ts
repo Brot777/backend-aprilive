@@ -11,7 +11,7 @@ const userSchema = new Schema(
       type: String,
       default: "",
     },
-    endedAt: {
+    finishAt: {
       type: Date,
       default: null,
     },
@@ -19,20 +19,14 @@ const userSchema = new Schema(
       type: Date,
       default: null,
     },
+    renewal: {
+      type: Boolean,
+      default: true,
+    },
     role: {
       type: Schema.Types.ObjectId,
       ref: "Role",
       required: true,
-    },
-    createdAt: {
-      type: Date,
-      default: new Date(),
-      require: true,
-    },
-    updatedAt: {
-      type: Date,
-      default: new Date(),
-      require: true,
     },
   },
   {

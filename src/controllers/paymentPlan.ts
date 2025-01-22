@@ -5,12 +5,13 @@ import { handleHttp } from "../utils/error.handle";
 import { getPayPalToken } from "../utils/paypal";
 import { premiumCompany } from "../consts/plans";
 import subscriptionModel from "../models/subscription";
+import roleModel from "../models/role";
+import accountTypeModel from "../models/accountType";
 
 export const subscribeToPremiumCompany = async (
   req: Request,
   res: Response
 ) => {
-  const Id = req.userId;
   const cycle = req.query.cycle ? `${req.query.cycle}` : "monthly";
 
   try {
@@ -54,6 +55,7 @@ export const subscribeToPremiumCompany = async (
   }
 };
 export const successSubscription = async (req: Request, res: Response) => {
+  const userId = req.userId;
   try {
     const subscriptionId = req.query.subscription_id;
     const access_token = await getPayPalToken();
@@ -68,11 +70,21 @@ export const successSubscription = async (req: Request, res: Response) => {
     if (response.data.status != "ACTIVE") {
       return res.status(500).json({ error: "Error_Capture_Order" });
     }
-    await subscriptionModel.create({
-      createdAt: response.data.start_time,
-      updatedAt: response.data.status_update_time,
+    const premiumCompanyRole = await roleModel.findOne({
+      name: "Premium Company",
     });
-    console.log(response.data);
+
+    await subscriptionModel.create({
+      userId,
+      reference: subscriptionId,
+      startedAt: response.data.start_time,
+      finishAt: response.data.status_update_time,
+      role: 
+    });
+
+    const accountTypeSaved = await accountTypeModel.findOneAndUpdate({userId,{role: premiumCompanyRole?._id,}
+      
+    });
 
     return res.json({ success: true });
   } catch (error) {
