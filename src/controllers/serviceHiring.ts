@@ -9,7 +9,7 @@ export const getMyServiceHiring = async (req: Request, res: Response) => {
   const customerId = req.userId;
   try {
     const serviceHirings = await serviceHiringModel
-      .find({ customerId })
+      .find({ customerId, status: { $not: { $eq: "iniciado" } } })
       .populate({ path: "reviewId", select: "value" })
       .populate({
         path: "serviceId",

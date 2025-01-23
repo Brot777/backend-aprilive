@@ -74,17 +74,20 @@ export const successSubscription = async (req: Request, res: Response) => {
       name: "Premium Company",
     });
 
+    console.log(premiumCompanyRole);
+
     await subscriptionModel.create({
       userId,
       reference: subscriptionId,
       startedAt: response.data.start_time,
       finishAt: response.data.status_update_time,
-      role: 
+      role: premiumCompanyRole?._id,
     });
 
-    const accountTypeSaved = await accountTypeModel.findOneAndUpdate({userId,{role: premiumCompanyRole?._id,}
-      
-    });
+    await accountTypeModel.findOneAndUpdate(
+      { userId },
+      { role: premiumCompanyRole?._id }
+    );
 
     return res.json({ success: true });
   } catch (error) {

@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-const userSchema = new Schema(
+const subcriptionSchema = new Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
@@ -34,4 +34,4 @@ const userSchema = new Schema(
   }
 );
 
-export default model("User", userSchema);
+export default model("Subscription", subcriptionSchema);
