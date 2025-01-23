@@ -73,14 +73,15 @@ export const successSubscription = async (req: Request, res: Response) => {
     const premiumCompanyRole = await roleModel.findOne({
       name: "Premium Company",
     });
+    console.log(response.data);
 
     console.log(premiumCompanyRole);
 
     await subscriptionModel.create({
       userId,
       reference: subscriptionId,
-      startedAt: response.data.start_time,
-      finishAt: response.data.status_update_time,
+      startedAt: response?.data?.start_time,
+      finishAt: response?.data?.status_update_time,
       role: premiumCompanyRole?._id,
     });
 
