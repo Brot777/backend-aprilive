@@ -6,7 +6,6 @@ import companyAccountModel from "../models/companyAccount";
 import userModel from "../models/user";
 import avatarModel from "../models/avatar";
 import presentationVideoModel from "../models/presentationVideo";
-import roleModel from "../models/role";
 import accountTypeModel from "../models/accountType";
 import { CompanyAccount } from "../interfaces/companyAccount";
 
@@ -44,13 +43,8 @@ export const createCompany = async (req: Request, res: Response) => {
       userId: companyUserSaved._id,
     });
 
-    const freeCompanyRole = await roleModel.findOne({
-      name: "Free Company",
-    });
-
-    const accountTypeSaved = await accountTypeModel.create({
-      userId: companyUserSaved._id,
-      role: freeCompanyRole?._id,
+    const accountTypeOwner = await accountTypeModel.findOne({
+      userId: ownerUser._id,
     });
 
     //update companyUserSaved
@@ -58,7 +52,7 @@ export const createCompany = async (req: Request, res: Response) => {
       photoUrl: avatarSaved._id,
       videoUrl: presentationVideoSaved._id,
       companyAccount: companyAccountSaved._id,
-      accountType: accountTypeSaved._id,
+      accountType: accountTypeOwner?._id,
       isCompany: true,
     });
 
