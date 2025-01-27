@@ -12,6 +12,7 @@ export const subscribeToPremiumCompany = async (
   req: Request,
   res: Response
 ) => {
+  const userId = req.userId;
   const cycle = req.query.cycle ? `${req.query.cycle}` : "monthly";
 
   try {
@@ -23,7 +24,7 @@ export const subscribeToPremiumCompany = async (
       application_context: {
         brand_name: "Aprilive",
         user_action: "SUBSCRIBE_NOW",
-        return_url: `${HOST}/api/paymentPlan/company/premium/success`,
+        return_url: `${HOST}/api/paymentPlan/company/premium/success?userId=${userId}`,
         cancel_url: `${HOST}/api/paymentPlan/company/premium/cancel`,
       },
     };
@@ -55,7 +56,7 @@ export const subscribeToPremiumCompany = async (
   }
 };
 export const successSubscription = async (req: Request, res: Response) => {
-  const userId = req.userId;
+  const userId = req.query.userId;
   try {
     const subscriptionId = req.query.subscription_id;
     const access_token = await getPayPalToken();
@@ -70,25 +71,31 @@ export const successSubscription = async (req: Request, res: Response) => {
     if (response.data.status != "ACTIVE") {
       return res.status(500).json({ error: "Error_Capture_Order" });
     }
-    const premiumCompanyRole = await roleModel.findOne({
-      name: "Premium Company",
+    const premiumUserRole = await roleModel.findOne({
+      name: "Premium User",
     });
     console.log(response.data);
 
-    console.log(premiumCompanyRole);
+    console.log(premiumUserRole);
 
     await subscriptionModel.create({
       userId,
       reference: subscriptionId,
       startedAt: response?.data?.start_time,
       finishAt: response?.data?.status_update_time,
-      role: premiumCompanyRole?._id,
+      role: premiumUserRole?._id,
     });
+    const accountTypes = await accountTypeModel.find();
+    console.log(accountTypes);
+    console.log(userId);
 
-    await accountTypeModel.findOneAndUpdate(
+    const accountType = await accountTypeModel.findOneAndUpdate(
       { userId },
-      { role: premiumCompanyRole?._id }
+      { role: premiumUserRole?._id },
+      { new: true }
     );
+
+    console.log(accountType);
 
     return res.json({ success: true });
   } catch (error) {
