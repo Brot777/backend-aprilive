@@ -1,4 +1,4 @@
-const categoriesArray = [
+export const categoriesArray = [
   { value: "Construcion y Remodelación" },
   { value: "Remodelación de departamentos y casas" },
   { value: "Servicios generales por hora" },
