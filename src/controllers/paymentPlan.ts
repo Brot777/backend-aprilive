@@ -39,7 +39,6 @@ export const subscribeToPremiumCompany = async (
         },
       }
     );
-    console.log(response);
 
     if (response.status != 201) {
       return res
@@ -76,26 +75,19 @@ export const successSubscription = async (req: Request, res: Response) => {
     });
     console.log(response.data);
 
-    console.log(premiumUserRole);
-
     await subscriptionModel.create({
       userId,
       reference: subscriptionId,
       startedAt: response?.data?.start_time,
-      finishAt: response?.data?.status_update_time,
+      finishAt: response?.data?.billing_info?.next_billing_time,
       role: premiumUserRole?._id,
     });
-    const accountTypes = await accountTypeModel.find();
-    console.log(accountTypes);
-    console.log(userId);
 
-    const accountType = await accountTypeModel.findOneAndUpdate(
+    await accountTypeModel.findOneAndUpdate(
       { userId },
       { role: premiumUserRole?._id },
       { new: true }
     );
-
-    console.log(accountType);
 
     return res.json({ success: true });
   } catch (error) {

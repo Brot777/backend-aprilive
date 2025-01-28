@@ -5,11 +5,12 @@ import {
   subscribeToPremiumCompany,
   successSubscription,
 } from "../controllers/paymentPlan";
+import { verifyActiveSubcription } from "../middlewares/paymentPlan";
 const router = Router();
 
 router.post(
   "/company/premium/subscribe",
-  [isValidToken],
+  [isValidToken, verifyActiveSubcription],
   subscribeToPremiumCompany
 );
 router.get("/company/premium/success", successSubscription);
