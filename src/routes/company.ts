@@ -11,11 +11,19 @@ import {
 } from "../controllers/company";
 import { isValidToken } from "../middlewares/verifyToken";
 import { isUser } from "../middlewares/user";
-import { isCompany, isOwnerAccountCompany } from "../middlewares/company";
+import {
+  isCompany,
+  isOwnerAccountCompany,
+  verifyActiveSubcription,
+} from "../middlewares/company";
 
 const router = Router();
 
-router.post("/", [isValidToken, isUser], createCompany);
+router.post(
+  "/",
+  [isValidToken, isUser, verifyActiveSubcription],
+  createCompany
+);
 router.get("/myCompanies", isValidToken, getMyCompanies);
 router.get("/profile/:companyUserId", getCompanyProfileById);
 router.put(

@@ -12,10 +12,11 @@ import {
   getJobbOffersByAuthorId,
 } from "../controllers/jobOffer";
 import { isValidToken } from "../middlewares/verifyToken";
+import { verifyActiveSubcription } from "../middlewares/jobOffer";
 
 const router = Router();
 
-router.post("/", isValidToken, createJobOffer);
+router.post("/", [isValidToken, verifyActiveSubcription], createJobOffer);
 router.get("/", getJobOffers);
 router.get("/personalized", isValidToken, getPersonalizedJobOffers);
 router.get("/jobOffers/:authorId", isValidToken, getJobbOffersByAuthorId);
