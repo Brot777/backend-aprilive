@@ -23,7 +23,7 @@ export const verifyActiveSubcription = async (
     if (totalJobOffer > 1 && !isActiveSubcription) {
       return res.status(402).json({
         error:
-          "Necesitas tener una subcripsion activa para crear mas ofertad de trabajo",
+          "Necesitas tener una suscripción activa para crear mas ofertas de trabajo",
       });
     }
 

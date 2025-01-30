@@ -62,7 +62,7 @@ export const verifyActiveSubcription = async (
 
     if (totalCompanies > 0 && totalCompanies < 10 && !isActiveSubcription) {
       return res.status(402).json({
-        error: "Necesitas tener una subcripsion activa para crear mas empresas",
+        error: "Necesitas tener una suscripción activa para crear mas empresas",
       });
     }
 

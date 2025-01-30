@@ -123,12 +123,25 @@ export const getJobOfferById = async (req: Request, res: Response) => {
     }
     const jobOffer = await jobOfferModel
       .findById(req.params.jobOfferId)
+      .populate("skills")
       .populate({
         path: "authorId",
         select: "_id name photoUrl accountType",
         populate: {
           path: "photoUrl",
           select: "url",
+        },
+      })
+      .populate({
+        path: "authorId",
+        select: "name isCompany accountType",
+        populate: {
+          path: "accountType",
+          select: "role",
+          populate: {
+            path: "role",
+            select: "name",
+          },
         },
       });
     if (!jobOffer) {
