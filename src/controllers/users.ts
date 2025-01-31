@@ -31,6 +31,7 @@ export const getUserProfile = async (req: Request, res: Response) => {
       .populate("photoUrl", "url")
       .populate("videoUrl", "url")
       .populate("preferences")
+      .populate("networks")
       .populate({
         path: "accountType",
         select: "role",

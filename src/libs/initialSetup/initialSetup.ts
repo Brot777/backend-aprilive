@@ -3,11 +3,13 @@ import roleModel from "../../models/role";
 import languajeModel from "../../models/languaje";
 import skillModel from "../../models/skill";
 import categoryModel from "../../models/category";
+import networkModel from "../../models/network";
 import { preferencesArray } from "./InitialData/preferences";
 import { rolesArray } from "./InitialData/roles";
-import { languajeArray } from "./InitialData/languajes";
+import { languajesArray } from "./InitialData/languajes";
 import { skillsArray } from "./InitialData/skills";
 import { categoriesArray } from "./InitialData/categories";
+import { networkArray } from "./InitialData/networks";
 
 const createPreferences = async () => {
   const countPreferences = await preferenceModel.estimatedDocumentCount();
@@ -24,7 +26,7 @@ const createRoles = async () => {
 const createLanguajes = async () => {
   const countLanguajes = await languajeModel.estimatedDocumentCount();
   if (countLanguajes > 0) return;
-  await languajeModel.insertMany(languajeArray);
+  await languajeModel.insertMany(languajesArray);
   console.log("susses create languajes in database");
 };
 
@@ -41,13 +43,22 @@ const createCategories = async () => {
   await categoryModel.insertMany(categoriesArray);
   console.log("susses create categories in database");
 };
+const createNetworks = async () => {
+  const countNetworks = await networkModel.estimatedDocumentCount();
+  if (countNetworks > 0) return;
+  await networkModel.insertMany(networkArray);
+  console.log("susses create networks in database");
+};
 export const createInitialData = async () => {
   try {
-    await createPreferences();
-    await createRoles();
-    await createLanguajes();
-    await createSkills();
-    await createCategories();
+    await Promise.all([
+      createPreferences(),
+      createRoles(),
+      createLanguajes(),
+      createSkills(),
+      createCategories(),
+      createNetworks(),
+    ]);
   } catch (error) {
     console.log(error);
   }

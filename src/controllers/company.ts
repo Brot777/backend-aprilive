@@ -103,6 +103,7 @@ export const getCompanyProfileById = async (req: Request, res: Response) => {
       .populate("videoUrl", "url")
       .populate("preferences")
       .populate("companyAccount")
+      .populate("networks")
       .populate({
         path: "accountType",
         select: "role",

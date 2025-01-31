@@ -4,4 +4,5 @@ export const folders = {
   cv: "cv",
   imagesOfService: "images_Of_service",
   imagesOfPortfolio: "images_Of_portfolio",
+  networks: "networks",
 };

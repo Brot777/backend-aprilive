@@ -1,4 +1,4 @@
-export const languajeArray = [
+export const languajesArray = [
   {
     name: "Afar - Qafar af",
   },
