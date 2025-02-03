@@ -94,7 +94,7 @@ const userSchema = new Schema<User>(
       default: [], //array de referencias de id {id, value}
     },
     networks: {
-      type: [{ type: Schema.Types.ObjectId, ref: "Network" }],
+      type: [{ type: Schema.Types.ObjectId, ref: "UserNetwork" }],
       default: [], // por definir
     },
     networkMore: {
