@@ -33,7 +33,7 @@ export const createOrder = async (req: Request, res: Response) => {
         brand_name: "Aprilive",
         landing_page: "NO_PREFERENCE",
         user_action: "PAY_NOW",
-        return_url: `${HOST}/api/paymentService/capture-order`,
+        return_url: `${HOST}/api/paymentService/capture-order?totalHours=${totalHours}&customerId=${customerId}&serviceId=${serviceId}&totalAmount=${totalAmount}`,
         cancel_url: `${HOST}/api/paymentService/cancel-order`,
       },
     };
@@ -53,13 +53,6 @@ export const createOrder = async (req: Request, res: Response) => {
     if (response.status != 201) {
       return res.status(500).send({ error: "Error_Creating_Order" });
     }
-    await serviceHiringModel.create({
-      serviceId,
-      customerId,
-      paymentId: response?.data?.id,
-      totalAmount,
-      totalHours,
-    });
 
     const approvalUrl = response.data.links.find(
       (link: any) => link.rel === "approve"
@@ -71,6 +64,10 @@ export const createOrder = async (req: Request, res: Response) => {
 };
 export const captureOrder = async (req: Request, res: Response) => {
   const { token } = req.query;
+  const customerId = req.query.customerId;
+  const serviceId = req.query.serviceId;
+  const totalHours = req.query.totalHours;
+  const totalAmount = req.query.totalAmount;
 
   try {
     const access_token = await getPayPalToken();
@@ -86,12 +83,13 @@ export const captureOrder = async (req: Request, res: Response) => {
       }
     );
 
-    await serviceHiringModel.findOneAndUpdate(
-      { paymentId: token },
-      {
-        status: "pendiente",
-      }
-    );
+    await serviceHiringModel.create({
+      serviceId,
+      customerId,
+      paymentId: token,
+      totalAmount,
+      totalHours,
+    });
 
     return res.json({ succes: true });
   } catch (error) {
@@ -99,9 +97,7 @@ export const captureOrder = async (req: Request, res: Response) => {
   }
 };
 export const cancelOrder = async (req: Request, res: Response) => {
-  const { token } = req.query;
   try {
-    await serviceHiringModel.findOneAndDelete({ paymentId: token });
     return res.json({ succes: false });
   } catch (error) {
     handleHttp(res, "Error_Cancel_Order", error);
