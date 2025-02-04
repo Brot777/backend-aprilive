@@ -24,8 +24,8 @@ const serviceHiringSchema = new Schema<ServiceHiring>(
     },
     status: {
       type: String,
-      enum: ["iniciado", "pendiente", "completado", "reembolsado"],
-      default: "iniciado",
+      enum: ["pendiente", "completado", "reembolsado"],
+      default: "pendiente",
     },
     totalAmount: {
       type: String,
