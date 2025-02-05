@@ -9,5 +9,6 @@ export interface ServiceHiring {
   paymentId: string;
   status: string;
   totalAmount: string;
+  netAmount: string;
   totalHours: string;
 }

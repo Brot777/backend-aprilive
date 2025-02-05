@@ -87,7 +87,8 @@ export const captureOrder = async (req: Request, res: Response) => {
       serviceId,
       customerId,
       paymentId: token,
-      totalAmount,
+      totalAmount: Number(totalAmount).toFixed(2),
+      netAmount: (Number(totalAmount) * 0.9).toFixed(2),
       totalHours,
     });
 

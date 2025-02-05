@@ -31,6 +31,10 @@ const serviceHiringSchema = new Schema<ServiceHiring>(
       type: String,
       default: "",
     },
+    netAmount: {
+      type: String,
+      default: "",
+    },
     totalHours: {
       type: String,
       default: "",
