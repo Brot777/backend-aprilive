@@ -20,16 +20,17 @@ export const getUsers = async (req: Request, res: Response) => {
 };
 
 export const deepLinkUserProfile = async (req: Request, res: Response) => {
-  const { userId } = req.query;
+  const { userId, typeAccount } = req.query;
   try {
     // Validar si se recibieron los parámetros
-    /* if (!typeAccount || !id) {
-          return res.status(400).send('Missing parameters');
-      } */
+    if (!typeAccount || !userId) {
+      return res.status(400).send("Missing parameters");
+    }
 
     const deepLink = `aprilive://visitProfile/${typeAccount}/${userId}`;
     // URL de la app en Play Store supuertamente
-    const playStoreUrl = `https://play.google.com/store/apps/details?id=com.aprilive`;
+    /*  const playStoreUrl = `https://play.google.com/store/apps/details?id=com.aprilive`; */
+    const playStoreUrl = `https://play.google.com/store/apps/details?id=com.supercell.clashroyale&hl=es_GT`;
 
     res.send(`
         <!DOCTYPE html>

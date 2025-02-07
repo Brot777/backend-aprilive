@@ -11,7 +11,7 @@ import {
 const router = Router();
 
 router.get("/", getUsers);
-router.get("visitUser", deepLinkUserProfile);
+router.get("/visitUser", deepLinkUserProfile);
 router.get("/profile/:userId", getUserProfile);
 router.put("/:userId", isValidToken, updateUserById);
 router.delete("/:userId", isValidToken, deleteUserById);
