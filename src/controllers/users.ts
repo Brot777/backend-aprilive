@@ -23,7 +23,7 @@ export const deepLinkUserProfile = async (req: Request, res: Response) => {
   const { userId, typeAccount } = req.query;
   try {
     // Validar si se recibieron los parámetros
-    if (!typeAccount || !userId) {
+    if (!typeAccount == undefined || !userId == undefined) {
       return res.status(400).send("Missing parameters");
     }
 
