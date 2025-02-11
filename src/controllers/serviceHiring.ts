@@ -76,8 +76,8 @@ export const changeCompletedByServiceHiringId = async (
     const service = serviceHiringUpdated?.serviceId as Service;
     console.log(serviceHiring);
 
-    await await balanceTransactionModel.create({
-      amount: serviceHiringUpdated?.totalAmount,
+    await balanceTransactionModel.create({
+      amount: serviceHiringUpdated?.netAmount,
       increase: true,
       description: "prestación de servicio",
       paymentId: serviceHiring?.paymentId,

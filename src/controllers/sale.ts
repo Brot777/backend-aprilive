@@ -77,6 +77,7 @@ export const getMySales = async (req: Request, res: Response) => {
           paymentId: 1,
           status: 1,
           totalAmount: 1,
+          netAmount: 1,
           createdAt: 1,
         },
       },
