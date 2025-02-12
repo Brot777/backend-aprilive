@@ -1,8 +1,8 @@
 import { model, Schema } from "mongoose";
 
-const conflictSchema = new Schema(
+const disputeSchema = new Schema(
   {
-    token: {
+    order: {
       type: String,
       required: true,
     },
@@ -19,15 +19,10 @@ const conflictSchema = new Schema(
       type: String,
       default: "",
     },
-    authorId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
   },
   {
     versionKey: false,
   }
 );
 
-export default model("Conflict", conflictSchema);
+export default model("Dispute", disputeSchema);
