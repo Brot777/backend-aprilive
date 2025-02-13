@@ -6,7 +6,7 @@ const disputeSchema = new Schema(
       type: String,
       required: true,
     },
-    seviceHiring: {
+    seviceHiringId: {
       type: Schema.Types.ObjectId,
       ref: "ServiceHiring",
       required: true,
@@ -18,6 +18,11 @@ const disputeSchema = new Schema(
     status: {
       type: String,
       default: "",
+    },
+    customerId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
   },
   {
