@@ -2,7 +2,7 @@ import { model, Schema } from "mongoose";
 
 const disputeSchema = new Schema(
   {
-    order: {
+    disputeId: {
       type: String,
       required: true,
     },

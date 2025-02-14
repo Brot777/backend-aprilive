@@ -24,28 +24,30 @@ export const createDisputeByServiceHiringId = async (
     if (!serviceHiring) {
       return res.status(404).json({ error: "404 service hiring not found" });
     }
-    const senderBatchId = `payout_${uuidv4()}`;
+    const disputeId = `payout_${uuidv4()}`;
     const disputeSaved = await disputeModel.create({
-      jobOfferId,
-      applicantId,
-      answers: answerIds,
-      cv,
+      disputeId,
+      serviceHiringId,
+      description,
     });
+    const disputeFind = await disputeModel
+      .findById(disputeSaved._id)
+      .populate("serviceId");
 
     // REAL TIME
-    const notificationSaved = await notificationModel.create({
+    /* const notificationSaved = await notificationModel.create({
       description: "Alguien aplico a tu oferta de trabajo",
-      type: "application",
+      type: "dispute",
       referenceId: jobOfferId,
       receiverId: authorId,
     });
     const reseiverSocketId = getSocketIdByUserId(authorId);
 
     if (reseiverSocketId)
-      io.to(reseiverSocketId).emit("newNotification", notificationSaved);
+      io.to(reseiverSocketId).emit("newNotification", notificationSaved); */
     // FINISH REAL TIME
 
-    res.status(200).json(applicationSaved);
+    res.status(200).json(disputeFind);
   } catch (error) {
     handleHttp(res, "Error_Apply_Job_Offer", error);
   }
