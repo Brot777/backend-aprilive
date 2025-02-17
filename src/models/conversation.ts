@@ -11,6 +11,20 @@ const conversationSchema = new Schema(
       ref: "Message",
       default: mongoose.Types.ObjectId,
     },
+    typeConversation: {
+      type: "",
+      referenceId: {
+        type: Schema.Types.ObjectId,
+      },
+      senderId: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+      receiverId: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    },
   },
   {
     timestamps: true,
