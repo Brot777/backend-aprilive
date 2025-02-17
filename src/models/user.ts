@@ -67,17 +67,36 @@ const userSchema = new Schema<User>(
     },
 
     country: {
-      type: String,
-      default: "",
-    },
-    provinceDepartmentState: {
-      type: String,
-      default: "",
+      name: {
+        type: String,
+        default: "",
+      },
+      iso2: {
+        type: String,
+        default: "",
+      },
     },
 
-    cityId: {
-      type: String,
-      default: "",
+    provinceDepartmentState: {
+      name: {
+        type: String,
+        default: "",
+      },
+      iso2: {
+        type: String,
+        default: "",
+      },
+    },
+
+    city: {
+      name: {
+        type: String,
+        default: "",
+      },
+      iso2: {
+        type: String,
+        default: "",
+      },
     },
 
     status: {

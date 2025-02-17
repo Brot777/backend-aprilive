@@ -2,6 +2,7 @@ import { Schema } from "mongoose";
 import { Avatar } from "./avatar.interface";
 import { PersonAccount } from "./personAccount";
 import { CompanyAccount } from "./companyAccount";
+import { CountryStateCity } from "./country";
 
 export interface User {
   _id: Schema.Types.ObjectId;
@@ -18,9 +19,9 @@ export interface User {
   phoneArea: string;
   phone: string;
   phoneVisible: boolean;
-  country: string;
-  provinceDepartmentState: string;
-  cityId: string;
+  country: CountryStateCity;
+  provinceDepartmentState: CountryStateCity;
+  city: CountryStateCity;
   status: string;
   about: string;
   preferences: Schema.Types.ObjectId[];
@@ -52,7 +53,7 @@ export type RegisterUser = Omit<
   | "sexVisible"
   | "country"
   | "provinceDepartmentState"
-  | "cityId"
+  | "city"
   | "compensation"
   | "status"
   | "birthday"
