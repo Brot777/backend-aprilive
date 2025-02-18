@@ -12,7 +12,10 @@ const conversationSchema = new Schema(
       default: mongoose.Types.ObjectId,
     },
     typeConversation: {
-      type: "",
+      type: {
+        type: String,
+        default: "",
+      },
       referenceId: {
         type: Schema.Types.ObjectId,
       },
