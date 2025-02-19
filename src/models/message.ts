@@ -30,7 +30,24 @@ const messageSchema = new Schema(
   {
     timestamps: true,
     versionKey: false,
+    discriminatorKey: "type",
+    collection: "messages",
   }
 );
 
-export default model("Message", messageSchema);
+const messageModel = model("Message", messageSchema);
+
+// quote schema
+const quoteSchema = new mongoose.Schema({
+  totalAmount: {
+    type: String,
+    default: "",
+  },
+
+  estimatedDeliveryDate: {
+    type: Date,
+    default: new Date(),
+  },
+});
+const quoteModel = messageModel.discriminator("Quote", quoteSchema);
+export { quoteModel, messageModel };
