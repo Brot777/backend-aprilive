@@ -1,5 +1,13 @@
 import mongoose, { model, Schema } from "mongoose";
 
+const options = {
+  timestamps: true,
+  versionKey: false,
+  discriminatorKey: "type",
+  collection: "messages",
+};
+
+// message schema
 const messageSchema = new Schema(
   {
     conversationId: {
@@ -27,31 +35,24 @@ const messageSchema = new Schema(
       default: false,
     },
   },
-  {
-    timestamps: true,
-    versionKey: false,
-    discriminatorKey: "type",
-    collection: "messages",
-  }
+  options
 );
 
 const messageModel = model("Message", messageSchema);
 
 // quote schema
-const quoteSchema = new mongoose.Schema({
-  totalAmount: {
-    type: String,
-    default: "",
+const quoteSchema = new mongoose.Schema(
+  {
+    totalAmount: {
+      type: String,
+      default: "",
+    },
+    estimatedDeliveryDate: {
+      type: Date,
+      default: new Date(),
+    },
   },
-  estimatedDeliveryDate: {
-    type: Date,
-    default: new Date(),
-  },
-}, {
-  timestamps: true,
-  versionKey: false,
-  discriminatorKey: "type",
-  collection: "messages",
-});
+  options
+);
 const quoteModel = messageModel.discriminator("Quote", quoteSchema);
 export { quoteModel, messageModel };

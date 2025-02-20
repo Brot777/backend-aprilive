@@ -1,5 +1,13 @@
 import mongoose, { model, Schema } from "mongoose";
 
+const options = {
+  timestamps: true,
+  versionKey: false,
+  discriminatorKey: "type",
+  collection: "conversations",
+};
+
+// conversation schema
 const conversationSchema = new Schema(
   {
     participants: {
@@ -11,28 +19,32 @@ const conversationSchema = new Schema(
       ref: "Message",
       default: mongoose.Types.ObjectId,
     },
-    typeConversation: {
-      type: {
-        type: String,
-        default: "",
-      },
-      referenceId: {
-        type: Schema.Types.ObjectId,
-      },
-      senderId: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-      receiverId: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
+  },
+  options
+);
+const conversationModel = model("Conversation", conversationSchema);
+
+// service conversation schema
+const serviceConversationSchema = new mongoose.Schema(
+  {
+    serviceId: {
+      type: Schema.Types.ObjectId,
+    },
+    customerId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    ServiceProviderId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
   },
-  {
-    timestamps: true,
-    versionKey: false,
-  }
+  options
 );
 
-export default model("Conversation", conversationSchema);
+const serviceConversationModel = conversationModel.discriminator(
+  "ServiceConversation",
+  serviceConversationSchema
+);
+
+export { conversationModel, serviceConversationModel };
