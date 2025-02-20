@@ -43,11 +43,15 @@ const quoteSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
-
   estimatedDeliveryDate: {
     type: Date,
     default: new Date(),
   },
+}, {
+  timestamps: true,
+  versionKey: false,
+  discriminatorKey: "type",
+  collection: "messages",
 });
 const quoteModel = messageModel.discriminator("Quote", quoteSchema);
 export { quoteModel, messageModel };
