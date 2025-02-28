@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { Request, Response } from "express";
-import { messageModel } from "../models/message";
+import { messageModel, requestQuoteModel,quoteModel } from "../models/message";
 import { conversationModel } from "../models/conversation";
 import userModel from "../models/user";
 import { handleHttp } from "../utils/error.handle";
@@ -66,10 +66,10 @@ export const sendMessage = async (req: Request, res: Response) => {
     handleHttp(res, "Error_Send_Message", error);
   }
 };
-export const sendCotization = async (req: Request, res: Response) => {
+export const sendRequesQuote = async (req: Request, res: Response) => {
   const receiverId = req.params.receiverId;
   const senderId = req.userId;
-  const { value } = req.body;
+  const { value ,serviceId, serviceTitle } = req.body;
   let conversationId;
 
   try {
@@ -96,11 +96,13 @@ export const sendCotization = async (req: Request, res: Response) => {
       conversationId = conversation._id;
     }
 
-    const messageSaved = await messageModel.create({
+    const messageSaved = await requestQuoteModel.create({
       conversationId,
       receiverId,
       senderId,
       value,
+      serviceId,
+      serviceTitle
     });
 
     await conversationModel.findByIdAndUpdate(conversationId, {

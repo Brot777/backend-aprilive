@@ -24,27 +24,5 @@ const conversationSchema = new Schema(
 );
 const conversationModel = model("Conversation", conversationSchema);
 
-// service conversation schema
-const serviceConversationSchema = new mongoose.Schema(
-  {
-    serviceId: {
-      type: Schema.Types.ObjectId,
-    },
-    customerId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-    },
-    ServiceProviderId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-    },
-  },
-  options
-);
 
-const serviceConversationModel = conversationModel.discriminator(
-  "ServiceConversation",
-  serviceConversationSchema
-);
-
-export { conversationModel, serviceConversationModel };
+export { conversationModel};
