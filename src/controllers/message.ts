@@ -128,6 +128,68 @@ export const sendRequesQuote = async (req: Request, res: Response) => {
     handleHttp(res, "Error_Send_Message", error);
   }
 };
+export const sendQuote = async (req: Request, res: Response) => {
+  const receiverId = req.params.receiverId;
+  const senderId = req.userId;
+  const { value ,serviceId, serviceTitle } = req.body;
+  let conversationId;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(receiverId)) {
+      return res.status(400).json({ error: "invalid receiver id" });
+    }
+    const receiver = await userModel.findById(receiverId);
+    if (!receiver) {
+      return res.status(404).json({ error: "404 receiver not found" });
+    }
+
+    const conversation = await conversationModel.findOne({
+      participants: { $all: [receiverId, senderId] },
+    });
+
+    if (!conversation) {
+      console.log("no hay conversacion todavia");
+
+      const conversationSaved = await conversationModel.create({
+        participants: [senderId, receiverId],
+      });
+      conversationId = conversationSaved._id;
+    } else {
+      conversationId = conversation._id;
+    }
+
+    const messageSaved = await requestQuoteModel.create({
+      conversationId,
+      receiverId,
+      senderId,
+      value,
+      serviceId,
+      serviceTitle
+    });
+
+    await conversationModel.findByIdAndUpdate(conversationId, {
+      lastMessage: messageSaved._id,
+    });
+
+    const reseiverSocketId = getSocketIdByUserId(receiverId);
+
+    if (reseiverSocketId) {
+      const message = await messageModel.findById(messageSaved._id).populate({
+        path: "senderId",
+        select: "name photoUrl",
+        populate: {
+          path: "photoUrl",
+          select: "url",
+        },
+      });
+      io.to(reseiverSocketId).emit("newMessage", message);
+    }
+
+    res.status(200).json(messageSaved);
+  } catch (error) {
+    handleHttp(res, "Error_Send_Message", error);
+  }
+};
 
 export const getMessagesByReceiverId = async (req: Request, res: Response) => {
   const receiverId = req.params.receiverId;
