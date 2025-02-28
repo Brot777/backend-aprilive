@@ -56,7 +56,10 @@ const requestQuoteSchema = new mongoose.Schema(
   },
   options
 );
-const requestQuoteModel = messageModel.discriminator("RequestQuote", requestQuoteSchema);
+const requestQuoteModel = messageModel.discriminator(
+  "RequestQuote",
+  requestQuoteSchema
+);
 
 // quote schema
 const quoteSchema = new mongoose.Schema(
@@ -71,20 +74,21 @@ const quoteSchema = new mongoose.Schema(
       ref: "Service",
       required: true,
     },
-    totalAmount: {
-      type: String,
-      
-    },
     totalHours: {
+      type: String,
+    },
+    pricePerHour: {
+      type: String,
+    },
+    totalAmount: {
       type: String,
     },
     estimatedDeliveryDate: {
       type: Date,
       default: new Date(),
     },
-   
   },
   options
 );
 const quoteModel = messageModel.discriminator("Quote", quoteSchema);
-export { quoteModel, messageModel,requestQuoteModel };
+export { quoteModel, messageModel, requestQuoteModel };

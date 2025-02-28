@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { Request, Response } from "express";
-import { messageModel, requestQuoteModel,quoteModel } from "../models/message";
+import { messageModel, requestQuoteModel, quoteModel } from "../models/message";
 import { conversationModel } from "../models/conversation";
 import userModel from "../models/user";
 import { handleHttp } from "../utils/error.handle";
@@ -69,7 +69,7 @@ export const sendMessage = async (req: Request, res: Response) => {
 export const sendRequesQuote = async (req: Request, res: Response) => {
   const receiverId = req.params.receiverId;
   const senderId = req.userId;
-  const { value ,serviceId, serviceTitle } = req.body;
+  const { value, serviceId, serviceTitle } = req.body;
   let conversationId;
 
   try {
@@ -102,7 +102,7 @@ export const sendRequesQuote = async (req: Request, res: Response) => {
       senderId,
       value,
       serviceId,
-      serviceTitle
+      serviceTitle,
     });
 
     await conversationModel.findByIdAndUpdate(conversationId, {
@@ -131,7 +131,15 @@ export const sendRequesQuote = async (req: Request, res: Response) => {
 export const sendQuote = async (req: Request, res: Response) => {
   const receiverId = req.params.receiverId;
   const senderId = req.userId;
-  const { value ,serviceId, serviceTitle } = req.body;
+  const {
+    value,
+    serviceId,
+    serviceTitle,
+    totalHours,
+    pricePerHour,
+    totalAmount,
+    estimatedDeliveryDate,
+  } = req.body;
   let conversationId;
 
   try {
@@ -158,13 +166,17 @@ export const sendQuote = async (req: Request, res: Response) => {
       conversationId = conversation._id;
     }
 
-    const messageSaved = await requestQuoteModel.create({
+    const messageSaved = await quoteModel.create({
       conversationId,
       receiverId,
       senderId,
       value,
       serviceId,
-      serviceTitle
+      serviceTitle,
+      totalHours,
+      pricePerHour,
+      totalAmount,
+      estimatedDeliveryDate,
     });
 
     await conversationModel.findByIdAndUpdate(conversationId, {
@@ -215,7 +227,6 @@ export const getMessagesByReceiverId = async (req: Request, res: Response) => {
     handleHttp(res, "Error_Get_Messages", error);
   }
 };
-
 export const updateReadMessageById = async (req: Request, res: Response) => {
   const messageId = req.params.messageId;
   const { read } = req.body;
