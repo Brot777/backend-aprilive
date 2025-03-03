@@ -1,9 +1,9 @@
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-import { HOST, PAYPAL_API } from "../config/paypal";
+import { PAYPAL_API } from "../config/paypal";
 import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
-import serviceHiringModel from "../models/serviceHiring";
+import { serviceHiringModel } from "../models/serviceHiring";
 import { getPayPalToken } from "../utils/paypal";
 import withdrawalModel from "../models/withdrawal";
 import balanceTransactionModel from "../models/balanceTransaction";

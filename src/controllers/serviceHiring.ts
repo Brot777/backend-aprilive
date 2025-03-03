@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
-import serviceHiringModel from "../models/serviceHiring";
+import { serviceHiringModel } from "../models/serviceHiring";
 import mongoose from "mongoose";
 import balanceTransactionModel from "../models/balanceTransaction";
 import { Service } from "../interfaces/service";

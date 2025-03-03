@@ -2,12 +2,12 @@ import axios from "axios";
 import { HOST, PAYPAL_API } from "../config/paypal";
 import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
-import serviceHiringModel from "../models/serviceHiring";
+import { serviceHiringModel } from "../models/serviceHiring";
 import { getPayPalToken } from "../utils/paypal";
 import serviceModel from "../models/service";
 
 export const createOrder = async (req: Request, res: Response) => {
-  const { totalAmount, currency, totalHours } = req.body;
+  const { totalAmount, currency, totalHours, estimatedDeliveryDate } = req.body;
   const customerId = req.userId;
   const serviceId = req.params.serviceId;
 
@@ -33,7 +33,7 @@ export const createOrder = async (req: Request, res: Response) => {
         brand_name: "Aprilive",
         landing_page: "NO_PREFERENCE",
         user_action: "PAY_NOW",
-        return_url: `${HOST}/api/paymentService/capture-order?totalHours=${totalHours}&customerId=${customerId}&serviceId=${serviceId}&totalAmount=${totalAmount}`,
+        return_url: `${HOST}/api/paymentService/capture-order?totalHours=${totalHours}&customerId=${customerId}&serviceId=${serviceId}&totalAmount=${totalAmount}&estimatedDeliveryDate=${estimatedDeliveryDate}`,
         cancel_url: `${HOST}/api/paymentService/cancel-order`,
       },
     };
@@ -68,6 +68,7 @@ export const captureOrder = async (req: Request, res: Response) => {
   const serviceId = req.query.serviceId;
   const totalHours = req.query.totalHours;
   const totalAmount = req.query.totalAmount;
+  const estimatedDeliveryDate = req.query.estimatedDeliveryDate;
 
   try {
     const access_token = await getPayPalToken();
@@ -90,6 +91,7 @@ export const captureOrder = async (req: Request, res: Response) => {
       totalAmount: Number(totalAmount).toFixed(2),
       netAmount: (Number(totalAmount) * 0.85).toFixed(2),
       totalHours,
+      estimatedDeliveryDate,
     });
 
     return res.json({ succes: true });

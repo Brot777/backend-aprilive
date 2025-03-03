@@ -39,6 +39,11 @@ const serviceHiringSchema = new Schema<ServiceHiring>(
       type: String,
       default: "",
     },
+    estimatedDeliveryDate: {
+      type: Date,
+      default: null,
+      required: true,
+    },
   },
   {
     timestamps: true,
@@ -46,4 +51,4 @@ const serviceHiringSchema = new Schema<ServiceHiring>(
   }
 );
 
-export default model("ServiceHiring", serviceHiringSchema);
+export const serviceHiringModel = model("ServiceHiring", serviceHiringSchema);

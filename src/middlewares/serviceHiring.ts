@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import serviceHiringModel from "../models/serviceHiring";
+import { serviceHiringModel } from "../models/serviceHiring";
 
 export const isCustomer = async (
   req: Request,

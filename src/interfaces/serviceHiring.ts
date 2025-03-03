@@ -11,4 +11,5 @@ export interface ServiceHiring {
   totalAmount: string;
   netAmount: string;
   totalHours: string;
+  estimatedDeliveryDate: Date;
 }

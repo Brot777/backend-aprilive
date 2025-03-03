@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import reviewModel from "../models/review";
-import serviceHiringModel from "../models/serviceHiring";
+import { serviceHiringModel } from "../models/serviceHiring";
 
 export const verrifyReviewCreated = async (
   req: Request,

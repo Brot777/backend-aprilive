@@ -85,7 +85,8 @@ const quoteSchema = new mongoose.Schema(
     },
     estimatedDeliveryDate: {
       type: Date,
-      default: new Date(),
+      default: null,
+      required: true,
     },
   },
   options

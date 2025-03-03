@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
 import reviewModel from "../models/review";
 import mongoose from "mongoose";
-import serviceHiringModel from "../models/serviceHiring";
+import { serviceHiringModel } from "../models/serviceHiring";
 
 export const createReviewByServiceHiringId = async (
   req: Request,

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { handleHttp } from "../utils/error.handle";
-import serviceHiringModel from "../models/serviceHiring";
+import { serviceHiringModel } from "../models/serviceHiring";
 import mongoose, { Types, ObjectId } from "mongoose";
 
 export const getMyBalance = async (req: Request, res: Response) => {
