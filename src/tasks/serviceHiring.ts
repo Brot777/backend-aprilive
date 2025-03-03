@@ -18,6 +18,24 @@ cron.schedule("0 0 * * *", async () => {
       }
     );
 
+    for (const servicio of serviciosPendientes) {
+      // Marcar servicio como completado
+      await servicios.updateOne(
+        { _id: servicio._id },
+        { $set: { completado: true } }
+      );
+
+      // Crear la transacción
+      await transacciones.insertOne({
+        servicioId: servicio._id,
+        compradorId: servicio.compradorId,
+        prestadorId: servicio.prestadorId,
+        monto: 100, // Ajusta según el servicio
+        fecha: new Date()
+      });
+
+      console.log(updatedServices);
+      
     console.log(
       `Servicios contratados actualizados: ${updatedServices.modifiedCount}`
     );
