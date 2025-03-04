@@ -17,8 +17,11 @@ cron.schedule("0 0 * * *", async () => {
         },
       }
     );
+console.log(updatedServices);
 
-    for (const servicio of serviciosPendientes) {
+    updatedServices.forEach(element => {
+      
+    }); {
       // Marcar servicio como completado
       await servicios.updateOne(
         { _id: servicio._id },
