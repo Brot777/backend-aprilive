@@ -18,7 +18,7 @@ cron.schedule("0 0 * * *", async () => {
       }
     );
 console.log(updatedServices);
-
+/* 
     updatedServices.forEach(element => {
       
     }); {
@@ -41,7 +41,7 @@ console.log(updatedServices);
       
     console.log(
       `Servicios contratados actualizados: ${updatedServices.modifiedCount}`
-    );
+    ); */
   } catch (error) {
     console.error("Error al actualizar los servicios:", error);
   }
