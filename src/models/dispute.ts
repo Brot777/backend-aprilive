@@ -19,7 +19,7 @@ const disputeSchema = new Schema(
       type: String,
       default: "",
     },
-    customerId: {
+    InitiatorId: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
