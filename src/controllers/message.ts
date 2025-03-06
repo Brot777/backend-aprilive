@@ -147,12 +147,12 @@ export const sendQuote = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "invalid receiver id" });
     }
     const estimatedDeliveryDateObj = new Date(estimatedDeliveryDate);
-    const nowOBj = new Date();
+  /*   const nowOBj = new Date();
     if (nowOBj > estimatedDeliveryDateObj) {
       return res
         .status(400)
         .json({ error: "la fecha estimada debe ser mayor a la fecha atual" });
-    }
+    } */
     const receiver = await userModel.findById(receiverId);
     if (!receiver) {
       return res.status(404).json({ error: "404 receiver not found" });

@@ -26,6 +26,7 @@ const balanceTransactionSchema = new Schema(
   },
   {
     versionKey: false,
+    timestamps: true,
   }
 );
 

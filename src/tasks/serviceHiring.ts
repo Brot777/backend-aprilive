@@ -12,6 +12,9 @@ cron.schedule("0 0 * * *", async () => {
     const serviceHirings = await serviceHiringModel.find({
       status: "pendiente",
       estimatedDeliveryDate: { $lte: deadline },
+    }).populate({
+      path: "serviceId",
+      select: "authorId",
     });
     const dataServiceHiringUpdated = await serviceHiringModel.updateMany(
       {
@@ -27,6 +30,8 @@ cron.schedule("0 0 * * *", async () => {
 
     serviceHirings.forEach(async (serviceHiring: ServiceHiring) => {
       const service = serviceHiring?.serviceId as Service;
+      console.log(service);
+      
       await balanceTransactionModel.create({
         amount: serviceHiring?.netAmount,
         increase: true,
