@@ -31,7 +31,7 @@ export const createDisputeByServiceHiringId = async (
     }
     const service = serviceHiring.serviceId as Service;
     const authorId = service.authorId as ObjectId;
-    const disputeId = `payout_${uuidv4()}`;
+    const disputeId = `dispute_${uuidv4()}`;
     const disputeSaved = await disputeModel.create({
       disputeId,
       serviceHiringId,
