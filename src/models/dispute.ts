@@ -19,11 +19,24 @@ const disputeSchema = new Schema(
       type: String,
       default: "",
     },
-    InitiatorId: {
+    customerId: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
+    sellerId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    reason: {
+      type: String,
+      default: "",
+      required: true,
+    },
+    sellerAccept:{ 
+      type: Boolean,
+      default: null}
   },
   {
     versionKey: false,

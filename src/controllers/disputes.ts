@@ -39,11 +39,11 @@ export const createDisputeByServiceHiringId = async (
     });
     const disputeFind = await disputeModel
       .findById(disputeSaved._id)
-      .populate("serviceId");
+      .populate("serviceHiringId");
 
     // REAL TIME
     const notificationSaved = await notificationModel.create({
-      description: "Un usuario inicio una disputa para el servicio contratado",
+      description: "Un usuario inicio una disputa para una de tus contrataciones",
       type: "dispute",
       referenceId: disputeSaved._id,
       receiverId: authorId,
@@ -55,6 +55,72 @@ export const createDisputeByServiceHiringId = async (
     // FINISH REAL TIME
 
     res.status(200).json(disputeFind);
+  } catch (error) {
+    handleHttp(res, "Error_Apply_Job_Offer", error);
+  }
+};
+
+export const getCustomerDisputes = async (
+  req: Request,
+  res: Response
+) => {
+    const limit = 10;
+  const queryPage = req.query.page ? `${req.query.page}` : "1";
+  let page = Number(queryPage);
+  const InitiatorId = req.userId;
+  try {
+    const disputes = await disputeModel.find({InitiatorId})
+    .skip((page - 1) * limit)
+      .limit(limit)
+      .populate({
+        path: "serviceId",
+        select: "authorId",
+      })
+
+      let totalDocs = await disputeModel.count({InitiatorId}); //Possible performance improvement: cache the value
+          let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
+
+          return res.status(200).json({
+            docs: disputes,
+            currentPage: page,
+            limit,
+            totalDocs,
+            totalPages,
+          });
+    
+  } catch (error) {
+    handleHttp(res, "Error_Apply_Job_Offer", error);
+  }
+};
+
+export const getSellerDisputes = async (
+  req: Request,
+  res: Response
+) => {
+    const limit = 10;
+  const queryPage = req.query.page ? `${req.query.page}` : "1";
+  let page = Number(queryPage);
+  const InitiatorId = req.userId;
+  try {
+    const disputes = await disputeModel.find({InitiatorId})
+    .skip((page - 1) * limit)
+      .limit(limit)
+      .populate({
+        path: "serviceId",
+        select: "authorId",
+      })
+
+      let totalDocs = await disputeModel.count({InitiatorId}); //Possible performance improvement: cache the value
+          let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
+
+          return res.status(200).json({
+            docs: disputes,
+            currentPage: page,
+            limit,
+            totalDocs,
+            totalPages,
+          });
+    
   } catch (error) {
     handleHttp(res, "Error_Apply_Job_Offer", error);
   }
