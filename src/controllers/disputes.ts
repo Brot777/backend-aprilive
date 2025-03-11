@@ -13,11 +13,11 @@ export const createDisputeByServiceHiringId = async (
   res: Response
 ) => {
   const serviceHiringId = req.params.serviceHiringId;
-  const InitiatorId = req.userId;
-  const { description } = req.body;
+  const customerId = req.userId;
+  const { description, reason } = req.body;
   try {
     if (!mongoose.Types.ObjectId.isValid(serviceHiringId)) {
-      return res.status(400).json({ error: "invalid dispute id" });
+      return res.status(400).json({ error: "invalid serviceHiring id" });
     }
     const serviceHiring = await serviceHiringModel
       .findById(serviceHiringId)
@@ -36,14 +36,19 @@ export const createDisputeByServiceHiringId = async (
       disputeId,
       serviceHiringId,
       description,
+      status: "waiting_seller_response",
+      customerId,
+      sellerId: authorId,
+      reason,
     });
-    const disputeFind = await disputeModel
+    /* const disputeFind = await disputeModel
       .findById(disputeSaved._id)
       .populate("serviceHiringId");
-
+ */
     // REAL TIME
     const notificationSaved = await notificationModel.create({
-      description: "Un usuario inicio una disputa para una de tus contrataciones",
+      description:
+        "Un usuario inicio una disputa para una de tus contrataciones",
       type: "dispute",
       referenceId: disputeSaved._id,
       receiverId: authorId,
@@ -54,74 +59,74 @@ export const createDisputeByServiceHiringId = async (
       io.to(reseiverSocketId).emit("newNotification", notificationSaved);
     // FINISH REAL TIME
 
-    res.status(200).json(disputeFind);
+    res.status(200).json(disputeSaved);
   } catch (error) {
-    handleHttp(res, "Error_Apply_Job_Offer", error);
+    handleHttp(res, "Error_Create_Dispute", error);
   }
 };
 
-export const getCustomerDisputes = async (
-  req: Request,
-  res: Response
-) => {
-    const limit = 10;
+export const getCustomerDisputes = async (req: Request, res: Response) => {
+  const limit = 10;
   const queryPage = req.query.page ? `${req.query.page}` : "1";
   let page = Number(queryPage);
-  const InitiatorId = req.userId;
+  const customerId = req.userId;
   try {
-    const disputes = await disputeModel.find({InitiatorId})
-    .skip((page - 1) * limit)
+    const disputes = await disputeModel
+      .find({ customerId })
+      .skip((page - 1) * limit)
       .limit(limit)
       .populate({
-        path: "serviceId",
-        select: "authorId",
-      })
+        path: "serviceHiringId",
+        select: "serviceId totalAmount",
+        populate: {
+          path: "serviceId",
+        },
+      });
 
-      let totalDocs = await disputeModel.count({InitiatorId}); //Possible performance improvement: cache the value
-          let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
+    let totalDocs = await disputeModel.count({ customerId }); //Possible performance improvement: cache the value
+    let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
 
-          return res.status(200).json({
-            docs: disputes,
-            currentPage: page,
-            limit,
-            totalDocs,
-            totalPages,
-          });
-    
+    return res.status(200).json({
+      docs: disputes,
+      currentPage: page,
+      limit,
+      totalDocs,
+      totalPages,
+    });
   } catch (error) {
-    handleHttp(res, "Error_Apply_Job_Offer", error);
+    handleHttp(res, "Error_Get_Customer_Disputes", error);
   }
 };
 
-export const getSellerDisputes = async (
-  req: Request,
-  res: Response
-) => {
-    const limit = 10;
+export const getSellerDisputes = async (req: Request, res: Response) => {
+  const limit = 10;
   const queryPage = req.query.page ? `${req.query.page}` : "1";
   let page = Number(queryPage);
-  const InitiatorId = req.userId;
+  const sellerId = req.userId;
   try {
-    const disputes = await disputeModel.find({InitiatorId})
-    .skip((page - 1) * limit)
+    const disputes = await disputeModel
+      .find({ sellerId })
+      .skip((page - 1) * limit)
       .limit(limit)
       .populate({
-        path: "serviceId",
-        select: "authorId",
-      })
+        path: "serviceHiringId",
+        select: "serviceId totalAmount",
+        populate: {
+          path: "serviceId",
+        },
+      });
 
-      let totalDocs = await disputeModel.count({InitiatorId}); //Possible performance improvement: cache the value
-          let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
+    let totalDocs = await disputeModel.count({ sellerId }); //Possible performance improvement: cache the value
+    let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
 
-          return res.status(200).json({
-            docs: disputes,
-            currentPage: page,
-            limit,
-            totalDocs,
-            totalPages,
-          });
-    
+    return res.status(200).json({
+      docs: disputes,
+      currentPage: page,
+      limit,
+      totalDocs,
+      totalPages,
+    });
   } catch (error) {
-    handleHttp(res, "Error_Apply_Job_Offer", error);
+    handleHttp(res, "Error_Seller_Disputes", error);
   }
 };

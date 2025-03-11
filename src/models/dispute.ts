@@ -6,7 +6,7 @@ const disputeSchema = new Schema(
       type: String,
       required: true,
     },
-    seviceHiringId: {
+    serviceHiringId: {
       type: Schema.Types.ObjectId,
       ref: "ServiceHiring",
       required: true,
@@ -34,9 +34,10 @@ const disputeSchema = new Schema(
       default: "",
       required: true,
     },
-    sellerAccept:{ 
+    sellerAccept: {
       type: Boolean,
-      default: null}
+      default: null,
+    },
   },
   {
     versionKey: false,
