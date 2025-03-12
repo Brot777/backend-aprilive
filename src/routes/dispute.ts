@@ -4,12 +4,23 @@ import {
   createDisputeByServiceHiringId,
   getCustomerDisputes,
   getSellerDisputes,
+  updateSellerResponseById,
 } from "../controllers/disputes";
+import { verrifyDisputeCreated } from "../middlewares/disapute";
 
 const router = Router();
 
-router.post("/:serviceHiringId", isValidToken, createDisputeByServiceHiringId);
+router.post(
+  "/:serviceHiringId",
+  [isValidToken, verrifyDisputeCreated],
+  createDisputeByServiceHiringId
+);
 router.get("/my-customer-disputes", isValidToken, getCustomerDisputes);
 router.get("/my-seller-disputes", isValidToken, getSellerDisputes);
+router.patch(
+  "/update-seller-response/:disputeId",
+  isValidToken,
+  updateSellerResponseById
+);
 
 export { router };

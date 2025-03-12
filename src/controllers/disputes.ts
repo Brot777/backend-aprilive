@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 import { handleHttp } from "../utils/error.handle";
 import { serviceHiringModel } from "../models/serviceHiring";
-import disputeModel from "../models/dispute";
+import { disputeModel } from "../models/dispute";
 import { Service } from "../interfaces/service";
 import notificationModel from "../models/notification";
 import { getSocketIdByUserId, io } from "../socket/socket";
@@ -31,9 +31,9 @@ export const createDisputeByServiceHiringId = async (
     }
     const service = serviceHiring.serviceId as Service;
     const authorId = service.authorId as ObjectId;
-    const disputeId = `dispute_${uuidv4()}`;
+    const key = `dispute_${uuidv4()}`;
     const disputeSaved = await disputeModel.create({
-      disputeId,
+      key,
       serviceHiringId,
       description,
       status: "waiting_seller_response",
@@ -128,5 +128,34 @@ export const getSellerDisputes = async (req: Request, res: Response) => {
     });
   } catch (error) {
     handleHttp(res, "Error_Seller_Disputes", error);
+  }
+};
+
+export const updateSellerResponseById = async (req: Request, res: Response) => {
+  const disputeId = req.params.disputeId;
+  const customerId = req.userId;
+  const { sellerAccept } = req.body;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(disputeId)) {
+      return res.status(400).json({ error: "invalid dispute id" });
+    }
+    const dispute = await disputeModel.findById(disputeId);
+    if (!dispute) {
+      return res.status(404).json({ error: "404 dispute not found" });
+    }
+
+    const disputeUpdated = await disputeModel.findByIdAndUpdate(
+      disputeId,
+      {
+        $set: {
+          sellerAccept,
+        },
+      },
+      { new: true }
+    );
+
+    res.status(200).json(disputeUpdated);
+  } catch (error) {
+    handleHttp(res, "Error_Update_Response_Seller", error);
   }
 };

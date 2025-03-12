@@ -2,7 +2,7 @@ import { model, Schema } from "mongoose";
 
 const disputeSchema = new Schema(
   {
-    disputeId: {
+    key: {
       type: String,
       required: true,
     },
@@ -44,4 +44,4 @@ const disputeSchema = new Schema(
   }
 );
 
-export default model("Dispute", disputeSchema);
+export const disputeModel = model("Dispute", disputeSchema);
