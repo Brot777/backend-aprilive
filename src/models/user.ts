@@ -10,17 +10,21 @@ const userSchema = new Schema<User>(
       unique: true,
     },
 
-    email: {
+    password: {
       type: String,
       required: true,
     },
 
-    password: {
+    email: {
       type: String,
       required: true,
     },
     /* FIN ----REQUERIDOS AL INICIAR SESION */
 
+    emailVisible: {
+      type: String,
+      required: true,
+    },
     accountType: {
       type: Schema.Types.ObjectId,
       ref: "AccountType",

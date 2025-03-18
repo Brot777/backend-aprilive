@@ -9,8 +9,9 @@ export interface User {
   accountType: Schema.Types.ObjectId;
   name: string;
   username: string;
-  email: string;
   password: string;
+  email: string;
+  emailVisible: string;
   photoUrl: Schema.Types.ObjectId | Avatar;
   profileUrl: string;
   videoUrl: Schema.Types.ObjectId;
@@ -37,34 +38,23 @@ export type RegisterUser = Omit<
   | "_id"
   | "accountType"
   | "name"
-  | "firstName"
-  | "lastName"
+  | "emailVisible"
   | "photoUrl"
   | "profileUrl"
   | "videoUrl"
   | "proTitle"
   | "proTitleVisible"
-  | "proEmail"
-  | "proEmailVisible"
   | "phoneArea"
   | "phone"
   | "phoneVisible"
-  | "sex"
-  | "sexVisible"
   | "country"
   | "provinceDepartmentState"
   | "city"
-  | "compensation"
   | "status"
-  | "birthday"
   | "about"
   | "preferences"
   | "networks"
   | "networkMore"
-  | "workExperience"
-  | "education"
-  | "languages"
-  | "myCompanies"
   | "personAccount"
   | "companyAccount"
   | "isCompany"
