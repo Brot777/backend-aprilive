@@ -1,5 +1,15 @@
 import { Schema } from "mongoose";
 
+export interface Compensation {
+  _id: string;
+  typeCompensation: string;
+  payment_currency: string;
+  payment_amount_min: number;
+  payment_amount_max: number;
+  payment_date: string;
+  visible: boolean;
+}
+
 export interface PersonAccount {
   _id: string;
   firstName: string;
@@ -8,8 +18,8 @@ export interface PersonAccount {
   proEmailVisible: boolean;
   sex: string;
   sexVisible: boolean;
-  compensation: Schema.Types.Mixed;
-  birthday: Date;
+  compensation: Compensation;
+  dateOfBirth: Date;
   workExperience: Schema.Types.ObjectId[];
   education: Schema.Types.ObjectId[];
   languages: Schema.Types.ObjectId[];

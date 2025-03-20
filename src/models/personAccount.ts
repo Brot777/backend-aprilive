@@ -29,17 +29,33 @@ const personAccountSchema = new Schema<PersonAccount>(
     },
 
     compensation: {
-      type: Schema.Types.Mixed,
-      default: {
-        type: "",
-        payment_currency: "",
-        payment_amount_min: 0,
-        payment_amount_max: 0,
-        payment_date: "",
+      typeCompensation: {
+        type: String,
+        default: "",
+      },
+      payment_currency: {
+        type: String,
+        default: "",
+      },
+      payment_amount_min: {
+        type: Number,
+        default: 0,
+      },
+      payment_amount_max: {
+        type: Number,
+        default: 0,
+      },
+      payment_date: {
+        type: String,
+        default: "",
+      },
+      visible: {
+        type: Boolean,
+        default: true,
       },
     },
 
-    birthday: {
+    dateOfBirth: {
       type: Date,
       default: new Date(),
     },
