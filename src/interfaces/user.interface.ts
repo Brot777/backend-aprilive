@@ -11,7 +11,7 @@ export interface User {
   username: string;
   password: string;
   email: string;
-  emailVisible: string;
+  emailVisible: boolean;
   photoUrl: Schema.Types.ObjectId | Avatar;
   profileUrl: string;
   videoUrl: Schema.Types.ObjectId;

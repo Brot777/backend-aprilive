@@ -22,8 +22,8 @@ const userSchema = new Schema<User>(
     /* FIN ----REQUERIDOS AL INICIAR SESION */
 
     emailVisible: {
-      type: String,
-      required: true,
+      type: Boolean,
+      default:true
     },
     accountType: {
       type: Schema.Types.ObjectId,
