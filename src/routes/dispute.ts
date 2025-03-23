@@ -4,6 +4,7 @@ import {
   createDisputeByServiceHiringId,
   getCustomerDisputes,
   getSellerDisputes,
+  updateGeneralStatusById,
   updateSellerResponseById,
 } from "../controllers/disputes";
 import { verrifyDisputeCreated } from "../middlewares/disapute";
@@ -21,6 +22,11 @@ router.patch(
   "/update-seller-response/:disputeId",
   isValidToken,
   updateSellerResponseById
+);
+router.patch(
+  "/update-general-status/:disputeId",
+  isValidToken,
+  updateGeneralStatusById
 );
 
 export { router };

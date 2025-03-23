@@ -159,3 +159,31 @@ export const updateSellerResponseById = async (req: Request, res: Response) => {
     handleHttp(res, "Error_Update_Response_Seller", error);
   }
 };
+export const updateGeneralStatusById = async (req: Request, res: Response) => {
+  const disputeId = req.params.disputeId;
+  const customerId = req.userId;
+  const { status } = req.body;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(disputeId)) {
+      return res.status(400).json({ error: "invalid dispute id" });
+    }
+    const dispute = await disputeModel.findById(disputeId);
+    if (!dispute) {
+      return res.status(404).json({ error: "404 dispute not found" });
+    }
+
+    const disputeUpdated = await disputeModel.findByIdAndUpdate(
+      disputeId,
+      {
+        $set: {
+          status,
+        },
+      },
+      { new: true }
+    );
+
+    res.status(200).json(disputeUpdated);
+  } catch (error) {
+    handleHttp(res, "Error_Update_General_Status", error);
+  }
+};
