@@ -28,7 +28,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@types/axios": "^0.14.0",
+    "@types/axios": "^0.14.4",
     "@types/bcryptjs": "^2.4.2",
     "@types/cors": "^2.8.13",
     "@types/dotenv": "^8.2.0",
