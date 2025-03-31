@@ -83,3 +83,15 @@ export const cancelSubcriptionById = async (req: Request, res: Response) => {
     handleHttp(res, "Error_Get_Subscriptions_By_UserId", error);
   }
 };
+
+export const webhookCancelSubcription = async (req: Request, res: Response) => {
+  const body = req.body;
+  const userId = req.userId;
+  try {
+    console.log(body);
+
+    return res.status(200).json(body);
+  } catch (error) {
+    handleHttp(res, "Error_Get_Subscriptions_By_UserId", error);
+  }
+};
