@@ -15,7 +15,7 @@ app.use(morgan("dev"));
 app.use(cors());
 
 //  ROUTES
-app.use("/api", (req: Request, res: Response) => {
+app.get("/api", (req: Request, res: Response) => {
   const userAgent = req.headers["user-agent"];
   console.log(userAgent);
 });
