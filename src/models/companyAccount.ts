@@ -21,6 +21,11 @@ const companyAccountSchema = new Schema<CompanyAccount>(
       type: String,
       default: "",
     },
+    addressVisible: {
+      type: Boolean,
+      default: true,
+    },
+
     sector: {
       type: String,
       default: "",

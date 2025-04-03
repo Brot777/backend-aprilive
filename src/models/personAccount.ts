@@ -88,6 +88,10 @@ const personAccountSchema = new Schema<PersonAccount>(
       ref: "Cv",
       default: mongoose.Types.ObjectId,
     },
+    cvVisible: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: false,

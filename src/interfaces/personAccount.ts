@@ -25,5 +25,6 @@ export interface PersonAccount {
   languages: Schema.Types.ObjectId[];
   skills: Schema.Types.ObjectId[];
   cv: Schema.Types.ObjectId;
+  cvVisible: boolean;
   userId: Schema.Types.ObjectId;
 }

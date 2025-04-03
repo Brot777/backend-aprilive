@@ -15,10 +15,6 @@ app.use(morgan("dev"));
 app.use(cors());
 
 //  ROUTES
-app.get("/api", (req: Request, res: Response) => {
-  const userAgent = req.headers["user-agent"];
-  console.log(userAgent);
-});
 app.use("/api/", routes);
 
 /* STATIC FILES */

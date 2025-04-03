@@ -6,6 +6,7 @@ export interface CompanyAccount {
   web: string;
   remote: boolean;
   address: string;
+  addressVisible: boolean;
   sector: string;
   specialties: [];
   userId: Schema.Types.ObjectId;
