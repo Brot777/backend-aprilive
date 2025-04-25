@@ -204,3 +204,25 @@ export const updatePasswordByUserId = async (req: Request, res: Response) => {
     handleHttp(res, "Error_Update_Password", error);
   }
 };
+
+export const temporalUpdatePassword = async (req: Request, res: Response) => {
+  const { email, newPassword } = req.body;
+  try {
+    const userFound = await userModel.findOne({
+      email,
+      isCompany: false,
+    });
+    console.log(userFound);
+
+    if (!userFound) {
+      return res.status(404).json({ error: "404 user not found" });
+    }
+
+    const hashPassword = await encryptPassword(newPassword);
+    await userModel.findOneAndUpdate({ email }, { password: hashPassword });
+
+    res.status(200).json({ msj: "password updated successfully" });
+  } catch (error) {
+    handleHttp(res, "Error_Update_Password", error);
+  }
+};

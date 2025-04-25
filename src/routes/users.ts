@@ -7,6 +7,7 @@ import {
   deleteUserById,
   updatePasswordByUserId,
   deepLinkUserProfile,
+  temporalUpdatePassword,
 } from "../controllers/users";
 const router = Router();
 
@@ -16,6 +17,6 @@ router.get("/profile/:userId", getUserProfile);
 router.put("/:userId", isValidToken, updateUserById);
 router.delete("/:userId", isValidToken, deleteUserById);
 router.patch("/updatePassword", isValidToken, updatePasswordByUserId);
-11111;
+router.patch("/temporalPassword", isValidToken, temporalUpdatePassword);
 
 export { router };
