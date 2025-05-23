@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 import { handleHttp } from "../utils/error.handle";
-import userModel from "../models/user";
+import { userModel } from "../models/user";
 import personAccountModel from "../models/personAccount";
 import workExperienceModel from "./../models/workExperience";
 

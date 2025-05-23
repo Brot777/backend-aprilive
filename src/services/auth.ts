@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { comparePassword, encryptPassword } from "../utils/bcrypt.handle";
 import { LoginUser, RegisterUser } from "../interfaces/user.interface";
-import userModel from "../models/user";
+import { userModel } from "../models/user";
 import avatarModel from "../models/avatar";
 import presentationVideoModel from "../models/presentationVideo";
 import personAccountModel from "../models/personAccount";

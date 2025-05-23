@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
 import networkModel from "../models/network";
-import userModel from "../models/user";
+import { userModel } from "../models/user";
 import userNetworkModel from "../models/userNetwork";
 import mongoose from "mongoose";
 

@@ -4,7 +4,7 @@ import jobOfferModel from "../models/jobOffer";
 import serviceModel from "../models/service";
 import portfolioModel from "../models/portfolio";
 import { convertTextNormalize } from "../utils/normalizeText";
-import userModel from "../models/user";
+import { userModel } from "../models/user";
 
 export const searchJobOffers = async (req: Request, res: Response) => {
   const { typeJob, minSalary, maxSalary, skill } = req.query;

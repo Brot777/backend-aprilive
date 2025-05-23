@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
-import userModel from "../models/user";
+import { userModel } from "../models/user";
 import followerModel from "../models/follower";
 import { handleHttp } from "../utils/error.handle";
 import notificationModel from "../models/notification";

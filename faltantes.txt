@@ -1,7 +1,5 @@
 1. HandleError mas robusto
 
-3. limitar numero de ofertas de trabajo
-
 3. Expandir el limite de 8 mb
 
 4. limitar las rutas para que solo puedan modificarse por el autor

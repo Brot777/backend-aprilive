@@ -144,7 +144,8 @@ const userSchema = new Schema<User>(
   }
 );
 userSchema.index({ name: "text", username: "text" });
-export default model("User", userSchema);
+export const userModel= model("User", userSchema);
+
 
 /* 
 

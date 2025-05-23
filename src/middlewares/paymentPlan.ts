@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import userModel from "../models/user";
+import { userModel } from "../models/user";
 import subscriptionModel from "../models/subscription";
 
 export const verifyActiveSubcription = async (

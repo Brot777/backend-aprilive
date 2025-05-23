@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { Request, Response } from "express";
 import { messageModel, requestQuoteModel, quoteModel } from "../models/message";
 import { conversationModel } from "../models/conversation";
-import userModel from "../models/user";
+import { userModel } from "../models/user";
 import { handleHttp } from "../utils/error.handle";
 import { getSocketIdByUserId, io } from "../socket/socket";
 

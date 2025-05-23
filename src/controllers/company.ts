@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import mongoose from "mongoose";
 import { handleHttp } from "../utils/error.handle";
 import companyAccountModel from "../models/companyAccount";
-import userModel from "../models/user";
+import { userModel } from "../models/user";
 import avatarModel from "../models/avatar";
 import presentationVideoModel from "../models/presentationVideo";
 import accountTypeModel from "../models/accountType";
