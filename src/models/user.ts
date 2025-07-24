@@ -16,15 +16,22 @@ const userSchema = new Schema<User>(
     },
 
     email: {
-      type: String,
-      required: true,
+      value: {
+        type: String,
+        require: true,
+      },
+      emailVisible: {
+        type: Boolean,
+        default: true,
+      },
+      verified: {
+        type: Boolean,
+        default: false,
+      },
     },
+
     /* FIN ----REQUERIDOS AL INICIAR SESION */
 
-    emailVisible: {
-      type: Boolean,
-      default:true
-    },
     accountType: {
       type: Schema.Types.ObjectId,
       ref: "AccountType",
@@ -144,8 +151,7 @@ const userSchema = new Schema<User>(
   }
 );
 userSchema.index({ name: "text", username: "text" });
-export const userModel= model("User", userSchema);
-
+export const userModel = model("User", userSchema);
 
 /* 
 
