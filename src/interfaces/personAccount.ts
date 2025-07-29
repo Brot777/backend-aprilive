@@ -9,6 +9,9 @@ export interface Compensation {
   payment_date: string;
   visible: boolean;
 }
+export interface Oauth2 {
+  googleId: string;
+}
 
 export interface PersonAccount {
   _id: string;
@@ -27,4 +30,5 @@ export interface PersonAccount {
   cv: Schema.Types.ObjectId;
   cvVisible: boolean;
   userId: Schema.Types.ObjectId;
+  oauth2: Oauth2;
 }

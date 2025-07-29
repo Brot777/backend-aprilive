@@ -92,6 +92,12 @@ const personAccountSchema = new Schema<PersonAccount>(
       type: Boolean,
       default: true,
     },
+    oauth2: {
+      googleId: {
+        type: String,
+        default: null,
+      },
+    },
   },
   {
     timestamps: false,
