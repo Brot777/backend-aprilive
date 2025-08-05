@@ -7,6 +7,8 @@ import presentationVideoModel from "../models/presentationVideo";
 import personAccountModel from "../models/personAccount";
 import roleModel from "../models/role";
 import accountTypeModel from "../models/accountType";
+import nodemailer from "nodemailer";
+import SMTPTransport from "nodemailer/lib/smtp-transport";
 
 export const registerNewUser = async (user: RegisterUser) => {
   user.password = await encryptPassword(user.password);
@@ -83,4 +85,22 @@ export const loginUser = async ({ email, password }: LoginUser) => {
     },
     status: 200,
   };
+};
+
+export const sendEmailResetPassword = async (
+  email: string,
+  transporter: nodemailer.Transporter<
+    SMTPTransport.SentMessageInfo,
+    SMTPTransport.Options
+  >,
+  subject: string,
+  html: string
+) => {
+  const info = await transporter.sendMail({
+    from: `APRILIVE <${email}>`,
+    to: email,
+    subject,
+    text: "Aprilive",
+    html, // HTML body
+  });
 };

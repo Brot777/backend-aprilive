@@ -20,3 +20,12 @@ export const singin = async (req: Request, res: Response) => {
     handleHttp(res, "Something went wrong", error);
   }
 };
+export const recoverPassword = async (req: Request, res: Response) => {
+  /* try {
+    const { email } = req.body;
+    const { response, status } = await loginUser({ email, });
+    res.status(status).json(response);
+  } catch (error) {
+    handleHttp(res, "Something went wrong", error);
+  } */
+};
