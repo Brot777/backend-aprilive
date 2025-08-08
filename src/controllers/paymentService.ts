@@ -5,6 +5,7 @@ import { handleHttp } from "../utils/error.handle";
 import { serviceHiringModel } from "../models/serviceHiring";
 import { getPayPalToken } from "../utils/paypal";
 import serviceModel from "../models/service";
+import { Schema } from "mongoose";
 
 export const createOrder = async (req: Request, res: Response) => {
   const { totalAmount, currency, totalHours, estimatedDeliveryDate } = req.body;
@@ -18,7 +19,7 @@ export const createOrder = async (req: Request, res: Response) => {
         error: "service not found",
       });
     }
-
+    const serviceProviderId = service.authorId as Schema.Types.ObjectId;
     const order = {
       intent: "CAPTURE",
       purchase_units: [
@@ -33,7 +34,7 @@ export const createOrder = async (req: Request, res: Response) => {
         brand_name: "Aprilive",
         landing_page: "NO_PREFERENCE",
         user_action: "PAY_NOW",
-        return_url: `${HOST}/api/paymentService/capture-order?totalHours=${totalHours}&customerId=${customerId}&serviceId=${serviceId}&totalAmount=${totalAmount}&estimatedDeliveryDate=${estimatedDeliveryDate}`,
+        return_url: `${HOST}/api/paymentService/capture-order?totalHours=${totalHours}&customerId=${customerId}&serviceId=${serviceId}&totalAmount=${totalAmount}&estimatedDeliveryDate=${estimatedDeliveryDate}&serviceProviderId=${serviceProviderId}`,
         cancel_url: `${HOST}/api/paymentService/cancel-order`,
       },
     };
@@ -69,6 +70,7 @@ export const captureOrder = async (req: Request, res: Response) => {
   const totalHours = req.query.totalHours;
   const totalAmount = req.query.totalAmount;
   const estimatedDeliveryDate = req.query.estimatedDeliveryDate;
+  const serviceProviderId = req.query.serviceProviderId;
 
   try {
     const access_token = await getPayPalToken();
@@ -87,6 +89,7 @@ export const captureOrder = async (req: Request, res: Response) => {
     await serviceHiringModel.create({
       serviceId,
       customerId,
+      serviceProviderId,
       paymentId: token,
       totalAmount: Number(totalAmount).toFixed(2),
       netAmount: (Number(totalAmount) * 0.85).toFixed(2),
