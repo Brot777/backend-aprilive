@@ -7,10 +7,9 @@ export const emailData = {
 
 // Create a test account or replace with real credentials.
 export const transporter = nodemailer.createTransport({
-  host: "smtp.ethereal.email",
-  port: 587,
-  tls: { rejectUnauthorized: true },
-  secure: false, // true for 465, false for other ports
+  host: "smtp.hostinger.com",
+  port: 465,
+  secure: true, // true for 465, false for other ports
   auth: {
     user: emailData.email,
     pass: emailData.password,
