@@ -226,3 +226,42 @@ export const temporalUpdatePassword = async (req: Request, res: Response) => {
     handleHttp(res, "Error_Update_Password", error);
   }
 };
+
+export const deepLinkChangePassword = async (req: Request, res: Response) => {
+  const { id, typeAccount } = req.query;
+  try {
+    // Validar si se recibieron los parámetros
+    if (typeAccount == undefined || id == undefined) {
+      return res.status(400).send("Missing parameters");
+    }
+
+    const deepLink = `aprilive://visitProfile/${typeAccount}/${id}`;
+    // URL de la app en Play Store supuertamente
+    /*  const playStoreUrl = `https://play.google.com/store/apps/details?id=com.aprilive`; */
+    const playStoreUrl = `https://play.google.com/store/apps/details?id=com.supercell.clashroyale&hl=es_GT`;
+
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Redirigiendo...</title>
+        </head>
+        <body>
+          <script>
+            // Intenta abrir la app
+            window.location = "${deepLink}";
+    
+            // Si no se abre la app, redirige a Play Store después de 1.5 segundos
+            setTimeout(() => {
+              window.location = "${playStoreUrl}";
+            }, 1500);
+          </script>
+        </body>
+        </html>
+      `);
+  } catch (error) {
+    handleHttp(res, "Error_Get_User", error);
+  }
+};
