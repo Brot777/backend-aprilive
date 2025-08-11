@@ -96,6 +96,13 @@ export const sendEmailResetPassword = async (
   subject: string,
   html: string
 ) => {
+  const userFound = await userModel.findOne({ email, isCompany: false });
+  if (!userFound) {
+    return {
+      response: { error: "Correo electronico no registrado" },
+      status: 401,
+    };
+  }
   const info = await transporter.sendMail({
     from: `APRILIVE <${email}>`,
     to: email,
