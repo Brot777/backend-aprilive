@@ -228,14 +228,14 @@ export const temporalUpdatePassword = async (req: Request, res: Response) => {
 };
 
 export const deepLinkChangePassword = async (req: Request, res: Response) => {
-  const { id, typeAccount } = req.query;
+  const { token } = req.query;
   try {
     // Validar si se recibieron los parámetros
-    if (typeAccount == undefined || id == undefined) {
+    if (token == undefined) {
       return res.status(400).send("Missing parameters");
     }
 
-    const deepLink = `aprilive://visitProfile/${typeAccount}/${id}`;
+    const deepLink = `aprilive://change-password/${token}`;
     // URL de la app en Play Store supuertamente
     /*  const playStoreUrl = `https://play.google.com/store/apps/details?id=com.aprilive`; */
     const playStoreUrl = `https://play.google.com/store/apps/details?id=com.supercell.clashroyale&hl=es_GT`;

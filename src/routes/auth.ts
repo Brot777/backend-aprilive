@@ -8,5 +8,6 @@ const router = Router();
 
 router.post("/singup", checkDuplicateUsername, checkDuplicateEmail, singup);
 router.post("/singin", singin);
+router.post("/recover-password/email", singin);
 
 export { router };
