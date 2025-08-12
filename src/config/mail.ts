@@ -16,7 +16,7 @@ export const transporter = nodemailer.createTransport({
   },
 });
 
-export const getTemplateRestartPassword = async (
+export const getTemplateRestartPassword = (
   name: string,
   token: string
 ) => `  <head>
@@ -28,8 +28,8 @@ export const getTemplateRestartPassword = async (
             <h2>Hola ${name}</h2>
             <p>Para restablecer tu contraseña, ingresa al siguiente enlace</p>
             <a
-                href="${process.env.HOST}/api/user/confirm/${token}"
+                href="${process.env.HOST}/api/users/change-password/${token}"
                 target="_blank"
-            >Confirmar Cuenta</a>
+            >Restablecer Contraseña</a>
         </div>
       `;

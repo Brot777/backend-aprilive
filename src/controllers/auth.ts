@@ -5,8 +5,7 @@ import {
   sendEmailResetPassword,
 } from "../services/auth";
 import { handleHttp } from "../utils/error.handle";
-import { userModel } from "../models/user";
-import { getTemplateRestartPassword, transporter } from "../config/mail";
+import { transporter } from "../config/mail";
 
 export const singup = async ({ body }: Request, res: Response) => {
   try {
@@ -30,13 +29,12 @@ export const singin = async (req: Request, res: Response) => {
 export const recoverPassword = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
-    const html= getTemplateRestartPassword()
-    const { response, status } = await sendEmailResetPassword({
+
+    const { response, status } = await sendEmailResetPassword(
       email,
       transporter,
-      "",
-      html
-    });
+      "Restablece tu contraseña"
+    );
     res.status(status).json(response);
   } catch (error) {
     handleHttp(res, "Something went wrong", error);

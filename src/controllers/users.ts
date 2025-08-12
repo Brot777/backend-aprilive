@@ -228,7 +228,9 @@ export const temporalUpdatePassword = async (req: Request, res: Response) => {
 };
 
 export const deepLinkChangePassword = async (req: Request, res: Response) => {
-  const { token } = req.query;
+  const { token } = req.params;
+  console.log(token);
+
   try {
     // Validar si se recibieron los parámetros
     if (token == undefined) {

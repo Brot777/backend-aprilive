@@ -9,6 +9,7 @@ import roleModel from "../models/role";
 import accountTypeModel from "../models/accountType";
 import nodemailer from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
+import { getTemplateRestartPassword } from "../config/mail";
 
 export const registerNewUser = async (user: RegisterUser) => {
   user.password = await encryptPassword(user.password);
@@ -59,7 +60,10 @@ export const registerNewUser = async (user: RegisterUser) => {
 };
 
 export const loginUser = async ({ email, password }: LoginUser) => {
-  const userFound = await userModel.findOne({ email, isCompany: false });
+  const userFound = await userModel.findOne({
+    "email.value": email,
+    isCompany: false,
+  });
   if (!userFound) {
     return {
       response: { error: "correo electronico o contraseña invalido" },
@@ -93,21 +97,35 @@ export const sendEmailResetPassword = async (
     SMTPTransport.SentMessageInfo,
     SMTPTransport.Options
   >,
-  subject: string,
-  html: string
+  subject: string
 ) => {
-  const userFound = await userModel.findOne({ email, isCompany: false });
+  const userFound = await userModel.findOne({
+    "email.value": email,
+    isCompany: false,
+  });
+
   if (!userFound) {
     return {
       response: { error: "Correo electronico no registrado" },
       status: 401,
     };
   }
+  const token = jwt.sign({ _id: userFound._id }, process.env.SECRET || "", {
+    expiresIn: 10 * 60,
+  });
+  const html = getTemplateRestartPassword(userFound?.name, token);
+  const emailSender = process.env.SMTP_EMAIL;
   const info = await transporter.sendMail({
-    from: `APRILIVE <${email}>`,
+    from: `APRILIVE <${emailSender}>`,
     to: email,
     subject,
     text: "Aprilive",
     html, // HTML body
   });
+  console.log(info);
+
+  return {
+    response: { message: "Correo de Verificación enviado correctamente" },
+    status: 200,
+  };
 };
