@@ -267,3 +267,16 @@ export const deepLinkChangePassword = async (req: Request, res: Response) => {
     handleHttp(res, "Error_Get_User", error);
   }
 };
+
+export const recoverAccount = async (req: Request, res: Response) => {
+  const userId = req.userId;
+  const { newPassword } = req.body;
+  try {
+    const hashPassword = await encryptPassword(newPassword);
+    await userModel.findByIdAndUpdate(userId, { password: hashPassword });
+
+    res.status(200).json({ msj: "password updated successfully" });
+  } catch (error) {
+    handleHttp(res, "Error_Update_Password", error);
+  }
+};

@@ -33,7 +33,7 @@ export const recoverPassword = async (req: Request, res: Response) => {
     const { response, status } = await sendEmailResetPassword(
       email,
       transporter,
-      "Restablece tu contraseña"
+      "Recupera tu cuenta de Aprilive"
     );
     res.status(status).json(response);
   } catch (error) {
