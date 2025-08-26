@@ -10,6 +10,8 @@ import accountTypeModel from "../models/accountType";
 import nodemailer from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 import { getTemplateRestartPassword } from "../config/mail";
+import { OAuth2Client } from "google-auth-library";
+import { GOOGLE_CLIENT_ID } from "../config/OAuth2";
 
 export const registerNewUser = async (user: RegisterUser) => {
   user.password = await encryptPassword(user.password);
@@ -126,6 +128,92 @@ export const sendEmailResetPassword = async (
 
   return {
     response: { message: "Correo de Verificación enviado correctamente" },
+    status: 200,
+  };
+};
+
+export const authorizationWithGoogle = async (idToken: string) => {
+  const client = new OAuth2Client(GOOGLE_CLIENT_ID);
+
+  const ticket = await client.verifyIdToken({
+    idToken,
+    audience: GOOGLE_CLIENT_ID,
+  });
+
+  const payload = ticket.getPayload();
+  if (!payload) {
+    return {
+      message: "token google invalido",
+      status: 401,
+    };
+  }
+  const { sub, email, name, picture } = payload;
+
+  // Buscar usuario en tu base de datos o crearlo
+  const personAccountFound = await personAccountModel.findOne({
+    "oauth2.googleId": sub,
+  });
+  const userFound = await userModel.findById(personAccountFound?.userId);
+
+  if (!userFound) {
+    const userSaved = await userModel.create({
+      email,
+      name,
+      googleId: sub,
+      avatar: picture,
+    });
+
+    const personAccountSaved = await personAccountModel.create({
+      userId: userSaved._id,
+    });
+    const avatarSaved = await avatarModel.create({
+      userId: userSaved._id,
+    });
+    const presentationVideoSaved = await presentationVideoModel.create({
+      userId: userSaved._id,
+    });
+
+    const freeUserRole = await roleModel.findOne({
+      name: "Free User",
+    });
+
+    const accountTypeSaved = await accountTypeModel.create({
+      userId: userSaved._id,
+      role: freeUserRole?._id,
+    });
+
+    await userModel.findByIdAndUpdate(
+      userSaved._id,
+      {
+        photoUrl: avatarSaved._id,
+        videoUrl: presentationVideoSaved._id,
+        personAccount: personAccountSaved._id,
+        accountType: accountTypeSaved._id,
+      },
+      {
+        new: true,
+      }
+    );
+
+    const token = jwt.sign({ _id: userSaved._id }, process.env.SECRET || "");
+    return {
+      response: {
+        _id: userSaved._id,
+        username: userSaved.username,
+        token,
+        isCompany: false,
+      },
+      status: 200,
+    };
+  }
+  const token = jwt.sign({ _id: userFound._id }, process.env.SECRET || "");
+  return {
+    response: {
+      _id: userFound._id,
+      username: userFound.username,
+      token,
+      isCompany: false,
+    },
     status: 200,
   };
 };

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import {
+  authorizationWithGoogle,
   loginUser,
   registerNewUser,
   sendEmailResetPassword,
@@ -35,6 +36,17 @@ export const recoverPassword = async (req: Request, res: Response) => {
       transporter,
       "Recupera tu cuenta de Aprilive"
     );
+    res.status(status).json(response);
+  } catch (error) {
+    handleHttp(res, "Something went wrong", error);
+  }
+};
+
+export const authWithGoogle = async (req: Request, res: Response) => {
+  try {
+    const { idToken } = req.body;
+
+    const { response, status } = await authorizationWithGoogle(idToken);
     res.status(status).json(response);
   } catch (error) {
     handleHttp(res, "Something went wrong", error);
