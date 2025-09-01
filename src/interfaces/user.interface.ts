@@ -10,7 +10,7 @@ export interface User {
   name: string;
   username: string;
   password: string;
-  email: string;
+  email: Email;
   emailVisible: boolean;
   photoUrl: Schema.Types.ObjectId | Avatar;
   profileUrl: string;
@@ -59,5 +59,11 @@ export type RegisterUser = Omit<
   | "companyAccount"
   | "isCompany"
 >;
+
+export interface Email {
+  value: string;
+  emailVisible: boolean;
+  verified: boolean;
+}
 
 export type LoginUser = Omit<RegisterUser, "username">;

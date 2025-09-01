@@ -5,6 +5,7 @@ export interface ServiceHiring {
   _id: Schema.Types.ObjectId;
   serviceId: Schema.Types.ObjectId | Service;
   customerId: Schema.Types.ObjectId | User;
+  serviceProviderId: Schema.Types.ObjectId | User;
   reviewId: Schema.Types.ObjectId;
   paymentId: string;
   status: string;

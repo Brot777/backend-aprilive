@@ -1,20 +1,22 @@
-import { Request, Response } from "express"
-import { handleHttp } from "./error.handle"
-import { userModel } from "../models/user"
+import { Request, Response } from "express";
+import { handleHttp } from "./error.handle";
+import { userModel } from "../models/user";
 
-const uptdateEmailToObject=async (req:Request,res:Response)=>{
-      try {
-        await userModel.updateMany({},[{
-          $set: {
-            email: {
-              value: "$email",
-              verified: false,
-              isVisible: "$emailIsVisible"
-            }
-          }
+const uptdateEmailToObject = async (req: Request, res: Response) => {
+  try {
+    await userModel.updateMany({}, [
+      {
+        $set: {
+          email: {
+            value: "$email",
+            verified: false,
+            emailVisible: "$emailVisible",
+          },
         },
-        { $unset: "emailIsVisible" }])
-      } catch (error) {
-        handleHttp(res,"Error Update Many Email Users",error)
-      }
-}
+      },
+      { $unset: "emailVisible" },
+    ]);
+  } catch (error) {
+    handleHttp(res, "Error Update Many Email Users", error);
+  }
+};

@@ -46,62 +46,26 @@ export const getMyBalance = async (req: Request, res: Response) => {
 };
 
 export const getMySales = async (req: Request, res: Response) => {
-  const authorId = req.userId;
-  const limit = 10;
-  const queryPage = req.query.page ? `${req.query.page}` : "1";
-  let page = Number(queryPage);
+  const serviceProviderId = req.userId;
   try {
-    if (!mongoose.Types.ObjectId.isValid(authorId)) {
-      return res.status(400).json({ error: "invalid user id" });
-    }
+    const serviceHirings = await serviceHiringModel
+      .find({ serviceProviderId })
+      .populate({ path: "reviewId", select: "value" })
+      .populate({
+        path: "serviceId",
+        select: "authorId title",
+        populate: {
+          path: "authorId",
+          select: "_id name photoUrl",
+          populate: {
+            path: "photoUrl",
+            select: "url",
+          },
+        },
+      });
 
-    const sales = await serviceHiringModel.aggregate([
-      {
-        $lookup: {
-          from: "services",
-          localField: "serviceId",
-          foreignField: "_id",
-          as: "service",
-        },
-      },
-      { $unwind: "$service" }, // Asegurar que cada pago tenga un servicio relacionado
-      {
-        $match: {
-          "service.authorId": new mongoose.Types.ObjectId(authorId),
-          status: "completado",
-        },
-      }, // Filtrar por el autor
-      {
-        $project: {
-          _id: 1,
-          paymentId: 1,
-          status: 1,
-          totalAmount: 1,
-          netAmount: 1,
-          createdAt: 1,
-        },
-      },
-      {
-        $facet: {
-          metadata: [
-            { $count: "total" }, // Conteo total de documentos
-          ],
-          data: [{ $skip: (page - 1) * limit }, { $limit: limit }],
-        },
-      },
-    ]);
-
-    const totalDocs = sales[0].metadata[0]?.total || 0; //Possible performance improvement: cache the value
-    const totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
-
-    return res.status(200).json({
-      docs: sales[0].data,
-      currentPage: page,
-      limit,
-      totalDocs,
-      totalPages,
-    });
+    return res.status(200).json(serviceHirings);
   } catch (error) {
-    handleHttp(res, "Error_Get_My_Sales", error);
+    handleHttp(res, "Error_Get_Service_Hirings", error);
   }
 };

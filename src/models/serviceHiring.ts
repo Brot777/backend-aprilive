@@ -13,6 +13,11 @@ const serviceHiringSchema = new Schema<ServiceHiring>(
       ref: "User",
       required: true,
     },
+    serviceProviderId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     reviewId: {
       type: Schema.Types.ObjectId,
       ref: "Review",

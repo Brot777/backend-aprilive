@@ -226,3 +226,57 @@ export const temporalUpdatePassword = async (req: Request, res: Response) => {
     handleHttp(res, "Error_Update_Password", error);
   }
 };
+
+export const deepLinkChangePassword = async (req: Request, res: Response) => {
+  const { token } = req.params;
+  console.log(token);
+
+  try {
+    // Validar si se recibieron los parámetros
+    if (token == undefined) {
+      return res.status(400).send("Missing parameters");
+    }
+
+    const deepLink = `aprilive://change-password/${token}`;
+    // URL de la app en Play Store supuertamente
+    /*  const playStoreUrl = `https://play.google.com/store/apps/details?id=com.aprilive`; */
+    const playStoreUrl = `https://play.google.com/store/apps/details?id=com.supercell.clashroyale&hl=es_GT`;
+
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Redirigiendo...</title>
+        </head>
+        <body>
+          <script>
+            // Intenta abrir la app
+            window.location = "${deepLink}";
+    
+            // Si no se abre la app, redirige a Play Store después de 1.5 segundos
+            setTimeout(() => {
+              window.location = "${playStoreUrl}";
+            }, 1500);
+          </script>
+        </body>
+        </html>
+      `);
+  } catch (error) {
+    handleHttp(res, "Error_Get_User", error);
+  }
+};
+
+export const recoverAccount = async (req: Request, res: Response) => {
+  const userId = req.userId;
+  const { newPassword } = req.body;
+  try {
+    const hashPassword = await encryptPassword(newPassword);
+    await userModel.findByIdAndUpdate(userId, { password: hashPassword });
+
+    res.status(200).json({ msj: "password updated successfully" });
+  } catch (error) {
+    handleHttp(res, "Error_Update_Password", error);
+  }
+};
