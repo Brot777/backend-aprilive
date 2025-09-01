@@ -176,7 +176,6 @@ export const authorizationWithGoogle = async (idToken: string) => {
     name,
     username: `${name}_${uuidv4()}`,
     googleId: sub,
-    avatar: picture,
   });
 
   const personAccountSaved = await personAccountModel.create({
@@ -184,6 +183,7 @@ export const authorizationWithGoogle = async (idToken: string) => {
   });
   const avatarSaved = await avatarModel.create({
     userId: userSaved._id,
+    url: picture,
   });
   const presentationVideoSaved = await presentationVideoModel.create({
     userId: userSaved._id,
