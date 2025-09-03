@@ -1,8 +1,6 @@
-import { Request, Response } from "express";
-import { handleHttp } from "./error.handle";
 import { userModel } from "../models/user";
 
-const uptdateEmailToObject = async (req: Request, res: Response) => {
+export const uptdateEmailToObject = async () => {
   try {
     await userModel.updateMany({}, [
       {
@@ -17,6 +15,6 @@ const uptdateEmailToObject = async (req: Request, res: Response) => {
       { $unset: "emailVisible" },
     ]);
   } catch (error) {
-    handleHttp(res, "Error Update Many Email Users", error);
+    console.log("error update many emails string to object");
   }
 };
