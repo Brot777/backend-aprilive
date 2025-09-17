@@ -10,9 +10,9 @@ import roleModel from "../models/role";
 import accountTypeModel from "../models/accountType";
 import nodemailer from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
-import { getTemplateRestartPassword } from "../config/mail";
 import { OAuth2Client } from "google-auth-library";
 import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "../config/OAuth2";
+import { getTemplateRestartPassword } from "../utils/getTemplateEmail";
 
 export const registerNewUser = async (user: RegisterUser) => {
   user.password = await encryptPassword(user.password);

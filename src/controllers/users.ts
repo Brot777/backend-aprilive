@@ -7,6 +7,7 @@ import presentationVideoModel from "../models/presentationVideo";
 import { handleHttp } from "../utils/error.handle";
 import { Request, Response } from "express";
 import { comparePassword, encryptPassword } from "../utils/bcrypt.handle";
+import { transporter } from "../config/mail";
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
@@ -57,6 +58,7 @@ export const deepLinkUserProfile = async (req: Request, res: Response) => {
     handleHttp(res, "Error_Get_User", error);
   }
 };
+
 export const getUserProfile = async (req: Request, res: Response) => {
   const userId = req.params.userId;
   try {
@@ -265,6 +267,61 @@ export const deepLinkChangePassword = async (req: Request, res: Response) => {
       `);
   } catch (error) {
     handleHttp(res, "Error_Get_User", error);
+  }
+};
+export const deepLinkVerifyEmail = async (req: Request, res: Response) => {
+  const { token } = req.params;
+  console.log(token);
+
+  try {
+    // Validar si se recibieron los parámetros
+    if (token == undefined) {
+      return res.status(400).send("Missing parameters");
+    }
+
+    const deepLink = `aprilive://verify-email/${token}`;
+    // URL de la app en Play Store supuertamente
+    /*  const playStoreUrl = `https://play.google.com/store/apps/details?id=com.aprilive`; */
+    const playStoreUrl = `https://play.google.com/store/apps/details?id=com.supercell.clashroyale&hl=es_GT`;
+
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Redirigiendo...</title>
+        </head>
+        <body>
+          <script>
+            // Intenta abrir la app
+            window.location = "${deepLink}";
+    
+            // Si no se abre la app, redirige a Play Store después de 1.5 segundos
+            setTimeout(() => {
+              window.location = "${playStoreUrl}";
+            }, 1500);
+          </script>
+        </body>
+        </html>
+      `);
+  } catch (error) {
+    handleHttp(res, "Error_Get_User", error);
+  }
+};
+
+export const verifyEmail = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    const { response, status } = await sendEmailResetPassword(
+      email,
+      transporter,
+      "Recupera tu cuenta de Aprilive"
+    );
+    res.status(status).json(response);
+  } catch (error) {
+    handleHttp(res, "Something went wrong", error);
   }
 };
 
