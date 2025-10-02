@@ -8,6 +8,7 @@ import { handleHttp } from "../utils/error.handle";
 import { Request, Response } from "express";
 import { comparePassword, encryptPassword } from "../utils/bcrypt.handle";
 import { transporter } from "../config/mail";
+import { sendEmailVerifyEmail } from "../services/user";
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
@@ -314,7 +315,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
 
-    const { response, status } = await sendEmailResetPassword(
+    const { response, status } = await sendEmailVerifyEmail(
       email,
       transporter,
       "Recupera tu cuenta de Aprilive"
