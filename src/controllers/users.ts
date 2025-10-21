@@ -318,7 +318,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
     const { response, status } = await sendEmailVerifyEmail(
       email,
       transporter,
-      "Recupera tu cuenta de Aprilive"
+      "Verifica tu cuenta de Aprilive"
     );
     res.status(status).json(response);
   } catch (error) {

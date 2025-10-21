@@ -1,17 +1,22 @@
 import nodemailer from "nodemailer";
 
 export const emailData = {
-  email: process.env.SMTP_EMAIL,
+  user: process.env.SMTP_USER,
   password: process.env.SMTP_PASSWORD,
+};
+
+export const smtpData = {
+  host: process.env.SMTP_HOST || "",
+  port: Number(process.env.SMTP_HOST) || 0,
 };
 
 // Create a test account or replace with real credentials.
 export const transporter = nodemailer.createTransport({
-  host: "smtp.hostinger.com",
-  port: 465,
-  secure: true, // true for 465, false for other ports
+  host: smtpData.host,
+  port: smtpData.port,
+  secure: false, // true for 465, false for other ports
   auth: {
-    user: emailData.email,
+    user: emailData.user,
     pass: emailData.password,
   },
 });

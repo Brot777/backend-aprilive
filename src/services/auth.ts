@@ -117,6 +117,8 @@ export const sendEmailResetPassword = async (
     expiresIn: 10 * 60,
   });
   const html = getTemplateRestartPassword(userFound?.name, token);
+  console.log("todo bien");
+
   const emailSender = process.env.SMTP_EMAIL;
   const info = await transporter.sendMail({
     from: `APRILIVE <${emailSender}>`,
@@ -128,7 +130,7 @@ export const sendEmailResetPassword = async (
   console.log(info);
 
   return {
-    response: { message: "Correo de Verificación enviado correctamente" },
+    response: { message: "Correo de recuperación enviado correctamente" },
     status: 200,
   };
 };
