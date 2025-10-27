@@ -90,7 +90,9 @@ export const getServices = async (req: Request, res: Response) => {
       .find()
       .skip((page - 1) * limit)
       .limit(limit)
-      .select("categories authorId images price money title description")
+      .select(
+        "categories authorId images price money title description deliberyTime"
+      )
       .populate("categories")
       .populate({
         path: "authorId",

@@ -174,7 +174,7 @@ export const authorizationWithGoogle = async (idToken: string) => {
   }
 
   const userSaved = await userModel.create({
-    email: { value: email },
+    email: { value: email, verified: true },
     name,
     username: `${name}_${uuidv4()}`,
   });
