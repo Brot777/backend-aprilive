@@ -73,7 +73,6 @@ const serviceSchema = new Schema<Service>(
       type: String,
       default: "",
     },
-
     deliberyTime: {
       type: String,
       default: "",
@@ -105,6 +104,17 @@ const serviceSchema = new Schema<Service>(
     numReviews: {
       type: Number,
       default: 0,
+    },
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        required: true,
+      },
+      coordinates: {
+        type: [Number], // [longitude, latitude]
+        required: true,
+      },
     },
   },
   {

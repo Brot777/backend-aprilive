@@ -2,6 +2,12 @@ import { Schema } from "mongoose";
 import { User } from "./user.interface";
 import { ImageService } from "./imageService";
 import { Category } from "./category";
+
+export interface Location {
+  type: "Point";
+  coordinates: [number, number]; // [longitude, latitude]
+}
+
 export interface Service {
   _id: Schema.Types.ObjectId;
   typePost: string;
@@ -26,4 +32,5 @@ export interface Service {
   WhoCanSee: string;
   averageRating: number;
   numReviews: number;
+  location: Location;
 }
