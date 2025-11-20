@@ -3,6 +3,7 @@ import { handleHttp } from "../utils/error.handle";
 import reviewModel from "../models/review";
 import mongoose from "mongoose";
 import { serviceHiringModel } from "../models/serviceHiring";
+import serviceModel from "../models/service";
 
 export const createReviewByServiceHiringId = async (
   req: Request,
@@ -23,12 +24,22 @@ export const createReviewByServiceHiringId = async (
       });
     }
 
+    await serviceModel.findById(serviceHiring.serviceId);
+
     review.serviceHiringId = serviceHiringId;
     review.serviceId = serviceHiring.serviceId;
     review.authorId = userId;
     const reviewSaved = await reviewModel.create(review);
+
+    const nuevoPromedio =
+      (promedioActual * totalActual + nuevaPuntuacion) / (totalActual + 1);
+    const nuevoTotal = totalActual + 1;
     await serviceHiringModel.findByIdAndUpdate(serviceHiringId, {
       reviewId: reviewSaved._id,
+    });
+    await serviceModel.findByIdAndUpdate(serviceHiring.serviceId, {
+      averageRating,
+      numReviews,
     });
     res.status(201).json(reviewSaved);
   } catch (error) {

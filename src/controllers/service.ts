@@ -155,7 +155,7 @@ export const getServiceById = async (req: Request, res: Response) => {
 export const updateServiceById = async (req: Request, res: Response) => {
   const files = (req.files as Express.Multer.File[]) || [];
   const serviceId = req.params.serviceId;
-  let { deletedImages, ...newService } = req.body;
+  let { deletedImages, averageRating, numReviews, ...newService } = req.body;
   deletedImages = (deletedImages as Schema.Types.ObjectId[]) || [];
 
   try {
