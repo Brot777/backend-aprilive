@@ -5,9 +5,6 @@ import { Request, Response } from "express";
 import likeServiceModel from "../models/likeService";
 import commentServiceModel from "../models/commentService";
 import {
-  addPropertiesWhenGetServices,
-  addPropertiesWhenGetServicesPersonalized,
-  addRatingWhenGetServices,
   deleteImagesService,
   updateImagesService,
   uploadImagesServiceToS3,
@@ -18,7 +15,9 @@ export const createService = async (req: Request, res: Response) => {
     const files = (req.files as Express.Multer.File[]) || [];
     const { response, status } = await uploadImagesServiceToS3(files);
     if (status !== 200) return res.status(status).json(response);
-    const service = req.body;
+    const { lng, lat, ...restService } = req.body;
+    const service = restService;
+    service.location = { type: "Point", coordinates: [lng, lat] };
     service.images = response;
     const serviceSaved = await serviceModel.create(service);
     res.status(201).json(serviceSaved);
@@ -27,7 +26,7 @@ export const createService = async (req: Request, res: Response) => {
   }
 };
 
-export const getPersonalizedServices = async (req: Request, res: Response) => {
+/* export const getPersonalizedServices = async (req: Request, res: Response) => {
   const userId = req.userId;
   const limit = 10;
   const queryPage = req.query.page ? `${req.query.page}` : "1";
@@ -80,7 +79,8 @@ export const getPersonalizedServices = async (req: Request, res: Response) => {
   } catch (error) {
     handleHttp(res, "Error_Get_Services", error);
   }
-};
+}; */
+
 export const getServices = async (req: Request, res: Response) => {
   const limit = 10;
   const queryPage = req.query.page ? `${req.query.page}` : "1";
@@ -91,7 +91,7 @@ export const getServices = async (req: Request, res: Response) => {
       .skip((page - 1) * limit)
       .limit(limit)
       .select(
-        "categories authorId images price money title description deliberyTime"
+        "categories authorId images price money title description deliberyTime averageRating numReviews location"
       )
       .populate("categories")
       .populate({
@@ -108,10 +108,9 @@ export const getServices = async (req: Request, res: Response) => {
       });
     let totalDocs = await serviceModel.count(); //Possible performance improvement: cache the value
     let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
-    const newServices = await addRatingWhenGetServices(services);
 
     return res.status(200).json({
-      docs: newServices,
+      docs: services,
       currentPage: page,
       limit,
       totalDocs,

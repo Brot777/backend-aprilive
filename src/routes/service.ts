@@ -3,7 +3,6 @@ import { Router } from "express";
 import {
   createService,
   deleteServiceById,
-  getPersonalizedServices,
   getServiceById,
   getServices,
   getServicesByAuthorId,
@@ -21,7 +20,7 @@ router.post(
   createService
 );
 router.get("/", getServices);
-router.get("/personalized", isValidToken, getPersonalizedServices);
+/* router.get("/personalized", isValidToken, getPersonalizedServices); */
 router.get("/services/:authorId", isValidToken, getServicesByAuthorId);
 router.get("/:serviceId", getServiceById);
 router.put(
