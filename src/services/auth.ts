@@ -73,6 +73,17 @@ export const loginUser = async ({ email, password }: LoginUser) => {
       status: 401,
     };
   }
+  const personAccountFound = await personAccountModel.findOne({
+    userId: userFound._id,
+  });
+
+  if (personAccountFound?.oauth2.googleId) {
+    return {
+      response: { error: "correo electronico o contraseña invalido" },
+      status: 401,
+    };
+  }
+
   const matchPassword = await comparePassword(password, userFound.password);
 
   if (!matchPassword) {

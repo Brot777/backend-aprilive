@@ -151,6 +151,7 @@ const userSchema = new Schema<User>(
   }
 );
 userSchema.index({ name: "text", username: "text" });
+userSchema.index({ "email.value": 1 }, { unique: true, sparse: true });
 export const userModel = model("User", userSchema);
 
 /* 

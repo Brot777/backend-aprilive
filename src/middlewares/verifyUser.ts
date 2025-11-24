@@ -26,7 +26,7 @@ export const checkDuplicateEmail = async (
 ) => {
   try {
     const user = await userModel.findOne({
-      email: req.body.email,
+      "email.value": req.body.email.value,
       isCompany: false,
     });
     if (user) {
