@@ -6,6 +6,7 @@ import likeServiceModel from "../models/likeService";
 import commentServiceModel from "../models/commentService";
 import {
   deleteImagesService,
+  haversineMetros,
   updateImagesService,
   uploadImagesServiceToS3,
 } from "../services/service";
@@ -84,10 +85,26 @@ export const createService = async (req: Request, res: Response) => {
 export const getServices = async (req: Request, res: Response) => {
   const limit = 10;
   const queryPage = req.query.page ? `${req.query.page}` : "1";
+  const lat = req.query.lat ? Number(req.query.lat) : null;
+  const lng = req.query.lng ? Number(req.query.lng) : null;
   let page = Number(queryPage);
+  let query = {};
+
+  if (lat && lng) {
+    console.log(`si se encontraron valores para ${lng} ${lat}}`);
+    query = {
+      location: {
+        $nearSphere: {
+          $geometry: { type: "Point", coordinates: [lng, lat] },
+          $maxDistance: 50000, // opcional: filtrar hasta 50km
+        },
+      },
+    };
+  }
+
   try {
     const services = await serviceModel
-      .find()
+      .find(query)
       .skip((page - 1) * limit)
       .limit(limit)
       .select(
@@ -106,11 +123,26 @@ export const getServices = async (req: Request, res: Response) => {
         path: "images",
         select: "url", // Especifica el campo que deseas recuperar
       });
-    let totalDocs = await serviceModel.count(); //Possible performance improvement: cache the value
+
+    const servicesWithDistance = services.map((s) => {
+      // asumiendo s.location.coordinates = [lng, lat]
+      const [srvLng, srvLat] = s.location.coordinates;
+      const distMeters = haversineMetros(lat, lng, srvLat, srvLng);
+      const distKm = distMeters / 1000;
+
+      const obj = s.toObject(); // convertir documento a objeto plano
+      obj.distance = {
+        meters: Math.round(distMeters),
+        km: Number(distKm.toFixed(2)),
+      };
+      return obj;
+    });
+
+    let totalDocs = await serviceModel.count(query); //Possible performance improvement: cache the value
     let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
 
     return res.status(200).json({
-      docs: services,
+      docs: servicesWithDistance,
       currentPage: page,
       limit,
       totalDocs,

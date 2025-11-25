@@ -124,5 +124,6 @@ const serviceSchema = new Schema<Service>(
 );
 
 serviceSchema.index({ title: "text", description: "text" });
+serviceSchema.index({ location: "2dsphere" });
 
 export default model("Service", serviceSchema);

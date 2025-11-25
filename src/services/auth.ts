@@ -77,7 +77,7 @@ export const loginUser = async ({ email, password }: LoginUser) => {
     userId: userFound._id,
   });
 
-  if (personAccountFound?.oauth2.googleId) {
+  if (personAccountFound?.oauth2?.googleId) {
     return {
       response: { error: "correo electronico o contraseña invalido" },
       status: 401,
