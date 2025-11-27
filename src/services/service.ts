@@ -273,11 +273,16 @@ export const deleteImagesService = async (service: Service) => {
 };
 
 export const haversineMetros = (
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number
+  lat1: number | null,
+  lng1: number | null,
+  lat2: number | null,
+  lng2: number | null
 ) => {
+  lat1 == null ? 0 : lat1;
+  lng1 == null ? 0 : lng1;
+  lat2 == null ? 0 : lat2;
+  lng2 == null ? 0 : lng2;
+
   const R = 6371000; // radio tierra en metros
   const φ1 = (lat1 * Math.PI) / 180;
   const φ2 = (lat2 * Math.PI) / 180;
