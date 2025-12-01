@@ -11,6 +11,7 @@ import {
 } from "../controllers/service";
 import { isValidToken } from "../middlewares/verifyToken";
 import { uploadImagesService } from "../middlewares/multerService";
+import { getCoordinates } from "../middlewares/service";
 const router = Router();
 
 router.post(
@@ -19,7 +20,7 @@ router.post(
   isValidToken,
   createService
 );
-router.get("/", getServices);
+router.get("/", getCoordinates, getServices);
 /* router.get("/personalized", isValidToken, getPersonalizedServices); */
 router.get("/services/:authorId", isValidToken, getServicesByAuthorId);
 router.get("/:serviceId", getServiceById);

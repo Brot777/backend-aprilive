@@ -1,5 +1,5 @@
 import serviceModel from "../models/service";
-import mongoose, { Schema } from "mongoose";
+import mongoose, { LeanDocument, Schema } from "mongoose";
 import { handleHttp } from "../utils/error.handle";
 import { Request, Response } from "express";
 import likeServiceModel from "../models/likeService";
@@ -10,6 +10,7 @@ import {
   updateImagesService,
   uploadImagesServiceToS3,
 } from "../services/service";
+import { Service } from "../interfaces/service";
 
 export const createService = async (req: Request, res: Response) => {
   try {
@@ -85,18 +86,21 @@ export const createService = async (req: Request, res: Response) => {
 export const getServices = async (req: Request, res: Response) => {
   const limit = 10;
   const queryPage = req.query.page ? `${req.query.page}` : "1";
-  const lat = req.query.lat ? Number(req.query.lat) : null;
-  const lng = req.query.lng ? Number(req.query.lng) : null;
+  const lat =
+    Number(req.query.lat) || Number(req?.geo?.ll?.[0] || 0) || 14.6349;
+  const lng =
+    Number(req.query.lng) || Number(req?.geo?.ll?.[1] || 0) || -90.5069;
   let page = Number(queryPage);
   let query = {};
-
+  console.log(req.geo);
+  console.log([lng, lat]);
   if (lat && lng) {
     console.log(`si se encontraron valores para ${lng} ${lat}}`);
     query = {
       location: {
         $nearSphere: {
           $geometry: { type: "Point", coordinates: [lng, lat] },
-          $maxDistance: 50000, // opcional: filtrar hasta 50km
+          $maxDistance: 100000, // opcional: filtrar hasta 100km
         },
       },
     };
@@ -130,7 +134,12 @@ export const getServices = async (req: Request, res: Response) => {
       const distMeters = haversineMetros(lat, lng, srvLat, srvLng);
       const distKm = distMeters / 1000;
 
-      const obj = s.toObject(); // convertir documento a objeto plano
+      const obj = s.toObject() as LeanDocument<Service> & {
+        distance: {
+          meters: number;
+          km: number;
+        };
+      }; // convertir documento a objeto plano
       obj.distance = {
         meters: Math.round(distMeters),
         km: Number(distKm.toFixed(2)),
