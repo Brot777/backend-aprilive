@@ -272,7 +272,7 @@ export const deleteImagesService = async (service: Service) => {
   };
 };
 
-export const haversineMetros = (
+export const calculateDistanceServices = (
   lat1: number,
   lng1: number,
   lat2: number,
@@ -292,4 +292,4 @@ export const haversineMetros = (
   return R * c; // metros
 };
 
-module.exports = { haversineMetros };
+

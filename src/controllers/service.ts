@@ -5,8 +5,8 @@ import { Request, Response } from "express";
 import likeServiceModel from "../models/likeService";
 import commentServiceModel from "../models/commentService";
 import {
+  calculateDistanceServices,
   deleteImagesService,
-  haversineMetros,
   updateImagesService,
   uploadImagesServiceToS3,
 } from "../services/service";
@@ -131,7 +131,7 @@ export const getServices = async (req: Request, res: Response) => {
     const servicesWithDistance = services.map((s) => {
       // asumiendo s.location.coordinates = [lng, lat]
       const [srvLng, srvLat] = s.location.coordinates;
-      const distMeters = haversineMetros(lat, lng, srvLat, srvLng);
+      const distMeters = calculateDistanceServices(lat, lng, srvLat, srvLng);
       const distKm = distMeters / 1000;
 
       const obj = s.toObject() as LeanDocument<Service> & {
