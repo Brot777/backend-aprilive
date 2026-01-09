@@ -278,8 +278,6 @@ export const categoriesArray = [
   { value: "Alquiler de scooters" },
   { value: "Servicio por encargo" },
   { value: "Alquiler de automoviles de alta gama y de lujo" },
-  { value: "Alquiler de novia" },
-  { value: "Alquiler de novio o amigos" },
   { value: "Gimnasio" },
   { value: "Servicio de alquiler de herramientas de construcción" },
   {
@@ -373,4 +371,12 @@ export const categoriesArray = [
   { value: "Diseño de anuncios de banner" },
   { value: "Diseño de productos" },
   { value: "Otros servicios de diseño y creatividad" },
+  { value: "Servicio de citas y experiencias" },
+  { value: "Cita de amistad" },
+  { value: "Cita casual" },
+  { value: "Cita romantica" },
+  { value: "Viaje y aventura" },
+  { value: "Eventos y planes" },
+  { value: "Guia o anfitrion local" },
+  { value: "Viajes de autor" },
 ];
