@@ -117,7 +117,7 @@ export const getServices = async (req: Request, res: Response) => {
       .populate("categories")
       .populate({
         path: "authorId",
-        select: "_id name photoUrl",
+        select: "_id name photoUrl isCompany",
         populate: {
           path: "photoUrl",
           select: "url",
