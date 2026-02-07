@@ -144,6 +144,10 @@ const userSchema = new Schema<User>(
       type: Boolean,
       default: false,
     },
+    verify: {
+      type: String,
+      default: "sin verificar",
+    },
   },
   {
     timestamps: true,
