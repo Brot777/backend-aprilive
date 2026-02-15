@@ -273,7 +273,11 @@ export const deleteImagesService = async (service: Service) => {
   };
 };
 
-export const addDistancesToServices = (services: Service[] | any, lat:number,lng:number) => {
+export const addDistancesToServices = (
+  services: Service[] | any,
+  lat: number,
+  lng: number,
+) => {
   if (!services?.length) return [];
   return services.map((s: Service) => {
     // asumiendo s.location.coordinates = [lng, lat]
@@ -285,7 +289,8 @@ export const addDistancesToServices = (services: Service[] | any, lat:number,lng
       distance: {
         meters: Math.round(distMeters),
         km: Number(distKm.toFixed(2)),
-      }
+      },
+    };
   });
 };
 
