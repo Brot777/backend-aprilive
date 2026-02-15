@@ -1,11 +1,10 @@
-import serviceModel from "../models/service";
+/* import serviceModel from "../models/service";
 import mongoose, { LeanDocument, Schema } from "mongoose";
 import { handleHttp } from "../utils/error.handle";
 import { Request, Response } from "express";
 import likeServiceModel from "../models/likeService";
 import commentServiceModel from "../models/commentService";
 import {
-  calculateDistanceServices,
   deleteImagesService,
   updateImagesService,
   uploadImagesServiceToS3,
@@ -27,61 +26,6 @@ export const createService = async (req: Request, res: Response) => {
     handleHttp(res, "Error_Create_Service", error);
   }
 };
-
-/* export const getPersonalizedServices = async (req: Request, res: Response) => {
-  const userId = req.userId;
-  const limit = 10;
-  const queryPage = req.query.page ? `${req.query.page}` : "1";
-  let page = Number(queryPage);
-
-  try {
-    const services = await serviceModel
-      .find()
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .populate({
-        path: "authorId",
-        select: "photoUrl",
-        populate: {
-          path: "photoUrl",
-          select: "url",
-        },
-      })
-      .populate({
-        path: "authorId",
-        select: "name isCompany accountType",
-        populate: {
-          path: "accountType",
-          select: "role",
-          populate: {
-            path: "role",
-            select: "name",
-          },
-        },
-      })
-      .populate({
-        path: "images",
-        select: "url", // Especifica el campo que deseas recuperar
-      });
-
-    const newServices = await addPropertiesWhenGetServicesPersonalized(
-      services,
-      userId
-    ); //user with autentication
-    let totalDocs = await serviceModel.count(); //Possible performance improvement: cache the value
-    let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
-
-    return res.status(200).json({
-      docs: newServices,
-      currentPage: page,
-      limit,
-      totalDocs,
-      totalPages,
-    });
-  } catch (error) {
-    handleHttp(res, "Error_Get_Services", error);
-  }
-}; */
 
 export const getServices = async (req: Request, res: Response) => {
   const limit = 10;
@@ -112,7 +56,7 @@ export const getServices = async (req: Request, res: Response) => {
       .skip((page - 1) * limit)
       .limit(limit)
       .select(
-        "categories authorId images price money title description deliberyTime averageRating numReviews location"
+        "categories authorId images price money title description deliberyTime averageRating numReviews location",
       )
       .populate("categories")
       .populate({
@@ -210,7 +154,7 @@ export const updateServiceById = async (req: Request, res: Response) => {
     const { response, status } = await updateImagesService(
       files,
       service,
-      deletedImages
+      deletedImages,
     );
     if (status !== 200) return res.status(status).json(response);
     newService.images = response;
@@ -218,7 +162,7 @@ export const updateServiceById = async (req: Request, res: Response) => {
     const serviceUpdated = await serviceModel.findByIdAndUpdate(
       serviceId,
       newService,
-      { new: true }
+      { new: true },
     );
 
     res.status(200).json(serviceUpdated);
@@ -322,5 +266,4 @@ export const getServicesByAuthorId = async (req: Request, res: Response) => {
   } catch (error) {
     handleHttp(res, "Error_Services_By_Author", error);
   }
-};
-
+}; */
