@@ -5,6 +5,7 @@ import serviceModel from "../models/service";
 import portfolioModel from "../models/portfolio";
 import { convertTextNormalize } from "../utils/normalizeText";
 import { userModel } from "../models/user";
+import { addDistancesToServices } from "../services/service";
 
 export const searchJobOffers = async (req: Request, res: Response) => {
   const { typeJob, minSalary, maxSalary, skill } = req.query;
@@ -75,20 +76,41 @@ export const searchJobOffers = async (req: Request, res: Response) => {
 };
 
 export const searchServices = async (req: Request, res: Response) => {
-  let query = req.query.filter?.toString() || "";
-  query = convertTextNormalize(query);
-  let filters: any = { $text: { $search: query } };
-  let proyection: any = { score: { $meta: "textScore" } };
-  query == "" && (filters = {});
-  query == "" && (proyection = {});
-  console.log(filters, query);
-
+  /* paginate */
   const limit = 10;
   const queryPage = req.query.page ? `${req.query.page}` : "1";
   let page = Number(queryPage);
+
+  /* location */
+  const lat =
+    Number(req.query.lat) || Number(req?.geo?.ll?.[0] || 0) || 14.6349;
+  const lng =
+    Number(req.query.lng) || Number(req?.geo?.ll?.[1] || 0) || -90.5069;
+
+  /* filters */
+  let query = req.query.filter?.toString() || "";
+  query = convertTextNormalize(query);
+  let filters: any = {
+    $text: { $search: query },
+    location: {
+      $nearSphere: {
+        $geometry: { type: "Point", coordinates: [lng, lat] },
+        $maxDistance: 100000, // opcional: filtrar hasta 100km
+      },
+    },
+  };
+  let proyection: any = { score: { $meta: "textScore" }, averageRating: -1 };
+
+  /* empty filters */
+  query == "" && (filters = {});
+  query == "" && (proyection = {});
+
   try {
     const services = await serviceModel
       .find(filters, proyection)
+      .select(
+        "categories authorId images price money title description deliberyTime quantity averageRating numReviews location",
+      )
       .skip((page - 1) * limit)
       .limit(limit)
       .populate({
@@ -117,6 +139,7 @@ export const searchServices = async (req: Request, res: Response) => {
       })
       .sort(proyection);
 
+    const servicesWithDistance = addDistancesToServices(services, lat, lng);
     let totalDocs = await serviceModel.count(filters);
     let totalPages = Math.ceil(totalDocs / limit);
 
@@ -144,7 +167,7 @@ export const searchPortfolios = async (req: Request, res: Response) => {
         {
           $text: { $search: query },
         },
-        { score: { $meta: "textScore" } }
+        { score: { $meta: "textScore" } },
       )
       .skip((page - 1) * limit)
       .limit(limit)
@@ -202,7 +225,7 @@ export const searchUsers = async (req: Request, res: Response) => {
         {
           $text: { $search: query },
         },
-        { score: { $meta: "textScore" } }
+        { score: { $meta: "textScore" } },
       )
       .skip((page - 1) * limit)
       .limit(limit)

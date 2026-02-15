@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 import likeServiceModel from "../models/likeService";
 import commentServiceModel from "../models/commentService";
 import {
-  calculateDistanceServices,
+  addDistancesToServices,
   deleteImagesService,
   updateImagesService,
   uploadImagesServiceToS3,
@@ -84,18 +84,20 @@ export const createService = async (req: Request, res: Response) => {
 }; */
 
 export const getServices = async (req: Request, res: Response) => {
+  /* paginate */
   const limit = 10;
   const queryPage = req.query.page ? `${req.query.page}` : "1";
+  let page = Number(queryPage);
+
+  /* location */
   const lat =
     Number(req.query.lat) || Number(req?.geo?.ll?.[0] || 0) || 14.6349;
   const lng =
     Number(req.query.lng) || Number(req?.geo?.ll?.[1] || 0) || -90.5069;
-  let page = Number(queryPage);
+
+  /* filters */
   let query = {};
-  console.log(req.geo);
-  console.log([lng, lat]);
   if (lat && lng) {
-    console.log(`si se encontraron valores para ${lng} ${lat}}`);
     query = {
       location: {
         $nearSphere: {
@@ -109,11 +111,11 @@ export const getServices = async (req: Request, res: Response) => {
   try {
     const services = await serviceModel
       .find(query)
+      .select(
+        "categories authorId images price money title description deliberyTime quantity averageRating numReviews location",
+      )
       .skip((page - 1) * limit)
       .limit(limit)
-      .select(
-        "categories authorId images price money title description deliberyTime averageRating numReviews location"
-      )
       .populate("categories")
       .populate({
         path: "authorId",
@@ -126,27 +128,11 @@ export const getServices = async (req: Request, res: Response) => {
       .populate({
         path: "images",
         select: "url", // Especifica el campo que deseas recuperar
-      });
+      })
+      .sort({ averageRating: -1 })
+      .lean();
 
-    const servicesWithDistance = services.map((s) => {
-      // asumiendo s.location.coordinates = [lng, lat]
-      const [srvLng, srvLat] = s.location.coordinates;
-      const distMeters = calculateDistanceServices(lat, lng, srvLat, srvLng);
-      const distKm = distMeters / 1000;
-
-      const obj = s.toObject() as LeanDocument<Service> & {
-        distance: {
-          meters: number;
-          km: number;
-        };
-      }; // convertir documento a objeto plano
-      obj.distance = {
-        meters: Math.round(distMeters),
-        km: Number(distKm.toFixed(2)),
-      };
-      return obj;
-    });
-
+    const servicesWithDistance = addDistancesToServices(services, lat, lng);
     let totalDocs = await serviceModel.count(query); //Possible performance improvement: cache the value
     let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
 
@@ -210,7 +196,7 @@ export const updateServiceById = async (req: Request, res: Response) => {
     const { response, status } = await updateImagesService(
       files,
       service,
-      deletedImages
+      deletedImages,
     );
     if (status !== 200) return res.status(status).json(response);
     newService.images = response;
@@ -218,7 +204,7 @@ export const updateServiceById = async (req: Request, res: Response) => {
     const serviceUpdated = await serviceModel.findByIdAndUpdate(
       serviceId,
       newService,
-      { new: true }
+      { new: true },
     );
 
     res.status(200).json(serviceUpdated);

@@ -17,7 +17,7 @@ import reviewModel from "../models/review";
 
 export const addPropertiesWhenGetServicesPersonalized = async (
   services: Service[] | any,
-  userId: string
+  userId: string,
 ) => {
   if (!services?.length) return [];
   const promisesLikes = services.map((service: Service, index: number) => {
@@ -43,7 +43,7 @@ export const addPropertiesWhenGetServicesPersonalized = async (
   return services.map((service: Service, index: number) => {
     service.numLikes = likes[index].length;
     const isLike = likes[index].find(
-      (likeService: LikeService, index: number) => likeService.userId == userId
+      (likeService: LikeService, index: number) => likeService.userId == userId,
     );
     service.isLike = Boolean(isLike);
     service.following = Boolean(followings[index]);
@@ -52,7 +52,7 @@ export const addPropertiesWhenGetServicesPersonalized = async (
   });
 };
 export const addPropertiesWhenGetServices = async (
-  services: Service[] | any
+  services: Service[] | any,
 ) => {
   if (!services?.length) return [];
   const promisesCountLikes = services.map((service: Service, index: number) => {
@@ -81,7 +81,7 @@ export const addRatingWhenGetServices = async (services: Service[] | any) => {
           },
         },
       ]);
-    }
+    },
   );
 
   const averages = await Promise.all(promiseAverageRatings);
@@ -135,7 +135,7 @@ export const uploadImagesServiceToS3 = async (files: Express.Multer.File[]) => {
         name,
         Key: `${folders.imagesOfService}/${name}`,
       };
-    })
+    }),
   );
 
   return {
@@ -147,7 +147,7 @@ export const uploadImagesServiceToS3 = async (files: Express.Multer.File[]) => {
 export const updateImagesService = async (
   files: Express.Multer.File[],
   service: Service,
-  deletedImages: string[]
+  deletedImages: string[],
 ) => {
   // Get Old Images
   const oldImages = service.images as ImageService[];
@@ -214,11 +214,12 @@ export const updateImagesService = async (
         name,
         Key: `${folders.imagesOfService}/${name}`,
       };
-    })
+    }),
   );
 
   const filterImages = oldImages.filter(
-    (oldImage: ImageService) => !deletedImages.includes(oldImage._id.toString())
+    (oldImage: ImageService) =>
+      !deletedImages.includes(oldImage._id.toString()),
   );
   filterImages.push(...imagesSaved);
 
@@ -244,7 +245,7 @@ export const deleteImagesService = async (service: Service) => {
   const Objects: ObjectIdentifier[] = oldImages.map(
     (oldImage: ImageService) => {
       return { Key: oldImage.name };
-    }
+    },
   );
 
   const params = {
@@ -262,7 +263,7 @@ export const deleteImagesService = async (service: Service) => {
     };
   }
   const promisesImagesDeleted = oldImages.map((oldImage: ImageService) =>
-    imageServiceModel.findByIdAndDelete(oldImage._id)
+    imageServiceModel.findByIdAndDelete(oldImage._id),
   );
   await Promise.all(promisesImagesDeleted);
 
@@ -272,11 +273,27 @@ export const deleteImagesService = async (service: Service) => {
   };
 };
 
-export const calculateDistanceServices = (
+export const addDistancesToServices = (services: Service[] | any, lat:number,lng:number) => {
+  if (!services?.length) return [];
+  return services.map((s: Service) => {
+    // asumiendo s.location.coordinates = [lng, lat]
+    const [srvLng, srvLat] = s.location.coordinates;
+    const distMeters = calculateDistanceServices(lat, lng, srvLat, srvLng);
+    const distKm = distMeters / 1000;
+    return {
+      ...s,
+      distance: {
+        meters: Math.round(distMeters),
+        km: Number(distKm.toFixed(2)),
+      }
+  });
+};
+
+const calculateDistanceServices = (
   lat1: number,
   lng1: number,
   lat2: number,
-  lng2: number
+  lng2: number,
 ) => {
   const R = 6371000; // radio tierra en metros
   const φ1 = (lat1 * Math.PI) / 180;
@@ -291,5 +308,3 @@ export const calculateDistanceServices = (
 
   return R * c; // metros
 };
-
-
