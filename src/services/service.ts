@@ -279,7 +279,10 @@ export const addDistancesToServices = (
   lng: number,
 ) => {
   if (!services?.length) return [];
+  
   return services.map((s: Service) => {
+
+    if (!(s?.location?.coordinates)) return s;
     // asumiendo s.location.coordinates = [lng, lat]
     const [srvLng, srvLat] = s.location.coordinates;
     const distMeters = calculateDistanceServices(lat, lng, srvLat, srvLng);

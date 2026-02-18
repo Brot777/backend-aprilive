@@ -76,17 +76,24 @@ export const searchJobOffers = async (req: Request, res: Response) => {
 };
 
 export const searchServices = async (req: Request, res: Response) => {
+ /* Paginate */
+  const limit = 10;
+  const queryPage = req.query.page ? `${req.query.page}` : "1";
+  let page = Number(queryPage);
+ 
   let query = req.query.filter?.toString() || "";
   query = convertTextNormalize(query);
   let filters: any = { $text: { $search: query } };
   let proyection: any = { score: { $meta: "textScore" } };
   query == "" && (filters = {});
   query == "" && (proyection = {});
-  console.log(filters, query);
 
-  const limit = 10;
-  const queryPage = req.query.page ? `${req.query.page}` : "1";
-  let page = Number(queryPage);
+
+/* Location */
+  const lat =
+    Number(req.query.lat) || Number(req?.geo?.ll?.[0] || 0) || 14.6349;
+  const lng =
+    Number(req.query.lng) || Number(req?.geo?.ll?.[1] || 0) || -90.5069;
   try {
     const services = await serviceModel
       .find(filters, proyection)
@@ -119,13 +126,17 @@ export const searchServices = async (req: Request, res: Response) => {
         path: "images",
         select: "-_id url", // Especifica el campo que deseas recuperar
       })
-      .sort(proyection);
+      .sort(proyection)
+      .lean();
+      
+       const servicesWithDistance = addDistancesToServices(services, lat, lng);
+       let totalDocs = await serviceModel.count(filters); //Possible performance improvement: cache the value
+       let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
 
-    let totalDocs = await serviceModel.count(filters);
-    let totalPages = Math.ceil(totalDocs / limit);
+       
 
     return res.status(200).json({
-      docs: services,
+      docs: servicesWithDistance,
       currentPage: page,
       limit,
       totalDocs,
