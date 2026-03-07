@@ -18,11 +18,11 @@ const userSchema = new Schema<User>(
     email: {
       value: {
         type: String,
-        require: true,
+        require: false,
       },
       emailVisible: {
         type: Boolean,
-        default: true,
+        default: false,
       },
       verified: {
         type: Boolean,
@@ -62,7 +62,7 @@ const userSchema = new Schema<User>(
     },
     proTitleVisible: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     phoneArea: {
       type: String,
@@ -74,7 +74,7 @@ const userSchema = new Schema<User>(
     },
     phoneVisible: {
       type: Boolean,
-      default: true,
+      default: false,
     },
 
     country: {
@@ -145,8 +145,8 @@ const userSchema = new Schema<User>(
       default: false,
     },
     verify: {
-      type: String,
-      default: "sin verificar",
+      type: Boolean,
+      default: false,
     },
   },
   {
