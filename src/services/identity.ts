@@ -9,6 +9,7 @@ import imageServiceModel from "../models/imageService";
 
 
 import { folders } from "../consts/s3Folders";
+import { imageIdentityModel } from "../models/imageIdentity";
 
 
 
@@ -46,7 +47,7 @@ export const uploadIdentityDocumentsToS3 = async (files: Express.Multer.File[]) 
     }
   });
 
-  const imagesSaved = await imageServiceModel.insertMany(
+  const imagesSaved = await imageIdentityModel.insertMany(
     names.map((name: string) => {
       return {
         url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfService}/${name}`,
