@@ -145,8 +145,9 @@ const userSchema = new Schema<User>(
       default: false,
     },
     verify: {
-      type: Boolean,
-      default: false,
+      type:String,
+      enum: ["sin verificar","pendiente", "verificado","rechazado"],
+      default:"sin verificar"
     },
   },
   {

@@ -1,24 +1,26 @@
 import { v4 as uuidv4 } from "uuid";
 import {
-  DeleteObjectsCommand,
-  ObjectIdentifier,
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
 import { s3Client } from "../config/s3Client";
-import imageServiceModel from "../models/imageService";
-
-
 import { folders } from "../consts/s3Folders";
-import { imageIdentityModel } from "../models/imageIdentity";
+import { imageVerificationModel } from "../models/imageVerification";
 
 
 
-export const uploadIdentityDocumentsToS3 = async (files: Express.Multer.File[]) => {
+export const uploadVerificationDocumentsToS3 = async (files: Express.Multer.File[],userId:string) => {
   if (files.length == 0) {
+     return {
+        response: { error: "Verification documents are required" },
+        status: 400,
+      };
+  }
+
+   if (userId==null) {//null o undefined
     return {
-      response: [],
-      status: 200,
-    };
+      response: { error: "404 user not found" },
+      status: 404,
+    }
   }
 
   // Set the parameters
@@ -30,7 +32,7 @@ export const uploadIdentityDocumentsToS3 = async (files: Express.Multer.File[]) 
     names.push(name);
     const params = {
       Bucket: BUKET, // The name of the bucket. For example, 'sample-bucket-101'.
-      Key: `${folders.identity}/${name}`, // The name of the object. For example, 'sample_upload.txt'.
+      Key: `${folders.verification}/${userId}/${name}`, // The name of the object. For example, 'sample_upload.txt'.
       Body: file.buffer,
       contentType: file.mimetype, // The content of the object. For example, 'Hello world!".
     };
@@ -47,12 +49,12 @@ export const uploadIdentityDocumentsToS3 = async (files: Express.Multer.File[]) 
     }
   });
 
-  const imagesSaved = await imageIdentityModel.insertMany(
+  const imagesSaved = await imageVerificationModel.insertMany(
     names.map((name: string) => {
       return {
-        url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.imagesOfService}/${name}`,
+        url: `${process.env.PREFIX_URI_UPLOADS_S3}/${userId}/${folders.verification}/${name}`,
         name,
-        Key: `${folders.imagesOfService}/${name}`,
+        Key: `${folders.verification}/${userId}/${name}`,
       };
     }),
   );

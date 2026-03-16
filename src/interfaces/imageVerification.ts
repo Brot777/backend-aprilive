@@ -1,6 +1,6 @@
 import { Schema } from "mongoose";
 
-export interface ImageIdentity {
+export interface ImageVerification {
   _id: Schema.Types.ObjectId;
   url: string;
   name: string;

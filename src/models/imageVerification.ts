@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
-import { ImageIdentity } from "../interfaces/imageIdentity";
+import { ImageVerification } from "../interfaces/imageVerification";
 
-const imageIdentitySchema = new Schema<ImageIdentity>(
+const imageVerificationSchema = new Schema<ImageVerification>(
   {
     url: {
       type: String,
@@ -22,5 +22,5 @@ const imageIdentitySchema = new Schema<ImageIdentity>(
   },
 );
 
-const imageIdentityModel = model("ImageIdentity", imageIdentitySchema);
-export { imageIdentityModel };
+const imageVerificationModel = model("ImageVerification", imageVerificationSchema);
+export { imageVerificationModel };

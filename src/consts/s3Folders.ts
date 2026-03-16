@@ -5,5 +5,5 @@ export const folders = {
   imagesOfService: "images_Of_service",
   imagesOfPortfolio: "images_Of_portfolio",
   networks: "networks",
-  identity: "identity",
+  verification: "verification",
 };

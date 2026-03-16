@@ -31,7 +31,7 @@ export interface User {
   personAccount: Schema.Types.ObjectId | PersonAccount;
   companyAccount: Schema.Types.ObjectId | CompanyAccount;
   isCompany: boolean;
-  verify: boolean;
+  verify: string;
 }
 
 export type RegisterUser = Omit<

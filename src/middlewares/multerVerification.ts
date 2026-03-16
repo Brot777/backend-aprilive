@@ -9,7 +9,7 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: any) => {
     cb(new Error("file is not of the correct type"), false);
   }
 };
-export const uploadImagesIdentity = multer({
+export const uploadImagesVerification = multer({
   storage,
   fileFilter,
   limits: { files: 3 },

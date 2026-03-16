@@ -1,9 +1,17 @@
 import { Router } from "express";
 import { isValidToken } from "../middlewares/verifyToken";
-import { createPayout } from "../controllers/withdrawal";
-
+import { uploadImagesVerification } from "../middlewares/multerVerification";
+import { createVerification, getStatusVerification } from "../controllers/verification";
+import { isStatusAllowed } from "../middlewares/verification";
 const router = Router();
 
-router.post("/upload-identification", isValidToken, createPayout);
+router.post(
+  "/",
+  uploadImagesVerification.array("images"),
+  [isValidToken,isStatusAllowed],
+  createVerification
+);
+
+router.get("/status",isValidToken,getStatusVerification)
 
 export { router };
