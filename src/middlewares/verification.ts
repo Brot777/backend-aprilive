@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { userModel } from "../models/user";
+import { verificationModel } from "../models/verification";
 
 export const isStatusAllowed = async (
   req: Request,
@@ -18,6 +19,24 @@ export const isStatusAllowed = async (
       return res.status(401).json({ error: "este usuario ya ha sido verificado" });
     }
 
+    next();
+  } catch (error) {
+    res.status(500).json({ error: "something went wrong" });
+  }
+};
+
+export const isInAllowedRange = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const userId=req.userId;
+  
+  try {
+    const numberOfVerifications= await verificationModel.count({userId})
+    if (numberOfVerifications >= 5 ) {
+      return res.status(401).json({ error: "se alcanzo el numero maximo de intentos permitidos" });
+    }
     next();
   } catch (error) {
     res.status(500).json({ error: "something went wrong" });

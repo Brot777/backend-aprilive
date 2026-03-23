@@ -76,4 +76,16 @@ export const getPendindVerification = async (req: Request, res: Response) => {
   }
 };
 
+export const getMyVerifications = async (req: Request, res: Response) => {
+
+  const userId = req.userId;
+
+  try {
+    const verifications = await verificationModel.find({ userId });
+    return res.status(200).json(verifications);
+  } catch (error) {
+    handleHttp(res, "Error_Get_My_Verification", error);
+  }
+};
+
 
