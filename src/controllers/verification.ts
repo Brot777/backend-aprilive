@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { uploadVerificationDocumentsToS3 } from "../services/verification";
 import { verificationModel } from "../models/verification";
 import { userModel } from "../models/user";
+import mongoose from "mongoose";
 
 export const createVerification = async (req: Request, res: Response) => {
   const userId = req.userId;
@@ -87,5 +88,31 @@ export const getMyVerifications = async (req: Request, res: Response) => {
     handleHttp(res, "Error_Get_My_Verification", error);
   }
 };
+
+export const changeStatusByVerificationId = async (req: Request, res: Response) => {
+  const verificationId: string = req.params.verificationId;
+  const status: string = req.body.status;
+  // 1. Iniciar la sesión
+  const session = await mongoose.startSession();
+  try {
+
+    await session.withTransaction(async () => {
+
+      const verificationFound = await verificationModel.findByIdAndUpdate(verificationId, { $set: { status } }, { new: true, session })
+      if (!verificationFound) {
+        return res.status(404).json({ error: "verification not found" });
+      }
+      await userModel.findByIdAndUpdate(verificationFound.userId, { $set: { verify: status } }, { session })
+    })
+
+    return res.status(201).json({ success: true, });
+
+  } catch (error) {
+    handleHttp(res, "Error_Update_Verification", error);
+  }
+  finally {
+    session.endSession();
+  }
+}
 
 
