@@ -92,26 +92,20 @@ export const getMyVerifications = async (req: Request, res: Response) => {
 export const changeStatusByVerificationId = async (req: Request, res: Response) => {
   const verificationId: string = req.params.verificationId;
   const status: string = req.body.status;
-  // 1. Iniciar la sesión
-  const session = await mongoose.startSession();
   try {
 
-    await session.withTransaction(async () => {
 
-      const verificationFound = await verificationModel.findByIdAndUpdate(verificationId, { $set: { status } }, { new: true, session })
-      if (!verificationFound) {
-        return res.status(404).json({ error: "verification not found" });
-      }
-      await userModel.findByIdAndUpdate(verificationFound.userId, { $set: { verify: status } }, { session })
-    })
+    const verificationFound = await verificationModel.findByIdAndUpdate(verificationId, { $set: { status } }, { new: true })
+    if (!verificationFound) {
+      return res.status(404).json({ error: "verification not found" });
+    }
+    await userModel.findByIdAndUpdate(verificationFound.userId, { $set: { verify: status } })
+
 
     return res.status(201).json({ success: true, });
 
   } catch (error) {
     handleHttp(res, "Error_Update_Verification", error);
-  }
-  finally {
-    session.endSession();
   }
 }
 
