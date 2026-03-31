@@ -1,0 +1,1 @@
+export const USER_ID_ALLOWED=process.env.USER_ID_ALLOWED
