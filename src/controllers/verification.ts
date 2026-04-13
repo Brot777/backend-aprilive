@@ -91,11 +91,11 @@ export const getMyVerifications = async (req: Request, res: Response) => {
 
 export const changeStatusByVerificationId = async (req: Request, res: Response) => {
   const verificationId: string = req.params.verificationId;
-  const status: string = req.body.status;
+  let {status,rejectionReason=""} = req.body;
   try {
 
 
-    const verificationFound = await verificationModel.findByIdAndUpdate(verificationId, { $set: { status } }, { new: true })
+    const verificationFound = await verificationModel.findByIdAndUpdate(verificationId, { $set: { status,rejectionReason } }, { new: true })
     if (!verificationFound) {
       return res.status(404).json({ error: "verification not found" });
     }
