@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { userModel } from "../models/user";
 import { verificationModel } from "../models/verification";
-import { USER_ID_ALLOWED } from "../config/userAllowed";
+import { USER_EMAIL_ALLOWED, USER_ID_ALLOWED } from "../config/userAllowed";
 
 export const isStatusAllowed = async (
   req: Request,
@@ -40,7 +40,7 @@ export const isInAllowedRange = async (
     }
     next();
   } catch (error) {
-    res.status(500).json({ error: "something went wrong" });
+    return res.status(500).json({ error: "something went wrong" });
   }
 };
 
@@ -54,15 +54,20 @@ export const isAccontAllowed = async (
   try {
     const userFound=  await userModel.findById(userId)
     if (!userFound) {
-      res.status(404).json({error: "user not found"})
+      console.log(userId+"1");
+      
+     return res.status(404).json({error: "user not found"})
     }
 
-    if (!(userFound?._id===USER_ID_ALLOWED) ) {
-      return res.status(401).json({ error: "unauthorized" });
+   if (userFound?._id.toString()!==USER_ID_ALLOWED?.toString() || userFound?.email.value.toString()!==USER_EMAIL_ALLOWED?.toString()) {
+   console.log({_id:userFound._id,USER_ID_ALLOWED,email:userFound.email.value,USER_EMAIL_ALLOWED});
+   
+    console.log(userId+"2");
+     return res.status(401).json({error: "Unautorized"})
     }
     next();
   } catch (error) {
-    res.status(500).json({ error: "something went wrong" });
+    return res.status(500).json({ error: "something went wrong" });
   }
 };
 
