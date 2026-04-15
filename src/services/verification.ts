@@ -52,7 +52,7 @@ export const uploadVerificationDocumentsToS3 = async (files: Express.Multer.File
   const imagesSaved = await imageVerificationModel.insertMany(
     names.map((name: string) => {
       return {
-        url: `${process.env.PREFIX_URI_UPLOADS_S3}/${userId}/${folders.verification}/${name}`,
+        url: `${process.env.PREFIX_URI_UPLOADS_S3}/${folders.verification}/${userId}/${name}`,
         name,
         Key: `${folders.verification}/${userId}/${name}`,
       };
