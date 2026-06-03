@@ -25,6 +25,10 @@ const withdrawalSchema = new Schema(
       type: String,
       default: "",
     },
+    balanceTransactionId: {
+      type: Schema.Types.ObjectId,
+      ref: "BalanceTransaction",
+    }
   },
   {
     timestamps: true,

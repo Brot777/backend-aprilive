@@ -13,4 +13,5 @@ export interface ServiceHiring {
   netAmount: string;
   totalHours: string;
   estimatedDeliveryDate: Date;
+  balanceTransactionId: Schema.Types.ObjectId | String;
 }

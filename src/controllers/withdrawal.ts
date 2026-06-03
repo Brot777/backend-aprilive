@@ -26,96 +26,63 @@ export const createPayout = async (req: Request, res: Response) => {
         error: "The minimum amount to withdraw is 10 USD",
       });
     }
-    const access_token = await getPayPalToken();
+    // const access_token = await getPayPalToken();
 
-    const payoutRequest = {
-      sender_batch_header: {
-        sender_batch_id: senderBatchId,
-        email_subject: "Retiro aprobado",
-        email_message: "Has recibido un pago",
-      },
-      items: [
-        {
-          recipient_type: "EMAIL",
-          amount: { value: Number(amount).toFixed(2), currency: "USD" },
-          receiver: email,
-          note: "Retiro solicitado",
-          sender_item_id: senderBatchId,
-        },
-      ],
-    };
+    // const payoutRequest = {
+    //   sender_batch_header: {
+    //     sender_batch_id: senderBatchId,
+    //     email_subject: "Retiro aprobado",
+    //     email_message: "Has recibido un pago",
+    //   },
+    //   items: [
+    //     {
+    //       recipient_type: "EMAIL",
+    //       amount: { value: Number(amount).toFixed(2), currency: "USD" },
+    //       receiver: email,
+    //       note: "Retiro solicitado",
+    //       sender_item_id: senderBatchId,
+    //     },
+    //   ],
+    // };
 
-    const response = await axios.post(
-      `${PAYPAL_API}/v1/payments/payouts`,
-      payoutRequest,
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    console.log(response.data);
+    // const response = await axios.post(
+    //   `${PAYPAL_API}/v1/payments/payouts`,
+    //   payoutRequest,
+    //   {
+    //     headers: {
+    //       Authorization: `Bearer ${access_token}`,
+    //       "Content-Type": "application/json",
+    //     },
+    //   }
+    // );
+    // console.log(response.data);
 
-    if (response.status != 201) {
-      return res.status(500).send({ error: "Error_Creating_Payout" });
-    }
-    await withdrawalModel.create({
-      userId,
-      amount,
-      status: "completado",
-      senderBatchId,
-      paymentId: response?.data?.batch_header?.payout_batch_id,
-      email,
-    });
-    await balanceTransactionModel.create({
+    // if (response.status != 201) {
+    //   return res.status(500).send({ error: "Error_Creating_Payout" });
+    // }
+
+   const balanceTransactionSaved= await balanceTransactionModel.create({
       amount,
       increase: false,
       description: "retiro de dinero",
-      paymentId: response?.data?.batch_header?.payout_batch_id,
       userId,
     });
+
+    await withdrawalModel.create({
+      userId,
+      amount,
+      status: "pendiente",
+      email, 
+      balanceTransactionId:balanceTransactionSaved._id,
+    });
+    
 
     return res.json({ message: "success" });
   } catch (error) {
     handleHttp(res, "Error_Create_Payout", error);
   }
 };
-export const captureOrder = async (req: Request, res: Response) => {
-  const { token } = req.query;
 
-  try {
-    const access_token = await getPayPalToken();
+export const getWithdrawals=async (req:Request,res:Response)=>{}
 
-    await axios.post(
-      `${process.env.PAYPAL_API}/v2/checkout/orders/${token}/capture`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    await serviceHiringModel.findOneAndUpdate(
-      { paymentId: token },
-      {
-        status: "pendiente",
-      }
-    );
-
-    return res.json({ succes: true });
-  } catch (error) {
-    handleHttp(res, "Error_Capture_Order", error);
-  }
-};
-export const cancelOrder = async (req: Request, res: Response) => {
-  const { token } = req.query;
-  try {
-    await serviceHiringModel.findOneAndDelete({ paymentId: token });
-    return res.json({ succes: false });
-  } catch (error) {
-    handleHttp(res, "Error_Cancel_Order", error);
-  }
-};
+export const changeStatusWithdrawalById=async (req:Request,res:Response)=>{}

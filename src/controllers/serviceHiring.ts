@@ -76,13 +76,21 @@ export const changeCompletedByServiceHiringId = async (
     const service = serviceHiringUpdated?.serviceId as Service;
     console.log(serviceHiring);
 
-    await balanceTransactionModel.create({
+    const balanceTransactionSaved = await balanceTransactionModel.create({
       amount: serviceHiringUpdated?.netAmount,
       increase: true,
-      description: "prestación de servicio",
+      description: "servicio concluido",
       paymentId: serviceHiring?.paymentId,
       userId: service.authorId,
     });
+
+    await serviceHiringModel
+      .findByIdAndUpdate(
+        serviceHiringId,
+        {
+          balanceTransactionId: balanceTransactionSaved._id,
+        }
+      )
 
     res.status(201).json(serviceHiringUpdated);
   } catch (error) {

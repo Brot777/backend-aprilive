@@ -14,7 +14,7 @@ export const getMyBalance = async (req: Request, res: Response) => {
       currency: "USD",
     });
   } catch (error) {
-    handleHttp(res, "Error_Upload_Photo", error);
+    handleHttp(res, "Error_Get_Balance", error);
   }
 };
 export const getMyTransactions = async (req: Request, res: Response) => {
