@@ -8,6 +8,7 @@ import { getPayPalToken } from "../utils/paypal";
 import withdrawalModel from "../models/withdrawal";
 import balanceTransactionModel from "../models/balanceTransaction";
 import { getTotalBalance } from "../services/transaction";
+import { typeTransaction } from "../consts/transactions";
 
 export const createPayout = async (req: Request, res: Response) => {
   const { amount, email } = req.body;
@@ -61,20 +62,23 @@ export const createPayout = async (req: Request, res: Response) => {
     //   return res.status(500).send({ error: "Error_Creating_Payout" });
     // }
 
-   const balanceTransactionSaved= await balanceTransactionModel.create({
-      amount,
-      increase: false,
-      description: "retiro de dinero",
-      userId,
-    });
-
-    await withdrawalModel.create({
+    const withdrawalSaved=await withdrawalModel.create({
       userId,
       amount,
       status: "pendiente",
       email, 
-      balanceTransactionId:balanceTransactionSaved._id,
     });
+
+   await balanceTransactionModel.create({
+      amount,
+      increase: false,
+      description: "retiro de dinero",
+      typeTransaction:typeTransaction.withdrawal,
+      referenceId:withdrawalSaved._id,
+      userId,
+    });
+
+    
     
 
     return res.json({ message: "success" });
@@ -83,6 +87,60 @@ export const createPayout = async (req: Request, res: Response) => {
   }
 };
 
-export const getWithdrawals=async (req:Request,res:Response)=>{}
+export const getPendingWithdrawals=async (req:Request,res:Response)=>{
+ /* paginate */
+  const limit = 10;
+  const queryPage = req.query.page ? `${req.query.page}` : "1";
+  let page = Number(queryPage);
 
-export const changeStatusWithdrawalById=async (req:Request,res:Response)=>{}
+
+
+  try {
+    const withdrawals = await withdrawalModel
+      .find({ status: "pendiente" })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate({
+        path: "userId",
+        select: "_id name photoUrl isCompany",
+        populate: {
+          path: "photoUrl",
+          select: "url",
+        },
+      })
+
+
+    let totalDocs = await withdrawalModel.count({ status: "pendiente" }); //Possible performance improvement: cache the value
+    let totalPages = Math.ceil(totalDocs / limit); //Possible performance improvement: cache the value
+
+    return res.status(200).json({
+      docs: withdrawals,
+      currentPage: page,
+      limit,
+      totalDocs,
+      totalPages,
+    });
+  } catch (error) {
+    handleHttp(res, "Error_Get_Pending_Verification", error);
+  }
+};
+
+export const changeStatusWithdrawalById=async (req:Request,res:Response)=>
+  {
+  const withdrawalId: string = req.params.withdrawalId;
+  let {status,rejectionReason=""} = req.body;
+  try {
+
+
+    const withdrawalFound = await withdrawalModel.findByIdAndUpdate(withdrawalId, { $set: { status } }, { new: true })
+    if (!withdrawalFound) {
+      return res.status(404).json({ error: "withdrawal not found" });
+    }
+
+
+    return res.status(201).json({ success: true, });
+
+  } catch (error) {
+    handleHttp(res, "Error_Update_Withdrawal", error);
+  }
+}

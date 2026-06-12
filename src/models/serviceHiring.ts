@@ -49,10 +49,6 @@ const serviceHiringSchema = new Schema<ServiceHiring>(
       default: null,
       required: true,
     },
-    balanceTransactionId: {
-      type: Schema.Types.ObjectId,
-      ref: "BalanceTransaction",
-    },
   },
   {
     timestamps: true,

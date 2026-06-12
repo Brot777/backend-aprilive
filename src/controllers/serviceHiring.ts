@@ -4,6 +4,7 @@ import { serviceHiringModel } from "../models/serviceHiring";
 import mongoose from "mongoose";
 import balanceTransactionModel from "../models/balanceTransaction";
 import { Service } from "../interfaces/service";
+import { typeTransaction } from "../consts/transactions";
 
 export const getMyServiceHiring = async (req: Request, res: Response) => {
   const customerId = req.userId;
@@ -79,18 +80,13 @@ export const changeCompletedByServiceHiringId = async (
     const balanceTransactionSaved = await balanceTransactionModel.create({
       amount: serviceHiringUpdated?.netAmount,
       increase: true,
-      description: "servicio concluido",
+      description: "servicio prestado",
       paymentId: serviceHiring?.paymentId,
+      typeTransaction:typeTransaction.serviceHiring,
+      referenceId:serviceHiring?._id,
       userId: service.authorId,
     });
 
-    await serviceHiringModel
-      .findByIdAndUpdate(
-        serviceHiringId,
-        {
-          balanceTransactionId: balanceTransactionSaved._id,
-        }
-      )
 
     res.status(201).json(serviceHiringUpdated);
   } catch (error) {

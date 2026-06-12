@@ -3,6 +3,7 @@ import { serviceHiringModel } from "../models/serviceHiring";
 import { Service } from "../interfaces/service";
 import { ServiceHiring } from "../interfaces/serviceHiring";
 import balanceTransactionModel from "../models/balanceTransaction";
+import { typeTransaction } from "../consts/transactions";
 // Tarea programada para ejecutarse todos los días a la medianoche
 cron.schedule("0 0 * * *", async () => {
   const deadline = new Date();
@@ -37,6 +38,8 @@ cron.schedule("0 0 * * *", async () => {
         increase: true,
         description: "prestación de servicio",
         paymentId: serviceHiring?.paymentId,
+        typeTransaction:typeTransaction.serviceHiring,
+        referenceId:serviceHiring?._id,
         userId: service.authorId,
       });
     });

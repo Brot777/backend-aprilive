@@ -14,6 +14,15 @@ const balanceTransactionSchema = new Schema(
       type: String,
       default: "",
     },
+    typeTransaction: {
+      type: String,
+      enum: ["service_hiring", "withdrawal"],
+
+    },
+    referenceId: {
+      type: String,
+      default: "",
+    },
     paymentId: {
       type: String,
       default: "",
